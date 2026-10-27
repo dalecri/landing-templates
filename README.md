@@ -8,8 +8,7 @@ A small shelf of reusable landing page templates by Cristobal D'Alessio. Each te
 
 | Template | What it demonstrates |
 | --- | --- |
-| [portfolio-ascii/](portfolio-ascii/) | A full portfolio page on the ASCII landing design: an interactive botanical koi pond hero with a vibe studio (palettes, glyph sets, koi), glass-scrim hero text, dark and light themes, and Experience / Projects / Writing / About / Contact sections. Built with Tailwind via CDN. This is the design currently live at heycristobal.com/prototype/. |
-| [portfolio-persona/](portfolio-persona/) | The portfolio-ascii template filled with a fictional persona instead of a real one: Marisol Vega, a Halifax product designer, with invented employers, projects, writing samples, and contact details, plus an SVG initials placeholder instead of a photo. Safe to demo publicly, and the quickest way to judge the template with content in it. |
+| [portfolio-persona/](portfolio-persona/) | A full portfolio page on the ASCII landing design, filled with a fictional persona: Marisol Vega, a Halifax product designer, with invented employers, projects, writing samples, and contact details, plus an SVG initials placeholder instead of a photo. Safe to demo publicly, and the quickest way to judge the template with content in it. |
 | [petrichor-rain/](petrichor-rain/) | A product landing page over the Rain on Glass engine: a fogged, rainy window as the living background, frosted-glass content panels, a scene switcher (Garden / City / Pond), and a fictional founder persona (Maren Ilves of Petrichor, a rain-recording studio). One single HTML file; Google Fonts is the only external dependency. |
 
 ## How to reuse one
@@ -26,4 +25,4 @@ A small shelf of reusable landing page templates by Cristobal D'Alessio. Each te
 
 ## Origins
 
-Both templates grew out of the [ASCII-VISUAL-PROJECTS](https://github.com/dalecri/ASCII-VISUAL-PROJECTS) collection: the portfolio from its botanical koi landing page, Petrichor from its Rain on Glass piece.
+Both templates grew out of the [ASCII-VISUAL-PROJECTS](https://github.com/dalecri/ASCII-VISUAL-PROJECTS) collection: the portfolio from its botanical koi landing page, Petrichor from its Rain on Glass piece. (An earlier edition of the portfolio template carried a real person's details; it was retired in favour of the persona edition and still runs as the live prototype at heycristobal.com/prototype/.)
