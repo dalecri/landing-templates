@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marisol Vega — Product Design, Front-End & Content Systems (Template)</title>
+    <meta name="description" content="Prototype: A fictional persona portfolio presented in the ASCII landing page design. Senior product designer in Halifax, Nova Scotia; builder of calm little tools. A template: swap in a real person and ship it.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind-config.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-pond-theme="lotus" class="bg-[#FAF9F5] dark:bg-[#0D1017] text-stone-900 dark:text-stone-100 font-sans transition-colors duration-500 selection:bg-pink-200 dark:selection:bg-pink-900">
+
+    <!-- HERO SECTION WITH LIVE INTERACTIVE ASCII CANVAS -->
+    <section id="top" class="relative w-full h-svh overflow-hidden flex flex-col justify-between">
+        
+        <!-- Interactive ASCII Canvas Background -->
+        <canvas id="ascii-canvas" class="absolute inset-0 w-full h-full cursor-crosshair z-0"></canvas>
+
+        <!-- Top Navigation Bar -->
+        <header class="relative z-20 w-full max-w-[1440px] mx-auto px-6 sm:px-10 pt-6 pb-4 flex items-center justify-between text-xs sm:text-[13px] tracking-tight">
+            <!-- Left Links -->
+            <nav class="nav-scroll flex flex-1 min-w-0 items-center space-x-5 sm:space-x-8 overflow-x-auto whitespace-nowrap pr-2 font-medium text-stone-600 dark:text-stone-400">
+                <a href="#work" class="hover:text-stone-950 dark:hover:text-white transition-colors">Experience</a>
+                <a href="#projects" class="hover:text-stone-950 dark:hover:text-white transition-colors">Projects</a>
+                    <a href="#writing" class="hover:text-stone-950 dark:hover:text-white transition-colors">Writing</a>
+                    <a href="#about" class="hover:text-stone-950 dark:hover:text-white transition-colors">About</a>
+                    <a href="#contact" class="hover:text-stone-950 dark:hover:text-white transition-colors">Contact</a>
+            </nav>
+
+            <!-- Right Socials, Email & Theme Toggle -->
+            <div class="flex items-center space-x-3.5 sm:space-x-5 text-stone-600 dark:text-stone-400">
+                <!-- Portfolio / Web -->
+                <a href="#" aria-label="marisolvega.design" title="marisolvega.design" class="hover:text-stone-950 dark:hover:text-white transition-colors font-mono text-[11px] hidden sm:inline">
+                    marisolvega.design ↗
+                </a>
+
+                <!-- Email Copy Button -->
+                <button id="copy-email-btn" class="hidden md:flex items-center space-x-1.5 hover:text-stone-950 dark:hover:text-white transition-colors group relative">
+                    <span class="font-mono text-[12px]">hello@marisolvega.design</span>
+                    <svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                        <rect width="13" height="13" x="9" y="9" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span id="copy-toast" class="absolute -bottom-7 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 text-[10px] font-mono rounded opacity-0 pointer-events-none transition-opacity">Copied!</span>
+                </button>
+
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/marisolvega/" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" class="hover:text-stone-950 dark:hover:text-white transition-colors">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+                </a>
+                <!-- Dark / Light Mode Toggle -->
+                <button id="theme-toggle" aria-label="Toggle Theme" class="p-1.5 rounded-full hover:bg-stone-200/60 dark:hover:bg-stone-800/60 transition-colors">
+                    <!-- Moon icon -->
+                    <svg id="moon-icon" class="w-3.5 h-3.5 block dark:hidden fill-current" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <!-- Sun icon -->
+                    <svg id="sun-icon" class="w-3.5 h-3.5 hidden dark:block fill-current text-amber-300" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Centerpiece Typography (Matches Reference Layout) -->
+        <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-4 text-center pointer-events-none">
+            <div class="max-w-xl mx-auto px-6 py-8 rounded-3xl transition-all duration-300 bg-stone-950/[0.11] backdrop-blur-[3px] shadow-[0_0_80px_rgba(28,25,23,0.10)] dark:bg-white/[0.04] dark:shadow-none">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Crect width='240' height='240' fill='%232A2233'/%3E%3Ccircle cx='120' cy='94' r='38' fill='%23E8873A'/%3E%3Cpath d='M36 240c12-54 46-78 84-78s72 24 84 78z' fill='%237B4B94'/%3E%3Ctext x='120' y='230' font-family='monospace' font-size='19' fill='%23EDE7F2' text-anchor='middle'%3EMV%3C/text%3E%3C/svg%3E" alt="Marisol Vega" class="pointer-events-auto block mx-auto w-20 h-20 rounded-full object-cover ring-4 ring-white/70 dark:ring-stone-800/70 shadow-md mb-5" />
+                <h1 class="text-5xl sm:text-6xl md:text-[64px] font-normal tracking-[-0.03em] text-stone-900 dark:text-stone-50 mb-3 leading-none select-text pointer-events-auto">
+                    Marisol Vega
+                </h1>
+                
+                <p class="hero-eyebrow font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.26em] text-stone-700 dark:text-stone-400 mb-6">
+                    PRODUCT DESIGN · FRONT-END · CONTENT SYSTEMS
+                </p>
+
+                <p class="hero-lede text-sm sm:text-[15px] leading-relaxed text-stone-700 dark:text-stone-200 max-w-[490px] mx-auto mb-8 font-medium select-text pointer-events-auto">
+                    I design and build calm, useful web things. Senior product designer at Northwind Studio in Halifax, where I lead the design system and previously ran community and content for a national outdoors retailer. Off the clock I make small tools like <a href="#projects" class="underline decoration-stone-400 underline-offset-4 hover:text-stone-950 dark:hover:text-white transition-colors">Nook</a> and <a href="#projects" class="underline decoration-stone-400 underline-offset-4 hover:text-stone-950 dark:hover:text-white transition-colors">Ember Reader</a>, and negotiate with two cats in Halifax, Nova Scotia.
+                </p>
+
+                <!-- Pill CTA Buttons -->
+                <div class="pointer-events-auto inline-flex flex-wrap items-center justify-center gap-2.5">
+                    <a href="#work" class="glass-pill inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-stone-900 dark:bg-stone-100 hover:bg-stone-700 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-medium transition-all shadow-sm hover:shadow"><span>Explore my work</span></a>
+                    <a href="#contact" class="glass-pill inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-stone-200/75 dark:bg-stone-800/80 hover:bg-stone-300/80 dark:hover:bg-stone-700/80 text-stone-800 dark:text-stone-200 text-xs font-medium transition-all shadow-sm hover:shadow"><span>Get my CV</span></a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Vibe Controller Drawer (Interactive Surprise) -->
+        <aside id="vibe-drawer" class="fixed top-16 right-6 z-30 w-72 max-w-[calc(100vw-3rem)] glass-pill bg-white/85 dark:bg-stone-900/85 border border-stone-200/80 dark:border-stone-800 rounded-2xl p-4 shadow-xl transition-all duration-300 opacity-0 pointer-events-none translate-y-2">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-stone-200/70 dark:border-stone-800">
+                <div class="flex items-center space-x-2">
+                    <span class="font-mono text-[11px] font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-200">ASCII Pond Studio</span>
+                </div>
+                <button id="close-drawer" class="text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 text-xs font-mono">✕</button>
+            </div>
+
+            <!-- Palette Selector -->
+            <div class="mb-3.5">
+                <label class="block font-mono text-[10px] uppercase tracking-wider text-stone-400 mb-1.5">Season &amp; Biome</label>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px] font-medium">
+                    <button data-season="lotus" class="season-btn px-2 py-1.5 rounded-lg bg-pink-100 dark:bg-pink-950/70 text-pink-900 dark:text-pink-200 border border-pink-300 dark:border-pink-700 transition-all">Lotus Pond</button>
+                    <button data-season="sakura" class="season-btn px-2 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-transparent hover:border-stone-300 transition-all">Sakura</button>
+                    <button data-season="cyber" class="season-btn px-2 py-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 border border-transparent hover:border-stone-300 transition-all">Biolum</button>
+                </div>
+            </div>
+
+            <!-- Character Set Selector -->
+            <div class="mb-3.5">
+                <label class="block font-mono text-[10px] uppercase tracking-wider text-stone-400 mb-1.5">Glyph Matrix</label>
+                <div class="grid grid-cols-3 gap-1.5 text-[11px] font-mono">
+                    <button data-charset="classic" class="charset-btn px-2 py-1 rounded-lg bg-stone-800 text-white dark:bg-stone-100 dark:text-stone-900 transition-all">%#S8@t:</button>
+                    <button data-charset="katakana" class="charset-btn px-2 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 transition-all">カキクケコ</button>
+                    <button data-charset="binary" class="charset-btn px-2 py-1 rounded-lg bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 transition-all">01.:;+</button>
+                </div>
+            </div>
+
+            <!-- Koi Fish Speed / Count -->
+            <div class="mb-4">
+                <div class="flex justify-between text-[11px] font-mono text-stone-500 dark:text-stone-400 mb-1">
+                    <span>SWIMMING KOI</span>
+                    <span id="koi-count-label">3 Fish</span>
+                </div>
+                <input id="koi-slider" type="range" min="0" max="6" value="3" class="w-full accent-pink-600 cursor-pointer h-1.5 bg-stone-200 dark:bg-stone-700 rounded-lg">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-2">
+                <button id="feed-koi-btn" class="flex-1 py-1.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 dark:text-amber-300 border border-amber-500/30 text-xs font-mono transition-colors">
+                    ✦ Scatter Petals
+                </button>
+                <button id="regrow-btn" class="flex-1 py-1.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30 text-xs font-mono transition-colors">
+                    ↻ Regrow
+                </button>
+            </div>
+            <p class="mt-2.5 text-[10px] font-mono text-stone-400 text-center">Tip: Click anywhere on the canvas to bloom a lotus</p>
+        </aside>
+
+        <!-- Bottom Bar: Floating Badge, Scroll Prompt, & Interactive Hint -->
+        <footer class="relative z-20 w-full max-w-[1440px] mx-auto px-6 sm:px-10 pb-6 flex items-end justify-between pointer-events-none">
+            <!-- Bottom Left Monogram Badge (Matches Reference) -->
+            <div class="pointer-events-auto flex items-center space-x-3">
+            </div>
+
+            <!-- Center Bottom WORK Arrow -->
+            <a href="#work" class="pointer-events-auto font-mono text-[10px] tracking-[0.25em] uppercase text-stone-500 dark:text-stone-400 hover:text-stone-900 dark:hover:text-white transition-colors flex items-center space-x-1 animate-bounce-slow">
+                <span>WORK</span>
+                <span>↓</span>
+            </a>
+
+            <!-- Bottom Right Live FPS / Grid Readout -->
+            <div class="hidden sm:flex pointer-events-auto items-center space-x-2 font-mono text-[10px] text-stone-400 dark:text-stone-500">
+                <span class="hidden sm:inline-block font-mono text-[11px] text-stone-400 dark:text-stone-500 bg-white/60 dark:bg-stone-900/60 px-2.5 py-1 rounded-full backdrop-blur-sm border border-stone-200/50 dark:border-stone-800/50">
+                    Move cursor to ripple • Click to plant lotus
+                </span>
+                <span id="grid-stats">GRID 96×54</span>
+                <span>•</span>
+                <button id="quick-studio-btn" class="underline hover:text-stone-700 dark:hover:text-stone-300">TUNE ASCII</button>
+            </div>
+        </footer>
+    </section>
+
+    <!-- PROTOTYPE SECTIONS: portfolio info in the ASCII landing design -->
+    <section id="work" class="relative z-20 max-w-5xl mx-auto px-6 sm:px-10 py-24 border-t border-stone-200/70 dark:border-stone-800/70">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+            <div>
+                <p class="font-mono text-[11px] uppercase tracking-[0.2em] th-acc text-pink-600 dark:text-pink-400 mb-2">01 / Work Experience</p>
+                <h2 class="text-2xl sm:text-3xl font-normal tracking-tight">Work, in and out of the office</h2>
+            </div>
+            <p class="font-mono text-xs text-stone-400 mt-2 sm:mt-0">NORTHWIND STUDIO • 2021 — NOW</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <article class="p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 flex flex-col">
+                <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>PRODUCT DESIGN</span><span>NORTHWIND STUDIO</span></div>
+                <h3 class="text-lg font-medium mb-1.5">Designing a calmer analytics dashboard</h3>
+                <dl><div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Challenge</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Independent hotels live inside their analytics dashboard, but the old one answered every question with a spreadsheet. Owners could not find occupancy, rates, or problem rooms without exporting a file and phoning support.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">What I do</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">I lead design for the dashboard's core views: a morning briefing that answers 'how did we do, and what needs me today' on one screen, plus the design system underneath it. I pair with two engineers, run weekly owner interviews, and ship in small, reversible steps.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Behind the scenes</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">I maintain the component library and its docs, keep the research archive, track adoption and support-ticket themes as design KPIs, and write the release notes owners actually read.</dd></div></dl>
+            </article>
+            <article class="p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 flex flex-col">
+                <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>CONTENT & COMMUNITY</span><span>HARBOURLIGHT RETAIL</span></div>
+                <h3 class="text-lg font-medium mb-1.5">Community for a national outdoors retailer</h3>
+                <dl><div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Challenge</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">A beloved gear brand with a huge following, and a comments section full of unanswered questions about sizing, repairs, and where the snow was good.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">What I did</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Ran the brand's channels and community programs: a repair-stories series that became its most-shared content, seasonal trail guides, and live Q&As with guides and gear techs. Grew the community by keeping replies human and the posting rhythm sustainable.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Behind the scenes</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Built the performance reporting and content calendar the team still runs on, from native analytics and a lot of spreadsheets. Wrote the voice guide and trained three community coordinators.</dd></div></dl>
+            </article>
+            <article class="p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 flex flex-col">
+                <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>SIDE PROJECT</span><span>@MARISOLMAKES</span></div>
+                <h3 class="text-lg font-medium mb-1.5">Marisol Makes | One tiny tool a month</h3>
+                <dl><div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">Challenge</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">Keep a side practice alive next to a full-time job, without it eating the weekends it was meant to improve.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">What I did</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">I ship one small, finished tool a month: a caption planner for tiny brands, a reading tracker, a terrarium timer. Each one gets a name, a one-page site, and a short write-up of what it taught me.</dd></div>
+<div class="mt-3"><dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400">What changed</dt><dd class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed mt-1">A portfolio that updates itself, and a steady trickle of freelance enquiries from people who found the tools first.</dd></div></dl>
+            <div class="mt-5 pt-4 border-t border-stone-100 dark:border-stone-800/80"><a href="#" target="_blank" rel="noopener" class="font-mono text-xs text-stone-500 hover:text-pink-600 dark:hover:text-pink-400 transition-colors">@marisolmakes (12 tools and counting) ↗</a></div>
+            </article>
+        </div>
+
+        <div id="projects" class="mt-24 pt-16 border-t border-stone-200/70 dark:border-stone-800/70">
+            <p class="font-mono text-[11px] uppercase tracking-[0.2em] th-acc text-violet-600 dark:text-violet-400 mb-2">02 / Indie Apps &amp; Tools</p>
+            <h2 class="text-2xl font-normal tracking-tight mb-8">Things I've designed &amp; built</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-pink-400/60 dark:hover:border-pink-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>COZY ROOM BUILDER</span><span class="text-emerald-600 dark:text-emerald-400">● LIVE</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-pink-600 dark:text-pink-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">     .---.   [:::]
+   /     /|  | o |
+  +-----+ |  '---'
+  | [~] | /  (=^･^=)
+  +-----+'   ~~~~~~~</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Nook</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">Build tiny isometric voxel rooms, switch on the lamps, put a record on and let the resident cat wander.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>3D, Creative coding, Capacitor</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-amber-500/60 dark:hover:border-amber-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>READING APP</span><span class="text-amber-600 dark:text-amber-400">◐ IN PROGRESS</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-amber-600 dark:text-amber-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">   .---.   .---.
+  / === \ / === \
+ |  ===  |  [•]  |
+ |  ===  |250 wpm|
+  \_____/ \_____/</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Ember Reader</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">A quieter place to read, one page or one word at a time.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>Interaction design, HTML / CSS / JS, Pixel art</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-sky-500/60 dark:hover:border-sky-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>LEARNING APP</span><span class="text-amber-600 dark:text-amber-400">◐ IN PROGRESS</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-sky-600 dark:text-sky-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">   .-----------.
+   | fr -&gt; en  |
+   | bonjour = |
+   |   hello   |
+   '-----------'</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">Motnest</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">French flashcards with spaced review and short sessions.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>Education, HTML / CSS / JS</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-emerald-500/60 dark:hover:border-emerald-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>FOCUS TIMER</span><span class="text-emerald-600 dark:text-emerald-400">● LIVE</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-emerald-600 dark:text-emerald-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">    .-=========-.
+   \  ' _..._ '  /
+    '-.________.-'
+      ~  \|/  ~
+        ( sprout )</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Sprout Timer</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">A cozy pomodoro timer where a voxel garden island grows while you work.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>Productivity, 3D, Capacitor</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-violet-500/60 dark:hover:border-violet-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>3D TO-DO APP</span><span class="text-emerald-600 dark:text-emerald-400">● LIVE</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-violet-600 dark:text-violet-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">      _   _
+     | |_| |  .--.
+     |  _  |  |[]|
+     |_| |_|  '--'
+    ~ voxel todo ~</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">Task Garden</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">A calm 3D island where every task you plant grows into the garden.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>3D, Creative coding, Productivity</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            <a href="#" target="_blank" rel="noopener" class="th-card group p-6 rounded-2xl bg-white/70 dark:bg-stone-900/60 border border-stone-200/80 dark:border-stone-800 hover:border-rose-500/60 dark:hover:border-rose-500/50 transition-all duration-300 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between font-mono text-[11px] text-stone-400 mb-4"><span>CONTENT PLANNER</span><span class="text-emerald-600 dark:text-emerald-400">● LIVE</span></div>
+                    <div class="h-32 mb-5 rounded-xl bg-[#F4F1EA] dark:bg-stone-950 border border-stone-200/60 dark:border-stone-800 flex items-center justify-center th-thumb overflow-hidden font-mono text-[10px] leading-tight text-rose-600 dark:text-rose-400 text-center p-2"><pre class="select-none group-hover:scale-105 transition-transform duration-500">   .------------.
+   | the CEO is |
+   |  napping.  |
+   '-----,------'
+      #CaptionFox</pre></div>
+                    <h3 class="text-lg font-medium mb-1.5 group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors">Caption Fox</h3>
+                    <p class="text-xs text-stone-500 dark:text-stone-400 leading-relaxed">Plans posts and drafts captions for small brand accounts.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-stone-100 dark:border-stone-800/80 flex items-center justify-between text-xs font-mono text-stone-500"><span>Social media, Workflow, Tool building</span><span class="group-hover:translate-x-1 transition-transform">Live Demo ↗</span></div>
+            </a>
+            </div>
+        </div>
+
+        <div id="writing" class="mt-24 pt-16 border-t border-stone-200/70 dark:border-stone-800/70">
+            <p class="font-mono text-[11px] uppercase tracking-[0.2em] th-acc text-emerald-700 dark:text-emerald-400 mb-2">03 / Technical &amp; Digital Writing</p>
+            <h2 class="text-2xl font-normal tracking-tight mb-2">Technical &amp; digital writing</h2>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mb-8">How I adapt complex information for users, support teams, and anyone reading on a deadline.</p>
+            <div class="divide-y divide-stone-200/70 dark:divide-stone-800/70 font-sans">
+                <a href="#writing" target="_blank" rel="noopener" class="th-row py-4 flex items-center justify-between group">
+                    <span><span class="th-title block text-sm sm:text-base font-medium group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Ember Reader: getting started</span><span class="block text-xs text-stone-500 dark:text-stone-400 mt-0.5">A task-based guide for a reading app: importing books, focus mode, themes and troubleshooting.</span></span>
+                    <span class="font-mono text-xs text-stone-400 shrink-0 ml-4">USER GUIDE · 5 MIN READ ↗</span>
+                </a>
+                <a href="#writing" target="_blank" rel="noopener" class="th-row py-4 flex items-center justify-between group">
+                    <span><span class="th-title block text-sm sm:text-base font-medium group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">From changelog to release notes</span><span class="block text-xs text-stone-500 dark:text-stone-400 mt-0.5">Nineteen commits, three fixes, one breaking change: a technical changelog rewritten as release notes a busy owner can skim with coffee.</span></span>
+                    <span class="font-mono text-xs text-stone-400 shrink-0 ml-4">BEFORE & AFTER · 3 MIN READ ↗</span>
+                </a>
+                <a href="#writing" target="_blank" rel="noopener" class="th-row py-4 flex items-center justify-between group">
+                    <span><span class="th-title block text-sm sm:text-base font-medium group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Putting a shy support team on camera</span><span class="block text-xs text-stone-500 dark:text-stone-400 mt-0.5">How a monthly live Q&A turned a hesitant support team into the most trusted voice of the brand.</span></span>
+                    <span class="font-mono text-xs text-stone-400 shrink-0 ml-4">CAMPAIGN WRITE-UP · 3 MIN READ ↗</span>
+                </a>
+                <a href="#writing" target="_blank" rel="noopener" class="th-row py-4 flex items-center justify-between group">
+                    <span><span class="th-title block text-sm sm:text-base font-medium group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">Who Nook is for</span><span class="block text-xs text-stone-500 dark:text-stone-400 mt-0.5">Four audience personas with goals and pain points, voice rules, and one onboarding flow written four ways.</span></span>
+                    <span class="font-mono text-xs text-stone-400 shrink-0 ml-4">AUDIENCE & VOICE BRIEF · 5 MIN READ ↗</span>
+                </a>
+            </div>
+        </div>
+
+        <div id="about" class="mt-24 pt-16 border-t border-stone-200/70 dark:border-stone-800/70">
+            <p class="font-mono text-[11px] uppercase tracking-[0.2em] th-acc text-amber-600 dark:text-amber-400 mb-2">04 / About</p>
+            <h2 class="text-2xl font-normal tracking-tight mb-4">A little about me</h2>
+            <p class="text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed max-w-2xl">When I'm not pushing pixels or untangling content models, you'll find me walking the harbour with my partner June, lost in a good book, or negotiating with our two cats, who run the house and most of my camera roll.</p>
+            <div class="flex flex-wrap gap-2 mt-5">
+                <span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">2 cats, 1 harbour</span>
+                <span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Always reading</span>
+                <span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Coastal trails</span>
+            </div>
+            <h3 class="font-mono text-[11px] uppercase tracking-[0.2em] text-stone-400 mt-12 mb-2">Experience and education</h3>
+            <ul class="divide-y divide-stone-200/70 dark:divide-stone-800/70">
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Senior Product Designer</span> <span class="text-stone-500 dark:text-stone-400">· Northwind Studio</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">Mar 2023 – now</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Bachelor of Design, Communication Design</span> <span class="text-stone-500 dark:text-stone-400">· NSCAD University</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">2019</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Community & Content Lead</span> <span class="text-stone-500 dark:text-stone-400">· Harbourlight Retail</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">Jun 2020 – Mar 2023</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Diploma, Interactive Media</span> <span class="text-stone-500 dark:text-stone-400">· NSCC</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">2020</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Front-End Developer</span> <span class="text-stone-500 dark:text-stone-400">· Bright Cart Studio</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">Jan 2018 – Jun 2020</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Certificate, User Experience Design</span> <span class="text-stone-500 dark:text-stone-400">· Springboard</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">2018</span>
+                    </li>
+                    <li class="py-3 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                        <span class="text-sm"><span class="font-medium">Barista &amp; Night Baker</span> <span class="text-stone-500 dark:text-stone-400">· Compass Rose Café</span></span>
+                        <span class="font-mono text-xs text-stone-400 shrink-0">2015 – 2018</span>
+                    </li>
+            </ul>
+            <h3 class="font-mono text-[11px] uppercase tracking-[0.2em] text-stone-400 mt-12 mb-4">Toolbox</h3>
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-wrap items-center gap-2"><span class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 w-full sm:w-36 shrink-0">RESEARCH & STRATEGY</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Design strategy</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">User interviews</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Dovetail</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Maze</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Notion</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Journey mapping</span></div>
+                <div class="flex flex-wrap items-center gap-2"><span class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 w-full sm:w-36 shrink-0">OPERATIONS</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Design systems</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Critique facilitation</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Adoption metrics</span></div>
+                <div class="flex flex-wrap items-center gap-2"><span class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 w-full sm:w-36 shrink-0">WRITING</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">UX writing</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Plain language</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">User guides</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Release notes</span></div>
+                <div class="flex flex-wrap items-center gap-2"><span class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 w-full sm:w-36 shrink-0">BUILD</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">HTML / CSS / JS</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Capacitor</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Adobe CC</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">AI workflows</span></div>
+                <div class="flex flex-wrap items-center gap-2"><span class="font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 w-full sm:w-36 shrink-0">LANGUAGES</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">English (native)</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">Spanish (fluent)</span><span class="px-3 py-1 rounded-full border border-stone-200 dark:border-stone-800 bg-white/60 dark:bg-stone-900/50 text-xs font-mono text-stone-600 dark:text-stone-300">French (functional, improving)</span></div>
+            </div>
+        </div>
+
+        <div id="contact" class="mt-24 pt-16 border-t border-stone-200/70 dark:border-stone-800/70">
+            <p class="font-mono text-[11px] uppercase tracking-[0.2em] th-acc text-pink-600 dark:text-pink-400 mb-2">05 / Contact</p>
+            <h2 class="text-2xl sm:text-3xl font-normal tracking-tight mb-3">Hiring for product design, front-end or content systems? Let's connect.</h2>
+            <p class="text-sm text-stone-500 dark:text-stone-400 mb-8">Send me a note and I'll reply within a day.</p>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <button onclick="protoCopyEmail()" class="glass-pill inline-flex items-center px-4 py-2 rounded-full bg-stone-900 dark:bg-stone-100 hover:bg-stone-700 dark:hover:bg-white text-white dark:text-stone-900 text-xs font-medium transition-all shadow-sm hover:shadow"><span id="protoEmailText">Copy my email</span></button>
+                <a href="https://www.linkedin.com/in/marisolvega/" target="_blank" rel="noopener" class="glass-pill inline-flex items-center px-4 py-2 rounded-full bg-stone-200/75 dark:bg-stone-800/80 hover:bg-stone-300/80 dark:hover:bg-stone-700/80 text-stone-800 dark:text-stone-200 text-xs font-medium transition-all shadow-sm hover:shadow">LinkedIn ↗</a>
+                <span class="font-mono text-xs text-stone-400">hello@marisolvega.design</span>
+            </div>
+            <div class="mt-16 pt-6 border-t border-stone-200/70 dark:border-stone-800/70 flex items-center justify-between font-mono text-xs text-stone-400">
+                <span>© 2026 Marisol Vega · Halifax, Canada</span>
+                <a href="#top" class="hover:text-stone-700 dark:hover:text-stone-200 transition-colors">Back to top ↑</a>
+            </div>
+        </div>
+    </section>
+
+<!-- INTERACTIVE ASCII BOTANICAL & KOI ENGINE -->
+    <script src="js/app.js"></script>
+</body>
+</html>
