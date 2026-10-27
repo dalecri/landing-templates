@@ -1,0 +1,28 @@
+# Landing Templates
+
+A small shelf of reusable landing page templates by Cristobal D'Alessio. Each template lives in its own folder, is fully self-contained, and can be viewed live or copied as the starting point for a new page.
+
+**Browse them from the home page: [index.html](index.html)** (live: `heycristobal.com/landing-templates/`)
+
+## The templates
+
+| Template | What it demonstrates |
+| --- | --- |
+| [portfolio-ascii/](portfolio-ascii/) | A full portfolio page on the ASCII landing design: an interactive botanical koi pond hero with a vibe studio (palettes, glyph sets, koi), glass-scrim hero text, dark and light themes, and Experience / Projects / Writing / About / Contact sections. Built with Tailwind via CDN. This is the design currently live at heycristobal.com/prototype/. |
+| [petrichor-rain/](petrichor-rain/) | A product landing page over the Rain on Glass engine: a fogged, rainy window as the living background, frosted-glass content panels, a scene switcher (Garden / City / Pond), and a fictional founder persona (Maren Ilves of Petrichor, a rain-recording studio). One single HTML file; Google Fonts is the only external dependency. |
+
+## How to reuse one
+
+1. Copy the template's folder into your new project.
+2. Replace the copy and images; each folder's README notes the hooks, defaults, and shortcuts to know about.
+3. Keep the engine code intact where a template has one (pond, rain); the interesting behaviour lives there, and the content layer is plain HTML on top.
+
+## House rules for this shelf
+
+- Self-contained folders: no shared assets between templates, so any folder can be lifted out on its own.
+- Styling follows the Quiet Pixel guide: dark soft-purple grounds, rounded soft shapes, Space Mono, one accent per screen.
+- Accessibility basics travel with each template: `prefers-reduced-motion` support, visible focus states, and real HTML content (canvas art is decorative).
+
+## Origins
+
+Both templates grew out of the [ASCII-VISUAL-PROJECTS](https://github.com/dalecri/ASCII-VISUAL-PROJECTS) collection: the portfolio from its botanical koi landing page, Petrichor from its Rain on Glass piece.
