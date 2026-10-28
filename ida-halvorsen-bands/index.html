@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ida Halvorsen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* Quiet Pixel foundation, arch palette.
+   Heading font hook: to use Alpha Lyrae, add an @font-face pointing at your local files
+   and set --head: 'Alpha Lyrae', var(--mono); */
+:root{
+  --ground:#e8e6df;
+  --ink:#22212e;
+  --dim:#6b6a75;
+  --rule:#d2d0c8;
+  --band-1:#c2c1c8;   /* outer: pale grey */
+  --band-2:#4434a8;   /* indigo */
+  --band-3:#4c0e48;   /* plum */
+  --band-4:#22212e;   /* night */
+  --accent:#f2909f;   /* the pink core, used sparingly */
+  --mono:'Space Mono', ui-monospace, Menlo, monospace;
+  --head:var(--mono);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--ground);color:var(--ink)}
+body{font:14px/1.6 var(--mono);-webkit-font-smoothing:antialiased}
+a{color:var(--band-2);text-decoration:none;border-bottom:1px solid currentColor}
+a:focus-visible,button:focus-visible{outline:2px solid var(--band-2);outline-offset:3px}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+
+.page{display:grid;grid-template-columns:minmax(340px,1fr) minmax(0,1.15fr);
+  grid-template-rows:auto 1fr;height:100vh;height:100svh}
+.intro{grid-column:1;padding:40px 40px 8px}
+.intro h1{font:700 14px/1.2 var(--head);color:var(--band-2)}
+.intro p{margin-top:28px;max-width:20ch;font:400 clamp(24px,2.7vw,36px)/1.25 var(--head);letter-spacing:-.01em}
+.arch{grid-column:2;grid-row:1/3;position:relative;min-height:0;cursor:pointer;touch-action:pan-y}
+.arch svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.arch text{font-family:var(--mono);font-weight:700;letter-spacing:.06em;pointer-events:none}
+
+.index{grid-column:1;display:flex;flex-direction:column;gap:26px;padding:28px 40px 32px;
+  overflow-y:auto;min-height:0}
+.legend{list-style:none}
+.entry{display:grid;grid-template-columns:14px 1fr;gap:0 14px;width:100%;padding:11px 0;
+  border-bottom:1px solid var(--rule)}
+.entry .sw{width:10px;height:10px;margin-top:6px;border-radius:5px 5px 0 0;transition:transform .25s}
+.entry .t{font-weight:700}
+.entry .d{grid-column:2;color:var(--dim);font-size:12.5px;line-height:1.5}
+.entry.on .t{color:var(--band-2)}
+.entry.on .sw{transform:scale(1.5)}
+.about{font-size:13px;max-width:52ch}
+.contact{font-size:13px}
+.colophon{margin-top:auto;font-size:11px;color:var(--dim);letter-spacing:.03em}
+.colophon::before{content:"";display:inline-block;width:7px;height:7px;margin-right:8px;
+  border-radius:4px 4px 0 0;background:var(--accent);vertical-align:1px}
+
+@media (max-width:760px){
+  .page{display:block;height:auto}
+  .intro{padding:28px 16px 22px}
+  .intro p{margin-top:18px;max-width:none;font-size:23px}
+  .arch{position:sticky;top:0;z-index:2;height:50svh;background:var(--ground);
+    border-block:1px solid var(--rule)}
+  .index{overflow:visible;padding:8px 16px 32px}
+}
+@media (prefers-reduced-motion:reduce){.entry .sw{transition:none}}
+</style>
+</head>
+<body>
+<main class="page">
+  <header class="intro">
+    <h1 id="name"></h1>
+    <p id="statement"></p>
+  </header>
+  <div class="arch" id="arch">
+    <svg id="svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <section class="index">
+    <ol class="legend" id="legend"></ol>
+    <p class="about" id="about"></p>
+    <p class="contact" id="contact"></p>
+    <p class="colophon" id="colophon"></p>
+  </section>
+</main>
+
+<script>
+/* ===== Template inputs: the four, then the filler ===== */
+const P = {
+  name: "Ida Halvorsen",
+  craft: "steam-bent furniture",
+  city: "Copenhagen", lat: 55.6761, lon: 12.5683,
+  technique: "hover physics",
+  statement: "Chairs and benches steam-bent from Danish ash, shaped by hand until the wood agrees.",
+  about: "Ida runs a small workshop in Copenhagen where timber is steamed, bent over hand-made forms and left to set for weeks. Most pieces are commissions, made one at a time for a particular room.",
+  email: "ida@example.com",
+  contactTail: " for commissions.",
+  // outermost band first; one project per band (4 bands in this palette)
+  projects: [
+    { name: "Havn Bench",  desc: "A harbour-side bench made from one continuous bent oak rail.", color: "--band-1", text: "--ink" },
+    { name: "Arc Chair",   desc: "A dining chair whose back and legs are a single steamed curve.", color: "--band-2", text: "--ground" },
+    { name: "Bow Shelf",   desc: "Wall shelving held up by tension, with no visible fixings.",     color: "--band-3", text: "--ground" },
+    { name: "Lull Cradle", desc: "A rocking cradle bent from a single board of ash.",              color: "--band-4", text: "--ground" }
+  ],
+  core: "--accent"
+};
+/* ====================================================== */
+
+const $ = id => document.getElementById(id);
+const css = getComputedStyle(document.documentElement);
+const v = name => css.getPropertyValue(name).trim();
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+document.title = P.name;
+$('name').textContent = P.name;
+$('statement').textContent = P.statement;
+$('about').textContent = P.about;
+const mail = Object.assign(document.createElement('a'), { href: 'mailto:' + P.email, textContent: P.email });
+$('contact').append(mail, P.contactTail);
+const fmt = (n, pos, neg) => Math.abs(n).toFixed(2) + '°' + (n >= 0 ? pos : neg);
+const coords = fmt(P.lat, 'N', 'S') + ' ' + fmt(P.lon, 'E', 'W');
+$('colophon').textContent = P.city + ' · ' + coords;
+
+/* ---------- Legend (the page works without the arch) ---------- */
+const N = P.projects.length;
+let hoverIdx = null, pinIdx = null;
+const active = () => hoverIdx ?? pinIdx;
+const entries = P.projects.map((p, i) => {
+  const li = document.createElement('li');
+  const b = document.createElement('button');
+  b.className = 'entry';
+  b.innerHTML = '<span class="sw"></span><span class="t"></span><span class="d"></span>';
+  b.children[0].style.background = v(p.color);
+  b.children[1].textContent = p.name;
+  b.children[2].textContent = p.desc;
+  b.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') setHover(i); });
+  b.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') setHover(null); });
+  b.addEventListener('focus', () => setHover(i));
+  b.addEventListener('blur', () => setHover(null));
+  b.addEventListener('click', () => { pinIdx = pinIdx === i ? null : i; sync(); });
+  li.append(b); $('legend').append(li);
+  return b;
+});
+function setHover(i){ if (hoverIdx !== i){ hoverIdx = i; sync(); } }
+function sync(){
+  const a = active();
+  entries.forEach((el, i) => el.classList.toggle('on', i === a));
+  P.projects.forEach((_, i) => T[i] = a == null ? base : (i === a ? base * SWELL : base * (N - SWELL) / (N - 1)));
+  wake();
+}
+
+/* ---------- Signature: springy nested arches ----------
+   Each band is a bent strip with its own spring. Hovering a band swells it and squeezes
+   the others; sweeping across bands plucks them, and they wobble before they settle.
+   Local humidity sets how pliable the "wood" is (more humid = looser, longer wobble). */
+const NS = 'http://www.w3.org/2000/svg';
+const svg = $('svg'), archEl = $('arch');
+const SWELL = 1.9, K = 190;
+let C = 11;                                   // damping; replaced by humidity if available
+let W = 0, H = 0, cx = 0, cy = 0, r0 = 0, base = 0;
+const t = new Array(N).fill(0), vel = new Array(N).fill(0), T = new Array(N).fill(0);
+const inner = new Array(N), outer = new Array(N);
+
+const mk = (tag, attrs) => { const el = document.createElementNS(NS, tag); for (const k in attrs) el.setAttribute(k, attrs[k]); return el; };
+const bandPaths = P.projects.map(p => svg.appendChild(mk('path', { fill: v(p.color) })));
+const corePath = svg.appendChild(mk('path', { fill: v(P.core) }));
+const defs = svg.insertBefore(mk('defs', {}), svg.firstChild);
+const labels = P.projects.map((p, i) => {
+  const guide = defs.appendChild(mk('path', { id: 'g' + i, fill: 'none' }));
+  const txt = svg.appendChild(mk('text', { fill: v(p.text), 'text-anchor': 'middle', 'dominant-baseline': 'central' }));
+  const tp = mk('textPath', { href: '#g' + i, startOffset: '50%' });
+  tp.textContent = p.name.toUpperCase();
+  txt.append(tp);
+  return { guide, txt };
+});
+const coreText = svg.appendChild(mk('text', { fill: v('--ink'), 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 10 }));
+coreText.textContent = P.name.toUpperCase();
+coreText.style.letterSpacing = '.18em';
+
+const stadium = r => `M${cx - r},${H + 2}V${cy}A${r},${r} 0 0 1 ${cx + r},${cy}V${H + 2}Z`;
+const spine   = r => `M${cx - r},${H}V${cy}A${r},${r} 0 0 1 ${cx + r},${cy}V${H}`;
+
+function layout(){
+  const rect = archEl.getBoundingClientRect();
+  W = rect.width; H = rect.height;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const R = Math.min(W * 0.44, H * 0.40);
+  r0 = R * 0.214; base = (R - r0) / N;
+  cx = W / 2; cy = Math.max(R + 24, H * 0.14 + R);
+  sync();                                   // recompute targets with the new base
+  for (let i = 0; i < N; i++) if (!t[i]) t[i] = T[i];
+  draw();
+}
+
+function draw(){
+  let r = r0;
+  for (let i = N - 1; i >= 0; i--){ inner[i] = r; r += Math.max(2, t[i]); outer[i] = r; }
+  for (let i = 0; i < N; i++){
+    bandPaths[i].setAttribute('d', stadium(outer[i]));
+    const th = outer[i] - inner[i];
+    labels[i].guide.setAttribute('d', spine(inner[i] + th / 2));
+    const fs = Math.max(0, Math.min(15, th * 0.36));
+    labels[i].txt.setAttribute('font-size', fs.toFixed(1));
+    labels[i].txt.style.opacity = fs < 7.5 ? 0 : 1;
+  }
+  corePath.setAttribute('d', stadium(r0));
+  const midY = cy + (H - cy) * 0.42;
+  coreText.setAttribute('transform', `translate(${cx},${midY}) rotate(-90)`);
+  coreText.setAttribute('font-size', Math.max(8, Math.min(11, r0 * 0.42)).toFixed(1));
+}
+
+let running = false, last = 0;
+function frame(now){
+  const dt = Math.min(1 / 30, (now - last) / 1000 || 1 / 60);
+  last = now;
+  let moving = false;
+  for (let i = 0; i < N; i++){
+    if (reduced){ t[i] = T[i]; vel[i] = 0; continue; }
+    // semi-implicit Euler, sub-stepped for stability at low frame rates
+    for (let s = 0; s < 2; s++){
+      const h = dt / 2;
+      vel[i] += ((T[i] - t[i]) * K - vel[i] * C) * h;
+      t[i] += vel[i] * h;
+    }
+    if (Math.abs(T[i] - t[i]) > .05 || Math.abs(vel[i]) > .5) moving = true;
+  }
+  draw();
+  if (moving) requestAnimationFrame(frame);
+  else { for (let i = 0; i < N; i++){ t[i] = T[i]; vel[i] = 0; } draw(); running = false; }
+}
+function wake(){ if (!running){ running = true; requestAnimationFrame(n => { last = n; frame(n); }); } }
+
+/* hit-test by distance from the arch's spine, so the bend itself is the target */
+function bandAt(x, y){
+  if (y < 0 || y > H) return null;
+  const d = y >= cy ? Math.abs(x - cx) : Math.hypot(x - cx, y - cy);
+  for (let i = 0; i < N; i++) if (d >= inner[i] && d < outer[i]) return i;
+  return null;
+}
+let lastX = 0, lastY = 0, lastT = 0, lastBand = null;
+archEl.addEventListener('pointermove', e => {
+  const r = archEl.getBoundingClientRect();
+  const x = e.clientX - r.left, y = e.clientY - r.top, now = performance.now();
+  const speed = Math.min(2400, Math.hypot(x - lastX, y - lastY) / Math.max(8, now - lastT) * 1000);
+  lastX = x; lastY = y; lastT = now;
+  const b = bandAt(x, y);
+  if (b !== lastBand && b != null && !reduced) vel[b] += speed * 0.09;   // the pluck
+  lastBand = b;
+  if (e.pointerType === 'mouse') setHover(b);
+  else wake();
+});
+archEl.addEventListener('pointerleave', () => { lastBand = null; setHover(null); });
+archEl.addEventListener('click', e => {
+  const r = archEl.getBoundingClientRect();
+  const b = bandAt(e.clientX - r.left, e.clientY - r.top);
+  pinIdx = (b == null || b === pinIdx) ? null : b;
+  if (b != null && !reduced) vel[b] += 260;
+  sync();
+});
+
+new ResizeObserver(layout).observe(archEl);
+document.fonts && document.fonts.ready.then(layout);
+
+/* ---------- Local flavor: humidity sets the wood's give (Open-Meteo, keyless) ---------- */
+(async () => {
+  try {
+    const ctl = new AbortController(); setTimeout(() => ctl.abort(), 6000);
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${P.lat}&longitude=${P.lon}` +
+      `&current=temperature_2m,relative_humidity_2m`;
+    const res = await fetch(url, { signal: ctl.signal });
+    if (!res.ok) return;
+    const cur = (await res.json()).current;
+    if (!cur || cur.relative_humidity_2m == null) return;
+    const rh = Math.max(20, Math.min(100, cur.relative_humidity_2m));
+    C = 15 - (rh - 20) / 80 * 8;              // 20% RH: stiff (15), 100% RH: pliable (7)
+    $('colophon').textContent = `${P.city} · ${coords} · ${Math.round(cur.temperature_2m)}°C · ${Math.round(rh)}% humidity`;
+  } catch (_) { /* offline or blocked: keep default damping and plain colophon */ }
+})();
+</script>
+</body>
+</html>
