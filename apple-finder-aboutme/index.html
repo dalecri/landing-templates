@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cristobal D'Alessio - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & ReactDOM CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Core Icons (UMD version) - Stable for direct script usage -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --ios-blue: #007AFF;
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #fff;
+        }
+
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Animation for modals */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .animate-fade { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-zoom { animation: zoomIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* Custom Scrollbar for Desktop */
+        @media (min-width: 768px) {
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 8px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(0,0,0,0.1);
+                border-radius: 10px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(0,0,0,0.2);
+            }
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;  
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-white md:bg-[#E5E5E5] overflow-hidden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect, useRef } = React;
+
+        /**
+         * ICON WRAPPER
+         * Manually renders Lucide icons to avoid forwardRef/UMD issues
+         */
+        const Icon = ({ name, size = 24, color = "currentColor", strokeWidth = 2, className = "", fill = "none" }) => {
+            const kebabName = name.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+            const iconData = window.lucide?.icons[kebabName] || window.lucide?.icons[name.toLowerCase()] || window.lucide?.icons['file'];
+
+            if (!iconData) return <div style={{width: size, height: size}} className={className} />;
+
+            const [tag, attrs, children] = iconData;
+
+            return (
+                <svg
+                    width={size}
+                    height={size}
+                    viewBox="0 0 24 24"
+                    fill={fill}
+                    stroke={color}
+                    strokeWidth={strokeWidth}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={className}
+                    dangerouslySetInnerHTML={{
+                        __html: children.map(([childTag, childAttrs]) => {
+                            const attrsString = Object.entries(childAttrs)
+                                .map(([key, value]) => `${key}="${value}"`)
+                                .join(' ');
+                            return `<${childTag} ${attrsString}></${childTag}>`;
+                        }).join('')
+                    }}
+                />
+            );
+        };
+
+        const initialFileSystem = {
+            guest: { id: 'guest', name: 'On My iPhone', type: 'folder', children: ['desktop', 'documents', 'pictures'] },
+            desktop: { id: 'desktop', name: 'Desktop', type: 'folder', children: ['about_me_folder', 'documents', 'resume_pdf'] },
+            documents: { id: 'documents', name: 'Projects', type: 'folder', children: ['project_noise', 'project_voxel', 'project_pomodoro', 'project_lexicon'] },
+            pictures: { id: 'pictures', name: 'Pictures', type: 'folder', children: ['travel_folder'] },
+            about_me_folder: { id: 'about_me_folder', name: 'About Me', type: 'folder', children: ['about_me_txt', 'profile_pic_jpg'] },
+            
+            project_noise: { 
+                id: 'project_noise', name: 'Noise Machine', type: 'file', fileType: 'html', 
+                url: 'https://dalecri.github.io/noise-machine/', date: '2026-01-15', size: '1.2 MB' 
+            },
+            project_voxel: { 
+                id: 'project_voxel', name: 'Japanese Voxel Todo Garden', type: 'file', fileType: 'html', 
+                url: 'https://dalecri.github.io/japanese-garden/', date: '2026-02-10', size: '2.5 MB' 
+            },
+            project_pomodoro: { 
+                id: 'project_pomodoro', name: 'Pomodoro App', type: 'file', fileType: 'html', 
+                url: 'https://dalecri.github.io/pomodoro-app/', date: '2025-11-20', size: '940 KB' 
+            },
+            project_lexicon: { 
+                id: 'project_lexicon', name: 'Aesthetic Lexicon', type: 'file', fileType: 'html', 
+                url: 'https://dalecri.github.io/lexicon-app/', date: '2025-12-05', size: '1.1 MB' 
+            },
+            
+            travel_folder: { id: 'travel_folder', name: 'Travels', type: 'folder', children: ['paris_jpg', 'tokyo_jpg'] },
+            
+            resume_pdf: { 
+                id: 'resume_pdf', name: 'My Resume 2026', type: 'file', fileType: 'pdf', date: '2026-02-13', size: '81 KB',
+                content: `CRIS DALESSIO
+Communications Advisor & Operations Specialist
+
+SUMMARY
+Communications Advisor and Operations Specialist with a history of translating technical ideas into clear guidance. Experienced in media relations, social media management, and IT support.
+
+EXPERIENCE
+Media Relations | Current
+• Manage high-volume stakeholder requests using Microsoft Dynamics 365.
+• Coordinate major economic releases with international media agencies.
+
+Social Media Manager | Previous
+• Managed official channels for a 600K+ audience.
+• Translated data releases into public-facing content.` 
+            },
+            profile_pic_jpg: { 
+                id: 'profile_pic_jpg', name: 'Cris.jpg', type: 'file', fileType: 'image', date: '2025-10-04', size: '1.2 MB',
+                imageUrl: 'https://media.licdn.com/dms/image/v2/C5603AQGXrGxokJ4y3Q/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1575683998390?e=1773273600&v=beta&t=Aj_CPm6KkdrQwbj-Y7e9OFpaYaT2E-zhPnZs_S3YKak'
+            },
+            about_me_txt: {
+                id: 'about_me_txt', name: 'About Me', type: 'file', fileType: 'text', date: '2026-02-10', size: '4 KB',
+                content: `I’m a Communications Advisor and Operations Specialist who’s been translating technical ideas into clear guidance since my early professional days. 
+
+My foundation in customer service came from coaching gymnastics at Nepean Corona School of Gymnastics, where I learned to translate difficult athletic concepts, handle high-stress situations with empathy, and adapt my approach to different audiences.
+
+That skillset carried into my IT support role at Statistics Canada, where I assisted with VDI migrations and technical onboarding, as well as troubleshooting for non-technical staff.
+
+I later moved into Social Media, where I managed official channels for a 600K+ audience, translating data releases into public-facing content and using social listening tools to track sentiment and performance. In my current role with Media Relations, I manage high-volume stakeholder requests using Microsoft Dynamics 365, coordinate major economic releases with national media agencies, and translate complex statistical data into clear communications for journalists and the public.
+
+I enjoy the challenge of taking something complicated, understanding the audience, and making it accessible without losing the substance.`
+            },
+            paris_jpg: { id: 'paris_jpg', name: 'Paris.jpg', type: 'file', fileType: 'image', imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=1000&auto=format&fit=crop', date: '2024-05-12', size: '2.4 MB' },
+            tokyo_jpg: { id: 'tokyo_jpg', name: 'Tokyo.jpg', type: 'file', fileType: 'image', imageUrl: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=1000&auto=format&fit=crop', date: '2024-06-20', size: '3.1 MB' },
+        };
+
+        const FileIcon = ({ type, name, size = "large", fileType, imageUrl }) => {
+            const isFolder = type === 'folder';
+            
+            if (isFolder) {
+                return (
+                    <div className="relative group flex flex-col items-center justify-center">
+                        <svg viewBox="0 0 100 85" className={`drop-shadow-sm transition-transform duration-200 ${size === 'large' ? 'w-[76px] h-[64px] md:w-[72px] md:h-[60px]' : 'w-8 h-6 md:w-6 md:h-5'}`}>
+                            <path d="M5 15 C5 10 10 10 10 10 L35 10 C40 10 40 15 40 15 L95 15 C100 15 100 20 100 20 L100 80 C100 85 95 85 95 85 L5 85 C0 85 0 80 0 80 L0 20 C0 15 5 15 5 15" fill="#5DA0F0" />
+                            <path d="M0 80 C0 85 5 85 5 85 L95 85 C100 85 100 80 100 80 L100 35 C100 30 95 30 95 30 L5 30 C0 30 0 35 0 35 L0 80" fill="url(#folderGradient)" />
+                            <defs>
+                                <linearGradient id="folderGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stopColor="#89CFF0" /> 
+                                    <stop offset="100%" stopColor="#4696EC" /> 
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                );
+            }
+
+            if (fileType === 'image' && imageUrl) {
+                return (
+                    <div className={`bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-100/50 flex items-center justify-center overflow-hidden ${size === 'large' ? 'w-[72px] h-[90px] md:w-[64px] md:h-[80px] rounded-lg' : 'w-8 h-10 md:w-6 md:h-8 rounded-sm'}`}>
+                        <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
+                    </div>
+                );
+            }
+
+            if (size === 'large') {
+                return (
+                    <div className="w-[72px] h-[90px] md:w-[64px] md:h-[80px] bg-white rounded-lg shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-gray-100/50 flex flex-col pt-3 md:pt-2 px-2 overflow-hidden relative">
+                        <div className="text-[7px] md:text-[6px] font-bold text-gray-800 uppercase tracking-tighter mb-1.5 md:mb-1 w-full text-center truncate">{name}</div>
+                        <div className="space-y-[4px] md:space-y-[3px] w-full flex-col flex items-center mt-1">
+                            <div className="h-[2px] bg-gray-200 w-full rounded-full"></div>
+                            <div className="h-[2px] bg-gray-200 w-[85%] rounded-full"></div>
+                            <div className="h-[2px] bg-gray-200 w-full rounded-full"></div>
+                            <div className="h-[2px] bg-gray-200 w-[60%] rounded-full"></div>
+                        </div>
+                        {fileType === 'pdf' && <div className="absolute bottom-2 right-2 text-[6px] md:text-[5px] font-bold text-red-500 bg-white/80 px-1 rounded shadow-sm">PDF</div>}
+                        {fileType === 'html' && <div className="absolute bottom-2 right-2 text-[6px] md:text-[5px] font-bold text-blue-500 bg-white/80 px-1 rounded shadow-sm">HTML</div>}
+                        {fileType === 'text' && <div className="absolute bottom-2 right-2 text-[6px] md:text-[5px] font-bold text-gray-500 bg-white/80 px-1 rounded shadow-sm">TXT</div>}
+                    </div>
+                );
+            }
+
+            const iconName = fileType === 'pdf' ? 'FileText' : fileType === 'html' ? 'Globe' : 'File';
+            const colorClass = fileType === 'pdf' ? 'text-red-500' : fileType === 'html' ? 'text-blue-500' : 'text-gray-400';
+            return <Icon name={iconName} className={colorClass} size={20} />;
+        };
+
+        const PdfPreviewModal = ({ file, onClose }) => (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm p-0 md:p-6 animate-fade" onClick={onClose}>
+                <div className="w-full h-full md:w-[95vw] md:max-w-[1200px] bg-[#3C3C3C] md:rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-zoom" onClick={(e) => e.stopPropagation()}>
+                    <div className="h-14 md:h-12 bg-[#2D2D2D] border-b border-black/20 flex items-center justify-between px-4 text-gray-300">
+                        <span className="font-medium text-sm text-gray-200 truncate">{file.name}</span>
+                        <button onClick={onClose} className="px-4 py-1.5 bg-[#4D4D4D] hover:bg-[#5D5D5D] rounded-lg text-sm font-medium border border-black/20 text-white transition-colors">Done</button>
+                    </div>
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center bg-[#525659] custom-scrollbar">
+                        <div className="bg-white w-full max-w-[800px] shadow-lg p-6 md:p-12 text-gray-800 font-serif min-h-screen">
+                            <h1 className="text-3xl font-bold uppercase border-b-2 border-black pb-4 text-center">Cristobal Dalessio</h1>
+                            <div className="mt-8 whitespace-pre-wrap leading-relaxed">{file.content}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const AppleNoteModal = ({ file, onClose }) => (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 md:p-8 animate-fade" onClick={onClose}>
+                <div className="w-full h-full md:max-w-2xl bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col animate-zoom" onClick={(e) => e.stopPropagation()}>
+                    <div className="h-14 flex items-center justify-between px-4 bg-white/95 border-b border-gray-50 shrink-0">
+                        <button onClick={onClose} className="flex items-center text-[#eeb223] font-medium text-lg"><Icon name="ChevronLeft" size={24} strokeWidth={2.5} /> Back</button>
+                        <div className="flex space-x-4">
+                            <Icon name="Share" size={20} className="text-[#eeb223]" />
+                            <Icon name="MoreHorizontal" size={20} className="text-[#eeb223]" />
+                        </div>
+                    </div>
+                    <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
+                        <div className="text-gray-400 text-xs font-medium text-center mb-6">February 23, 2026 at 9:10 PM</div>
+                        <h1 className="text-3xl font-bold mb-6 tracking-tight leading-tight">{file.name}</h1>
+                        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-lg">{file.content}</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        const SidebarItem = ({ icon, label, active, color, onClick }) => (
+            <div onClick={onClick} className={`group flex items-center space-x-3 px-3 py-2 rounded-lg cursor-pointer transition-all ${active ? 'bg-gray-200/80' : 'hover:bg-gray-200/50'}`}>
+                <div className={`${active ? color : 'text-gray-500/80'}`}>{icon}</div>
+                <span className={`text-sm font-medium ${active ? 'text-gray-900' : 'text-gray-600'}`}>{label}</span>
+            </div>
+        );
+
+        function App() {
+            const [currentPath, setCurrentPath] = useState(['guest']);
+            const [history, setHistory] = useState([['guest']]);
+            const [historyIndex, setHistoryIndex] = useState(0);
+            const [selection, setSelection] = useState(null);
+            const [viewMode, setViewMode] = useState('grid');
+            const [previewFile, setPreviewFile] = useState(null);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [activeMobileTab, setActiveMobileTab] = useState('browse');
+
+            const currentDirId = currentPath[currentPath.length - 1];
+            const currentDir = initialFileSystem[currentDirId] || initialFileSystem['guest'];
+            
+            const contentIds = searchQuery ? 
+                Object.keys(initialFileSystem).filter(k => 
+                    initialFileSystem[k].name.toLowerCase().includes(searchQuery.toLowerCase())
+                ) : 
+                currentDir.children || [];
+
+            const navigateTo = (folderId) => {
+                const newPath = [...currentPath, folderId];
+                const newHistory = [...history.slice(0, historyIndex + 1), newPath];
+                setHistory(newHistory);
+                setHistoryIndex(newHistory.length - 1);
+                setCurrentPath(newPath);
+                setSelection(null);
+                setSearchQuery('');
+            };
+
+            const navigateBack = () => {
+                if (historyIndex > 0) {
+                    setHistoryIndex(historyIndex - 1);
+                    setCurrentPath(history[historyIndex - 1]);
+                    setSelection(null);
+                }
+            };
+
+            const handleItemAction = (e, itemId) => {
+                e.stopPropagation();
+                setSelection(itemId);
+                const item = initialFileSystem[itemId];
+                if (item.type === 'folder') navigateTo(itemId);
+                else setPreviewFile(item);
+            };
+
+            const closeModal = () => setPreviewFile(null);
+
+            const getItemSubtitle = (item) => {
+                if (item.type === 'folder') {
+                    const count = item.children?.length || 0;
+                    return `${count} item${count === 1 ? '' : 's'}`;
+                }
+                return `${item.date || '2026-02-13'}\n${item.size || '15 KB'}`;
+            };
+
+            return (
+                <div className="h-[100dvh] w-full font-sans overflow-hidden select-none relative bg-white">
+                    {/* MOBILE UI (iOS Files Style) */}
+                    <div className="md:hidden flex flex-col h-full w-full bg-white relative">
+                        <div className="w-full px-4 pt-14 pb-2 shrink-0 bg-white/90 backdrop-blur border-b border-gray-100 z-20">
+                            <div className="flex justify-between items-center mb-1">
+                                <button 
+                                    onClick={navigateBack} 
+                                    className={`w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-[#0066FF] ${historyIndex > 0 ? 'active:opacity-60' : 'opacity-0 pointer-events-none'}`}
+                                >
+                                    <Icon name="ChevronLeft" size={24} strokeWidth={2.5} />
+                                </button>
+                                <h1 className="text-[17px] font-semibold tracking-tight">{searchQuery ? 'Search' : currentDir.name}</h1>
+                                <button className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-800">
+                                    <Icon name="MoreHorizontal" size={20} />
+                                </button>
+                            </div>
+                            <div className="relative mt-3 mb-2">
+                                <Icon name="Search" size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input 
+                                    type="text" 
+                                    placeholder="Search" 
+                                    value={searchQuery} 
+                                    onChange={(e) => setSearchQuery(e.target.value)} 
+                                    className="pl-9 pr-4 py-2 bg-gray-100 rounded-[10px] w-full outline-none text-[17px] text-black" 
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto px-4 py-6 pb-32 no-scrollbar" onClick={() => setSelection(null)}>
+                            {contentIds.length === 0 ? (
+                                <div className="h-full flex flex-col items-center justify-center text-gray-300">
+                                    <Icon name="Search" size={64} strokeWidth={1} />
+                                    <span className="mt-4">No results found</span>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-3 gap-y-10 gap-x-2">
+                                    {contentIds.map(id => {
+                                        const item = initialFileSystem[id];
+                                        return (
+                                            <div key={id} onClick={(e) => handleItemAction(e, id)} className="flex flex-col items-center active:opacity-60 transition-opacity">
+                                                <FileIcon type={item.type} name={item.name} fileType={item.fileType} imageUrl={item.imageUrl} />
+                                                <span className="mt-2 text-[14px] font-medium text-center line-clamp-2 leading-tight w-full px-1">{item.name}</span>
+                                                <div className="mt-0.5 text-[11px] text-gray-400 text-center whitespace-pre-line leading-[1.2]">{getItemSubtitle(item)}</div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* iOS Floating Tab Bar */}
+                        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white/90 backdrop-blur-2xl border border-gray-100 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[2.2rem] flex justify-around py-2 px-2 z-30 ring-1 ring-black/5">
+                            {[
+                                { id: 'recents', icon: 'Clock', label: 'Recents', action: () => navigateTo('about_me_folder') },
+                                { id: 'shared', icon: 'User', label: 'Shared', action: () => navigateTo('documents') },
+                                { id: 'browse', icon: 'Folder', label: 'Browse', action: () => setCurrentPath(['guest']) }
+                            ].map(tab => (
+                                <div 
+                                    key={tab.id} 
+                                    onClick={() => { setActiveMobileTab(tab.id); tab.action(); }} 
+                                    className={`flex flex-col items-center justify-center w-[76px] h-[54px] rounded-[1.4rem] transition-all ${activeMobileTab === tab.id ? 'bg-[#E5F0FF] text-[#0066FF]' : 'text-gray-400 active:bg-gray-50'}`}
+                                >
+                                    <Icon name={tab.icon} size={24} fill={activeMobileTab === tab.id && tab.id !== 'recents' ? 'currentColor' : 'none'} strokeWidth={2.5} />
+                                    <span className="text-[10px] font-bold mt-1 tracking-tight">{tab.label}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* DESKTOP UI (macOS Finder Style) */}
+                    <div className="hidden md:flex h-full w-full items-center justify-center p-6 bg-[#E5E5E5]">
+                        <div className="w-full max-w-[1600px] h-[90vh] bg-white rounded-2xl shadow-2xl flex overflow-hidden ring-1 ring-black/10" onClick={() => setSelection(null)}>
+                            {/* Sidebar */}
+                            <div className="w-[260px] bg-[#F6F6F6]/80 backdrop-blur-md border-r border-gray-200 flex flex-col shrink-0">
+                                <div className="h-14 flex items-center px-6 space-x-2 shrink-0">
+                                    <div className="w-3 h-3 rounded-full bg-[#FF5F57] border border-black/10 shadow-inner"></div>
+                                    <div className="w-3 h-3 rounded-full bg-[#FEBC2E] border border-black/10 shadow-inner"></div>
+                                    <div className="w-3 h-3 rounded-full bg-[#28C840] border border-black/10 shadow-inner"></div>
+                                </div>
+                                <div className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+                                    <div className="px-3 mb-2 mt-4 text-[11px] font-bold text-gray-400 uppercase tracking-wider">Favorites</div>
+                                    <SidebarItem label="Desktop" icon={<Icon name="Monitor" size={18}/>} active={currentPath.includes('desktop')} color="text-purple-600" onClick={() => navigateTo('desktop')} />
+                                    <SidebarItem label="About Me" icon={<Icon name="User" size={18}/>} active={currentPath.includes('about_me_folder')} color="text-blue-600" onClick={() => navigateTo('about_me_folder')} />
+                                    <SidebarItem label="Documents" icon={<Icon name="FileText" size={18}/>} active={currentPath.includes('documents')} color="text-blue-500" onClick={() => navigateTo('documents')} />
+                                </div>
+                            </div>
+
+                            {/* Main Content Area */}
+                            <div className="flex-1 flex flex-col bg-white/60 backdrop-blur-xl">
+                                <div className="h-14 border-b border-gray-200/50 flex items-center justify-between px-6 shrink-0">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex space-x-2 text-gray-400">
+                                            <button onClick={navigateBack} className={`p-1 hover:bg-gray-100 rounded transition-colors ${historyIndex === 0 ? 'opacity-30 pointer-events-none' : ''}`}><Icon name="ChevronLeft" size={20}/></button>
+                                            <button className="p-1 opacity-30 cursor-not-allowed"><Icon name="ChevronRight" size={20}/></button>
+                                        </div>
+                                        <h2 className="text-lg font-bold text-gray-800 tracking-tight">{currentDir.name}</h2>
+                                    </div>
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex bg-gray-200/40 p-0.5 rounded-lg border border-black/5">
+                                            <button onClick={() => setViewMode('grid')} className={`p-1 rounded-md ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-gray-500'}`}><Icon name="LayoutGrid" size={14} /></button>
+                                            <button onClick={() => setViewMode('list')} className={`p-1 rounded-md ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-gray-500'}`}><Icon name="List" size={14} /></button>
+                                        </div>
+                                        <div className="relative group">
+                                            <Icon name="Search" size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-600" />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Search" 
+                                                value={searchQuery} 
+                                                onChange={(e) => setSearchQuery(e.target.value)} 
+                                                className="pl-8 pr-3 py-1.5 bg-gray-200/40 border border-transparent focus:bg-white focus:border-blue-400/50 rounded-lg text-sm outline-none w-48 transition-all" 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex-1 p-8 overflow-y-auto custom-scrollbar" onClick={() => setSelection(null)}>
+                                    <div className="grid grid-cols-4 lg:grid-cols-6 gap-x-12 gap-y-10">
+                                        {contentIds.map(id => {
+                                            const item = initialFileSystem[id];
+                                            const isSelected = selection === id;
+                                            return (
+                                                <div 
+                                                    key={id} 
+                                                    onClick={(e) => handleItemAction(e, id)} 
+                                                    className="flex flex-col items-center group cursor-pointer"
+                                                >
+                                                    <div className={`p-2 rounded-xl transition-all ${isSelected ? 'bg-blue-100/60' : 'group-hover:bg-gray-100/50'}`}>
+                                                        <FileIcon type={item.type} name={item.name} fileType={item.fileType} imageUrl={item.imageUrl} />
+                                                    </div>
+                                                    <span className={`mt-2 text-[12px] font-medium px-2 py-0.5 rounded-md leading-tight text-center max-w-[100px] truncate ${isSelected ? 'bg-blue-600 text-white' : 'text-gray-700'}`}>
+                                                        {item.name}
+                                                    </span>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+
+                                <div className="h-7 border-t border-gray-200 flex items-center justify-center text-[10px] text-gray-400 shrink-0">
+                                    <span>{contentIds.length} items</span>
+                                    <span className="mx-3 opacity-50">|</span>
+                                    <span className="font-bold tracking-widest text-gray-500 uppercase">Cristobal D'Alessio</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* MODALS */}
+                    {previewFile && previewFile.fileType === 'pdf' && <PdfPreviewModal file={previewFile} onClose={closeModal} />}
+                    {previewFile && previewFile.fileType === 'text' && <AppleNoteModal file={previewFile} onClose={closeModal} />}
+                    
+                    {/* DEDICATED IMAGE PREVIEW */}
+                    {previewFile && previewFile.fileType === 'image' && (
+                        <div className="fixed inset-0 z-[300] bg-black flex flex-col animate-fade" onClick={closeModal}>
+                            <div className="h-16 flex items-center justify-between px-6 bg-black/60 backdrop-blur-md text-white shrink-0" onClick={e => e.stopPropagation()}>
+                                <button onClick={closeModal} className="font-medium text-lg">Done</button>
+                                <div className="flex flex-col items-center">
+                                    <span className="font-semibold text-sm">{previewFile.name}</span>
+                                    <span className="text-[10px] opacity-60 uppercase tracking-tighter">{previewFile.date} &middot; {previewFile.size}</span>
+                                </div>
+                                <div className="flex space-x-4">
+                                    <Icon name="Share" size={24} color="white" />
+                                    <Icon name="MoreHorizontal" size={24} color="white" />
+                                </div>
+                            </div>
+                            <div className="flex-1 flex items-center justify-center p-4">
+                                <img src={previewFile.imageUrl} className="max-w-full max-h-full object-contain shadow-2xl" />
+                            </div>
+                        </div>
+                    )}
+
+                    {/* HTML PROJECT PREVIEW */}
+                    {previewFile && previewFile.fileType === 'html' && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-fade" onClick={closeModal}>
+                            <div className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] p-10 max-w-sm w-full text-center flex flex-col items-center shadow-2xl animate-zoom" onClick={e => e.stopPropagation()}>
+                                <div className="w-20 h-20 bg-blue-50 rounded-[1.5rem] flex items-center justify-center mb-6 ring-1 ring-blue-100">
+                                    <Icon name="Globe" size={48} className="text-blue-500" strokeWidth={1.5} />
+                                </div>
+                                <h3 className="text-2xl font-bold mb-3 tracking-tight text-gray-900">{previewFile.name}</h3>
+                                <p className="text-gray-500 mb-8 leading-relaxed">This is a web project. Visit the live site in a new browser tab.</p>
+                                <button 
+                                    onClick={() => {
+                                        window.open(previewFile.url, '_blank', 'noopener,noreferrer');
+                                        closeModal();
+                                    }} 
+                                    className="w-full bg-[#007AFF] text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-colors flex items-center justify-center space-x-2"
+                                >
+                                    <span>Visit Website</span>
+                                    <Icon name="ExternalLink" size={18} />
+                                </button>
+                                <button onClick={closeModal} className="mt-4 text-gray-400 font-semibold text-sm active:text-gray-600 transition-colors">Not now</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
