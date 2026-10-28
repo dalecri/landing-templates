@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cristobal · a quiet corner in Labelle</title>
+<meta name="description" content="Cristobal (Cris): communications, media relations, and small web apps, from Labelle, Quebec.">
+<meta name="theme-color" content="#F4DCBC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4DCBC;
+    --ink:#2B2420;
+    --muted:#8A7766;
+    --faint:#A8968a;
+    --hair:rgba(43,36,32,.12);
+    --line:rgba(43,36,32,.28);
+    --pill:rgba(255,250,243,.72);
+    --pill-ink:#5E5046;
+    --card:rgba(255,250,243,.74);
+    --accent:#C0663F;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  body.dusk{ --bg:#EFC3A4; --muted:#86695E; --faint:#A48478; --hair:rgba(43,36,32,.13); --pill:rgba(255,244,236,.7); --card:rgba(255,244,236,.72) }
+  body.night{
+    --bg:#1D1B2C; --ink:#EDE6F2; --muted:#A79DB8; --faint:#7d7392; --hair:rgba(237,230,242,.12); --line:rgba(237,230,242,.3);
+    --pill:rgba(46,42,66,.72); --pill-ink:#CFC6DD; --card:rgba(40,37,58,.78); --accent:#F2C14E;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  html{scroll-behavior:smooth;scroll-padding-top:96px}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{background:var(--bg);color:var(--ink);font:15px/1.95 var(--mono);transition:background-color 1.2s ease,color 1.2s ease;overflow-x:hidden}
+  a{color:inherit}
+  p{margin:0}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+
+  #scene{position:fixed;inset:0;z-index:0;width:100vw;height:100vh;display:block}
+
+  /* nav pill */
+  .nav{position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:2px;
+    padding:6px 8px;border-radius:999px;background:var(--pill);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transition:background-color 1.2s}
+  .nav a, .nav button{font:14px/1 var(--mono);color:var(--pill-ink);text-decoration:none;background:none;border:0;cursor:pointer;padding:9px 16px;border-radius:999px;transition:color .2s,background .2s}
+  .nav a:hover, .nav button:hover{color:var(--ink)}
+  .nav a[aria-current="page"]{color:var(--ink);font-weight:600}
+  .nav #ff{padding:7px 12px;display:inline-flex;align-items:center}
+  .nav #ff svg{width:18px;height:14px;display:block}
+  .nav #ff[aria-pressed="true"]{color:var(--accent)}
+  @media (max-width:560px){ .nav{top:14px} .nav a,.nav button{padding:8px 10px;font-size:13px} }
+
+  /* content */
+  main{position:relative;z-index:2;pointer-events:none}
+  main a, main button{pointer-events:auto}
+  .hero{min-height:100vh;padding:clamp(96px,15vh,170px) clamp(22px,5vw,50px) 0;max-width:780px}
+  .muted{color:var(--muted)}
+  .gap{height:1.6em}
+  .u{text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:1px}
+  .u:hover{border-bottom-color:var(--ink)}
+  .key{display:inline-block;font-weight:600;padding:0 4px}
+
+  /* below the fold: a calm, plain index (the scene stays up top) */
+  .below{position:relative;z-index:3;pointer-events:auto;background:var(--bg);transition:background-color 1.2s ease;
+    padding:clamp(70px,10vh,110px) clamp(22px,5vw,50px) 90px}
+  .below::before{content:'';position:absolute;left:0;right:0;top:-40px;height:40px;background:linear-gradient(to bottom,transparent,var(--bg));pointer-events:none}
+  .below section{max-width:720px;margin:0 auto 86px}
+  .label{font:400 13px/1 var(--mono);color:var(--faint);margin:0 0 16px;letter-spacing:.02em}
+  .rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair)}
+  .rows li{border-bottom:1px solid var(--hair)}
+  .rows .row{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;padding:12px 0;text-decoration:none;line-height:1.6}
+  .rows .n{color:var(--ink);white-space:nowrap}
+  .rows .d{color:var(--muted)}
+  .rows .y{color:var(--faint);text-align:right;white-space:nowrap}
+  .rows a.row:hover .n{text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--line)}
+  .rows a.row:hover .y{color:var(--ink)}
+  @media (max-width:620px){
+    .rows .row{grid-template-columns:1fr auto;gap:2px 14px}
+    .rows .d{grid-column:1 / -1;grid-row:2}
+  }
+  .below .note{color:var(--faint);font-size:13px;margin-top:14px}
+  .below footer{max-width:720px;margin:0 auto;color:var(--faint);font-size:12.5px;line-height:1.8}
+
+  /* live card */
+  .live.away{opacity:0;transform:translateY(8px);pointer-events:none}
+  .live{transition:opacity .4s,transform .4s,background-color 1.2s;position:fixed;right:clamp(12px,3vw,32px);bottom:clamp(12px,3vw,28px);z-index:4;text-align:right;
+    padding:12px 16px;border-radius:6px;background:var(--card);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-size:13.5px;line-height:1.7;transition:background-color 1.2s;max-width:calc(100vw - 24px)}
+  .live .sub{color:var(--muted)}
+  .live .lapse{color:var(--accent)}
+
+  /* terminal */
+  .term{position:fixed;left:50%;bottom:clamp(16px,6vh,70px);transform:translateX(-50%);z-index:8;width:min(640px,calc(100vw - 24px));
+    background:#17141f;color:#E9E3F0;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.35);font:13.5px/1.6 var(--mono);display:none}
+  .term.open{display:block}
+  .term .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.08);color:#9a90ad;font-size:12px}
+  .term .bar button{background:none;border:0;color:#9a90ad;font:inherit;cursor:pointer}
+  .term .out{max-height:min(46vh,360px);overflow:auto;padding:12px 14px 4px;white-space:pre-wrap;word-break:break-word}
+  .term .out .p{color:#F2C14E}
+  .term .out .d{color:#9a90ad}
+  .term .out a{color:#9fd3ff}
+  .term form{display:flex;gap:8px;padding:4px 14px 14px}
+  .term label{color:#F2C14E;white-space:nowrap}
+  .term input{flex:1;min-width:0;background:none;border:0;color:#fff;font:inherit;outline:none;caret-color:#F2C14E}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<nav class="nav" aria-label="Primary">
+  <a href="#top" aria-current="page">home</a>
+  <a href="#work">work</a>
+  <a href="#projects">projects</a>
+  <button type="button" id="openTerm">terminal</button>
+  <button type="button" id="ff" aria-pressed="false" title="Time-lapse the day in Labelle" aria-label="Time-lapse"><svg viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 2.2v9.6L9 7z"/><path d="M10.5 2.2v9.6L18 7z"/></svg></button>
+</nav>
+
+<main>
+  <section class="hero" id="top" aria-label="Home">
+    <p class="muted">Small things, made with care, tend to add up.</p>
+    <p class="muted">Thanks for wandering in.</p>
+    <div class="gap"></div>
+    <p>I'm Cristobal, Cris for short.</p>
+    <p>I turn complicated things into clear words and calm interfaces.</p>
+    <p>Media relations @ <a class="u" href="https://www.statcan.gc.ca" target="_blank" rel="noopener">Statistics Canada</a>, shaping expert answers for journalists.</p>
+    <p>Before that: social media, then IT. Same building, different hats.</p>
+    <p class="muted">Off the clock: four cats on two floors, pixel art, the Laurentians, and my French (en progrès).</p>
+    <div class="gap"></div>
+    <p><a class="u" href="https://github.com/dalecri" target="_blank" rel="noopener">github</a> / <a class="u" href="https://www.linkedin.com/in/cdalessio/" target="_blank" rel="noopener">linkedin</a> / <a class="u" href="mailto:workwithcristobal@gmail.com">email</a> / <a class="u" href="https://beacons.ai/twostorytails" target="_blank" rel="noopener">@twostorytails</a> <span class="muted">· press <span class="key">`</span> for the terminal</span></p>
+  </section>
+
+  <div class="below" id="below">
+    <section id="work" aria-labelledby="work-h">
+      <h2 class="label" id="work-h">work</h2>
+      <ul class="rows">
+        <li><div class="row"><span class="n">Statistics Canada</span><span class="d">Media relations, communications officer</span><span class="y">now</span></div></li>
+        <li><div class="row"><span class="n">Statistics Canada</span><span class="d">Social media</span><span class="y">before</span></div></li>
+        <li><div class="row"><span class="n">Statistics Canada</span><span class="d">IT deployment technician</span><span class="y">before</span></div></li>
+        <li><div class="row"><span class="n">Nepean Corona</span><span class="d">Gymnastics coach</span><span class="y">first</span></div></li>
+        <li><div class="row"><span class="n">Algonquin College</span><span class="d">Public Relations · Mobile App Design &amp; Development</span><span class="y">school</span></div></li>
+      </ul>
+      <p class="note">Open to remote roles in social media strategy, comms operations, and technical writing. <a class="u" href="mailto:workwithcristobal@gmail.com">Say hi</a>.</p>
+    </section>
+
+    <section id="projects" aria-labelledby="proj-h">
+      <h2 class="label" id="proj-h">projects</h2>
+      <ul class="rows">
+        <!-- swap any href below for the project's own repo or live link -->
+        <li><a class="row" href="https://github.com/dalecri/little-folders" target="_blank" rel="noopener"><span class="n">Pocketful</span><span class="d">Little folders for keeping things tidy</span><span class="y">web app</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri/digital-journal-app" target="_blank" rel="noopener"><span class="n">Journo</span><span class="d">Softleaf Journal, a soft and quiet journal</span><span class="y">web app</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri" target="_blank" rel="noopener"><span class="n">Lamplight</span><span class="d">Pixel-art EPUB reader in a single HTML file</span><span class="y">reader</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri" target="_blank" rel="noopener"><span class="n">Keepsake</span><span class="d">Skeuomorphic journal, Lamplight's sibling</span><span class="y">journal</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri" target="_blank" rel="noopener"><span class="n">Wordnest</span><span class="d">French flashcards, sorted into themed decks</span><span class="y">learning</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri" target="_blank" rel="noopener"><span class="n">TyQuest Retro</span><span class="d">Gamified quest tracker, made as a gift</span><span class="y">game</span></a></li>
+        <li><a class="row" href="https://github.com/dalecri" target="_blank" rel="noopener"><span class="n">TwoStoryCaptions</span><span class="d">The content tool behind the cat accounts</span><span class="y">tool</span></a></li>
+        <li><a class="row" href="https://dalecri.github.io" target="_blank" rel="noopener"><span class="n">Everything else</span><span class="d">30+ single-file web apps and counting</span><span class="y">portfolio</span></a></li>
+      </ul>
+    </section>
+
+    <section id="cats" aria-labelledby="cats-h">
+      <h2 class="label" id="cats-h">cats</h2>
+      <ul class="rows">
+        <li><div class="row"><span class="n">Cali</span><span class="d">The Princess · domestic shorthair</span><span class="y">downstairs</span></div></li>
+        <li><div class="row"><span class="n">Neo</span><span class="d">The Cuddler · domestic shorthair</span><span class="y">downstairs</span></div></li>
+        <li><div class="row"><span class="n">Ramses</span><span class="d">The Adventurer · savannah</span><span class="y">upstairs</span></div></li>
+        <li><div class="row"><span class="n">Diego</span><span class="d">The Loyalist · bengal</span><span class="y">upstairs</span></div></li>
+      </ul>
+      <p class="note">They take turns in the house windows up top. Follow along at <a class="u" href="https://beacons.ai/twostorytails" target="_blank" rel="noopener">@twostorytails</a>.</p>
+    </section>
+
+    <footer>Made slowly in Labelle, Quebec · <a class="u" href="#top">back to the sky</a></footer>
+  </div>
+</main>
+
+<aside class="live" aria-live="polite">
+  <div id="liveTitle">A quiet moment in Labelle</div>
+  <div class="sub" id="liveSub">checking the sky…</div>
+</aside>
+
+<div class="term" id="term" role="dialog" aria-label="Terminal" aria-modal="false">
+  <div class="bar"><span>cris@labelle: ~</span><button type="button" id="closeTerm" aria-label="Close terminal">esc ×</button></div>
+  <div class="out" id="out" aria-live="polite"></div>
+  <form id="termForm" autocomplete="off">
+    <label for="cmd">cris@labelle:~$</label>
+    <input id="cmd" spellcheck="false" autocapitalize="off">
+  </form>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const TZ = 'America/Toronto';                 // Labelle, Quebec is on Eastern time
+  const LAT = 46.283, LON = -74.733;
+
+  /* ================= time & weather ================= */
+  const live = { code: null, temp: null, wind: null, windDir: null, ok: false };
+  let lapse = false, lapseMin = 0;              // time-lapse offset in minutes
+  let previewMin = 0;                           // ?at=HH previews another hour
+
+  function labelleTime(offsetMin = 0) {
+    const d = new Date(Date.now() + (offsetMin + previewMin) * 60000);
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+      timeZone: TZ, hour: 'numeric', minute: '2-digit', hour12: false, timeZoneName: 'short'
+    }).formatToParts(d).map(p => [p.type, p.value]));
+    const h = (+parts.hour) % 24, m = +parts.minute;
+    const pretty = new Intl.DateTimeFormat('en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' }).format(d);
+    return { h, m, hours: h + m / 60, pretty, tz: parts.timeZoneName || 'ET' };
+  }
+
+  const WX = c =>
+    c == null ? null :
+    c === 0 ? 'Clear skies' : c <= 2 ? 'A few clouds' : c === 3 ? 'Grey skies' :
+    c <= 48 ? 'Fog on the lake' : c <= 57 ? 'Drizzle' : c <= 67 ? 'Rain' :
+    c <= 77 ? 'Snow falling' : c <= 82 ? 'Passing showers' : c <= 86 ? 'Snow squalls' : 'Thunder in the hills';
+  const precip = c => c == null ? 'none' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'snow' : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95 ? 'rain' : 'none';
+  const windWord = w => w == null ? '' : w < 4 ? 'Still air' : w < 14 ? 'Slight breeze' : w < 28 ? 'Breezy' : 'Windy';
+  const compass = deg => ['N','NE','E','SE','S','SW','W','NW'][Math.round(((deg % 360) / 45)) % 8];
+
+  async function fetchWeather() {
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code,wind_speed_10m,wind_direction_10m&timezone=${encodeURIComponent(TZ)}`;
+      const r = await fetch(url);
+      if (!r.ok) throw 0;
+      const j = await r.json();
+      live.temp = Math.round(j.current.temperature_2m);
+      live.code = j.current.weather_code;
+      live.wind = Math.round(j.current.wind_speed_10m);
+      live.windDir = j.current.wind_direction_10m;
+      live.ok = true;
+    } catch (e) { live.ok = false; }
+    updateCard();
+  }
+
+  const liveTitle = document.getElementById('liveTitle'), liveSub = document.getElementById('liveSub');
+  function updateCard() {
+    const t = labelleTime(lapse ? lapseMin : 0);
+    if (lapse) {
+      liveTitle.innerHTML = '<span class="lapse">⏩ time-lapse</span> · a day in Labelle';
+      liveSub.textContent = `${t.pretty} ${t.tz} · press ⏩ to return to now`;
+      return;
+    }
+    if (live.ok) {
+      const lead = live.code <= 3 && live.wind != null ? windWord(live.wind) : WX(live.code);
+      liveTitle.textContent = `${lead} over Labelle right now`;
+      liveSub.textContent = `${t.pretty} ${t.tz} in Labelle, QC · ${live.temp}°C · ${live.wind} km/h ${compass(live.windDir)} wind`;
+    } else {
+      liveTitle.textContent = 'A quiet moment in Labelle';
+      liveSub.textContent = `${t.pretty} ${t.tz} in Labelle, QC`;
+    }
+  }
+
+
+  /* ================= terminal ================= */
+  const term = document.getElementById('term'), out = document.getElementById('out'), cmd = document.getElementById('cmd');
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  function print(html, cls) { const d = document.createElement('div'); if (cls) d.className = cls; d.innerHTML = html; out.appendChild(d); out.scrollTop = out.scrollHeight; }
+  const COMMANDS = {
+    help: () => print('commands: <b>about</b> · <b>work</b> · <b>projects</b> · <b>cats</b> · <b>contact</b> · <b>weather</b> · <b>timelapse</b> · <b>bonjour</b> · <b>clear</b> · <b>exit</b>', 'd'),
+    about: () => print("Cris. Media relations at Statistics Canada. I make complicated things clear,\nbuild small web apps, and live in Labelle, Quebec with four cats."),
+    work: () => { print('scrolling to work…', 'd'); document.getElementById('work').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' }); },
+    projects: () => { document.getElementById('projects').scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth' }); },
+    cats: () => print('Cali (the princess) and Neo (the cuddler) downstairs.\nRamses (the adventurer) and Diego (the loyalist) upstairs.\n<a href="https://beacons.ai/twostorytails" target="_blank" rel="noopener">@twostorytails</a>'),
+    contact: () => print('<a href="mailto:workwithcristobal@gmail.com">workwithcristobal@gmail.com</a> · <a href="https://www.linkedin.com/in/cdalessio/" target="_blank" rel="noopener">linkedin</a> · <a href="https://github.com/dalecri" target="_blank" rel="noopener">github</a>'),
+    weather: () => print(esc(liveTitle.textContent + '\n' + liveSub.textContent)),
+    timelapse: () => { toggleLapse(); print(lapse ? 'time-lapse on. watch the sun.' : 'back to real time.', 'd'); },
+    bonjour: () => print("Bonjour! Je pratique mon français. Soyez indulgent·e·s. 🙂"),
+    clear: () => { out.innerHTML = ''; },
+    exit: () => closeTerm(),
+    sudo: () => print("nice try. the cats have root.", 'd'),
+  };
+  function openTerm() {
+    term.classList.add('open');
+    if (!out.childElementCount) print("welcome. type <b>help</b> to look around.", 'd');
+    setTimeout(() => cmd.focus(), 0);
+  }
+  function closeTerm() { term.classList.remove('open'); document.getElementById('openTerm').focus(); }
+  document.getElementById('openTerm').addEventListener('click', () => term.classList.contains('open') ? closeTerm() : openTerm());
+  document.getElementById('closeTerm').addEventListener('click', closeTerm);
+  document.getElementById('termForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const raw = cmd.value.trim(); cmd.value = '';
+    if (!raw) return;
+    print('<span class="p">$</span> ' + esc(raw));
+    const fn = COMMANDS[raw.toLowerCase().split(/\s+/)[0]];
+    fn ? fn() : print(`command not found: ${esc(raw)}. try <b>help</b>`, 'd');
+  });
+  addEventListener('keydown', e => {
+    const typing = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+    if (e.key === '`' && !typing) { e.preventDefault(); term.classList.contains('open') ? closeTerm() : openTerm(); }
+    else if (e.key === 'Escape' && term.classList.contains('open')) closeTerm();
+  });
+
+  /* ================= the scene ================= */
+  const canvas = document.getElementById('scene');
+  const ctx = canvas.getContext('2d');
+  const CELL = 16, TILE = 14;
+  const FONT = '600 10px "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace';
+  const CHAR_FONT = '13px "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace';
+
+  const PALETTES = {
+    day: {
+      bg: '#F4DCBC', far: '#E6D6CA', near: '#D8D9C4', water: '#C9D7E6', waterHi: '#E3ECF4', grass: '#D3DDB8',
+      pine: '#9DB98C', pineDk: '#7F9F72', trunk: '#A98468', wall: '#EFDDC5', wall2: '#E6D0B4', roof: '#C9805F',
+      win: '#BCD0E2', door: '#9A7457', stone: '#CFC4B8', cloud: '#FCF5EC', canoe: '#B4734E', ink: '#2B2420', bird: 'rgba(43,36,32,.55)',
+      sun: ['#F08A32', '#F6A24C'], smoke: 'rgba(250,244,236,', star: null,
+    },
+    dusk: {
+      bg: '#EFC3A4', far: '#DDB7AE', near: '#C9C0B0', water: '#C8B9D0', waterHi: '#E6D2DE', grass: '#BFC7A4',
+      pine: '#8EA580', pineDk: '#6F8A66', trunk: '#946F59', wall: '#E8CDB5', wall2: '#DDBFA4', roof: '#B66C55',
+      win: '#F2C77A', door: '#86624C', stone: '#C3B3AA', cloud: '#F8E6DC', canoe: '#A6654A', ink: '#2B2420', bird: 'rgba(43,36,32,.5)',
+      sun: ['#E86A3A', '#F28B55'], smoke: 'rgba(248,232,222,', star: null,
+    },
+    night: {
+      bg: '#1D1B2C', far: '#2D2B42', near: '#283130', water: '#232E46', waterHi: '#3A4C6C', grass: '#222D27',
+      pine: '#2E4A3A', pineDk: '#243C2F', trunk: '#3B2F28', wall: '#3B3448', wall2: '#342E40', roof: '#563A3D',
+      win: '#F2C14E', door: '#2F2630', stone: '#33303C', cloud: '#33314A', canoe: '#4A3530', ink: '#EDE6F2', bird: 'rgba(237,230,242,.45)',
+      sun: ['#EFE6CF', '#D9CFB6'], smoke: 'rgba(120,112,140,', star: '#EDE6F2',
+    },
+  };
+
+  // deterministic noise for the landscape
+  function hash(x, y) {
+    let h = Math.imul(x | 0, 374761393) ^ Math.imul(y | 0, 668265263);
+    h = Math.imul(h ^ (h >>> 13), 1274126177); h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  }
+  function noise1(x, seed) {
+    const i = Math.floor(x), f = x - i, u = f * f * (3 - 2 * f);
+    return hash(i, seed) * (1 - u) + hash(i + 1, seed) * u;
+  }
+  const fbm = (x, seed) => noise1(x, seed) * 0.6 + noise1(x * 2.1, seed + 7) * 0.3 + noise1(x * 4.3, seed + 13) * 0.1;
+
+  function hexRgb(h) { return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); }
+  function shade(hex, k) { const c = hexRgb(hex); return `rgb(${c.map(v => Math.round(v * k)).join(',')})`; }
+  function charColor(hex, night) { const c = hexRgb(hex); return night ? `rgba(${c.map(v => Math.min(255, v + 70)).join(',')},.55)` : `rgba(${c.map(v => Math.round(v * 0.62)).join(',')},.75)`; }
+
+  let W, H, cols, rows, ox, horizon, lakeH, shoreTop, phase = 'day', pal = PALETTES.day;
+  let staticLayer = document.createElement('canvas'), sctx = staticLayer.getContext('2d');
+  let house = null, clouds = [], stars = [], flock = null, nextFlock = 4, canoe = null, flakes = [];
+  let windowCats = [0, 0, 0, 0], catTimer = 0;
+  let rafId = 0, last = 0, acc = 0, t = 0, paused = false;
+
+  function tile(g, c, r, color, ch, chColor) {
+    const x = ox + c * CELL + (CELL - TILE) / 2, y = r * CELL + (CELL - TILE) / 2;
+    g.fillStyle = color;
+    if (g.roundRect) { g.beginPath(); g.roundRect(x, y, TILE, TILE, 2); g.fill(); }
+    else g.fillRect(x, y, TILE, TILE);
+    if (ch) { g.fillStyle = chColor; g.fillText(ch, x + TILE / 2, y + TILE / 2 + 0.5); }
+  }
+
+  function layout() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    for (const [cv, g] of [[canvas, ctx], [staticLayer, sctx]]) {
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    cols = Math.ceil(W / CELL) + 1; rows = Math.ceil(H / CELL);
+    ox = (W - cols * CELL) / 2;
+    horizon = Math.round(rows * (W < 600 ? 0.76 : 0.74));
+    lakeH = Math.max(3, Math.round(rows * 0.07));
+    shoreTop = horizon + lakeH;
+    const hw = 9;
+    const hc = Math.min(cols - hw - 3, Math.round(cols * (W < 700 ? 0.62 : 0.56)));
+    house = { c: hc, w: hw, base: rows - 2 };
+    clouds = [];
+    const shapes = [
+      ['..####......', '.#######.##.', '############'],
+      ['...###..', '.######.', '########'],
+      ['..##.###..', '##########'],
+    ];
+    for (let i = 0; i < 4; i++) {
+      clouds.push({ shape: shapes[i % 3], x: (i * 0.29 + 0.05) * cols, y: 1 + Math.round(hash(i, 9) * 3), speed: 0.25 + hash(i, 3) * 0.35 });
+    }
+    stars = [];
+    for (let i = 0; i < 70; i++) stars.push({ c: Math.floor(hash(i, 41) * cols), r: Math.floor(hash(i, 43) * horizon * 0.8), ph: hash(i, 47) * 6.28 });
+    canoe = { x: cols * 0.25, dir: 1 };
+    buildStatic();
+  }
+
+  function setPhase(hours) {
+    const p = (hours >= 21 || hours < 5.5) ? 'night' : (hours >= 18.5 || hours < 7.5) ? 'dusk' : 'day';
+    if (p === phase && staticLayer.width) return;
+    phase = p; pal = PALETTES[p];
+    document.body.classList.toggle('night', p === 'night');
+    document.body.classList.toggle('dusk', p === 'dusk');
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', pal.bg);
+    buildStatic();
+  }
+
+  // mountains, hills, lake, shore, pines, house walls: drawn once per phase or resize
+  function buildStatic() {
+    if (!cols) return;
+    const g = sctx, night = phase === 'night';
+    g.clearRect(0, 0, W, H);
+    g.font = FONT; g.textAlign = 'center'; g.textBaseline = 'middle';
+    const farC = charColor(pal.far, night), nearC = charColor(pal.near, night);
+    for (let c = 0; c < cols; c++) {
+      const farTop = horizon - Math.round(3 + fbm(c * 0.045, 1) * 9);
+      for (let r = farTop; r < horizon; r++) tile(g, c, r, pal.far, r === farTop ? '_' : (hash(c, r) > 0.9 ? '.' : ''), farC);
+      const nearTop = horizon - Math.round(1 + fbm(c * 0.09 + 30, 2) * 4);
+      for (let r = nearTop; r < horizon; r++) tile(g, c, r, pal.near, hash(c, r + 99) > 0.85 ? ':' : '', nearC);
+      // tiny pines on the near hills
+      if (hash(c, 501) > 0.72) {
+        const h = 1 + Math.floor(hash(c, 502) * 3);
+        for (let k = 0; k < h; k++) tile(g, c, nearTop - 1 - k, k === h - 1 ? pal.pine : pal.pineDk, k === h - 1 ? '^' : '', charColor(pal.pine, night));
+      }
+      // lake
+      for (let r = horizon; r < shoreTop; r++) tile(g, c, r, pal.water, (c + r) % 3 === 0 ? '~' : '', charColor(pal.water, night));
+      // shore and ground
+      for (let r = shoreTop; r < rows - 1; r++) tile(g, c, r, pal.grass, hash(c, r + 7) > 0.9 ? ',' : '', charColor(pal.grass, night));
+      tile(g, c, rows - 1, pal.stone, '=', charColor(pal.stone, night));
+    }
+    // foreground pines along the shore
+    const spot = (c) => c >= house.c - 2 && c <= house.c + house.w + 1;
+    for (let c = 1; c < cols - 1; c++) {
+      if (spot(c) || hash(c, 777) < 0.68) continue;
+      const h = 3 + Math.floor(hash(c, 778) * Math.min(6, rows - shoreTop - 3));
+      const base = rows - 2;
+      tile(g, c, base, pal.trunk, '|', charColor(pal.trunk, night));
+      for (let k = 1; k <= h; k++) {
+        const r = base - k;
+        const half = Math.max(0, Math.round((h - k) / 2.6));
+        for (let d = -half; d <= half; d++) if (c + d >= 0 && c + d < cols) tile(g, c + d, r, (d + k) % 2 ? pal.pineDk : pal.pine, k === h ? '^' : (d === 0 ? '|' : ''), charColor(pal.pine, night));
+      }
+      c += 2;
+    }
+    // the house: two storeys, two windows each (cats get their own floors)
+    const { c: hc, w: hw, base } = house;
+    const wallC = charColor(pal.wall, night);
+    for (let r = base - 5; r <= base; r++) for (let c = hc; c < hc + hw; c++) tile(g, c, r, r <= base - 3 ? pal.wall2 : pal.wall, '', wallC);
+    for (let k = 0; k < 4; k++) {                   // roof
+      const r = base - 6 - k;
+      for (let c = hc - 1 + k; c <= hc + hw - k; c++) tile(g, c, r, pal.roof, c === hc - 1 + k ? '/' : c === hc + hw - k ? '\\' : (k === 3 ? '^' : ''), charColor(pal.roof, night));
+    }
+    tile(g, hc + hw - 3, base - 10, pal.stone, 'H', charColor(pal.stone, night));   // chimney
+    tile(g, hc + hw - 3, base - 9, pal.stone, '', '');
+    tile(g, hc + 4, base, pal.door, '|', charColor(pal.door, night));
+    tile(g, hc + 4, base - 1, pal.door, 'o', charColor(pal.door, night));
+    // a little dock into the lake
+    for (let c = hc - 6; c < hc - 1; c++) tile(g, c, shoreTop - 1, pal.trunk, '=', charColor(pal.trunk, night));
+  }
+
+  const windowSpots = () => {
+    const { c: hc, w: hw, base } = house;
+    return [[hc + 1, base - 1], [hc + hw - 2, base - 1], [hc + 1, base - 4], [hc + hw - 2, base - 4]];  // Cali, Neo downstairs; Ramses, Diego upstairs
+  };
+
+  function sunPos(hours) {
+    const day = hours >= 6 && hours <= 20.5;
+    const span = day ? (hours - 6) / 14.5 : ((hours + 24 - 20.5) % 24) / 9.5;
+    // keep the sun and moon on the open side of the sky, clear of the intro text
+    const x = W >= 900 ? cols * (0.5 + 0.44 * span) : cols * (0.12 + 0.76 * span);
+    const y = horizon - 2 - Math.sin(Math.PI * span) * (horizon * (W >= 900 ? 0.62 : 0.3));
+    return { x, y, day };
+  }
+
+  function drawSun(g, hours) {
+    const { x, y, day } = sunPos(hours);
+    const R = day ? 4 : 3.3;
+    const [c1, c2] = pal.sun;
+    if (!day) {                                    // soft halo around the full moon
+      const px = ox + x * CELL + CELL / 2, py = y * CELL + CELL / 2;
+      const halo = g.createRadialGradient(px, py, 0, px, py, CELL * 9);
+      halo.addColorStop(0, 'rgba(239,230,207,0.16)'); halo.addColorStop(1, 'rgba(239,230,207,0)');
+      g.fillStyle = halo; g.fillRect(px - CELL * 9, py - CELL * 9, CELL * 18, CELL * 18);
+    }
+    for (let r = Math.floor(y - R); r <= Math.ceil(y + R); r++) {
+      for (let c = Math.floor(x - R); c <= Math.ceil(x + R); c++) {
+        const d = Math.hypot(c - x, r - y);
+        if (d > R) continue;
+        if (day) {
+          tile(g, c, r, d < R * 0.6 ? c1 : c2, d < R * 0.6 ? '@' : 'o', 'rgba(255,240,220,.9)');
+        } else {
+          const crater = hash(c * 3 + 1, r * 5 + 2);          // a few quiet maria
+          const ch = crater > 0.82 ? 'o' : crater > 0.68 ? '.' : '';
+          tile(g, c, r, d < R * 0.55 ? c1 : c2, ch, 'rgba(120,108,118,.55)');
+        }
+      }
+    }
+  }
+
+  function drawCloud(g, cl) {
+    const night = phase === 'night';
+    cl.shape.forEach((row, j) => {
+      for (let i = 0; i < row.length; i++) if (row[i] === '#') {
+        const c = Math.floor(cl.x) + i;
+        if (c < -1 || c > cols) continue;
+        tile(g, c, cl.y + j, pal.cloud, hash(i, j + cl.y) > 0.8 ? '~' : '', charColor(pal.cloud, night));
+      }
+    });
+  }
+
+  const pointer = { x: -9999, y: -9999, seen: 0 };
+  addEventListener('pointermove', e => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.seen = t; }, { passive: true });
+
+  function newFlock() {
+    const n = 7, fromRight = Math.random() > 0.5;
+    flock = { x: fromRight ? W + 60 : -120, y: H * (0.14 + Math.random() * 0.22), dir: fromRight ? -1 : 1, birds: [] };
+    for (let i = 0; i < n; i++) {
+      const k = Math.ceil(i / 2), side = i % 2 ? -1 : 1;
+      const ox_ = -flock.dir * k * 16, oy_ = side * k * 10;
+      flock.birds.push({ ox: ox_, oy: oy_, x: flock.x + ox_, y: flock.y + oy_, vx: 0, vy: 0, ph: i * 0.7, fright: 0 });
+    }
+  }
+
+  function render(steady) {
+    const tm = labelleTime(lapse ? lapseMin : 0);
+    setPhase(tm.hours);
+    const night = phase === 'night';
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+
+    if (night) {
+      ctx.fillStyle = pal.star;
+      ctx.font = CHAR_FONT;
+      for (const s of stars) {
+        ctx.globalAlpha = steady ? 0.5 : 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(t * 1.3 + s.ph));
+        ctx.fillText(hash(s.c, s.r) > 0.8 ? '+' : '.', ox + s.c * CELL + CELL / 2, s.r * CELL + CELL / 2);
+      }
+      ctx.globalAlpha = 1;
+      ctx.font = FONT;
+    }
+    drawSun(ctx, tm.hours);
+    for (const cl of clouds) drawCloud(ctx, cl);
+    ctx.drawImage(staticLayer, 0, 0, W, H);
+
+    // shimmer on the lake
+    for (let r = horizon; r < shoreTop; r++) for (let c = 0; c < cols; c++) {
+      const v = noise1(c * 0.35 + t * 0.6 * (r % 2 ? 1 : -1), r * 13);
+      if (v > (steady ? 0.8 : 0.74)) tile(ctx, c, r, pal.waterHi, '~', charColor(pal.water, night));
+    }
+    // canoe with a paddler
+    if (canoe) {
+      const r = horizon + Math.floor(lakeH / 2), c = Math.round(canoe.x);
+      ctx.font = CHAR_FONT; ctx.fillStyle = pal.canoe;
+      ctx.fillText(canoe.dir > 0 ? '\\_i_/' : '\\_i_/', ox + c * CELL, r * CELL + CELL / 2 + (steady ? 0 : Math.sin(t * 2) * 1.2));
+      ctx.font = FONT;
+    }
+    // windows: lit at dusk and night, and the cats take turns
+    const lit = phase !== 'day';
+    windowSpots().forEach(([c, r], i) => {
+      const cat = windowCats[i] > 0;
+      tile(ctx, c, r, lit ? pal.win : PALETTES.day.win, cat ? '^' : (lit ? '#' : '+'), cat ? (lit ? 'rgba(60,40,30,.85)' : 'rgba(43,36,32,.7)') : charColor(lit ? pal.win : PALETTES.day.win, false));
+    });
+    // chimney smoke
+    if (!steady) {
+      const cx = house.c + house.w - 3, cy = house.base - 11;
+      for (let k = 0; k < 5; k++) {
+        const life = ((t * 0.35 + k / 5) % 1);
+        const c = cx + Math.round(Math.sin(life * 3 + k) * 1.2 + life * 2 * (live.wind ? Math.min(1, live.wind / 15) : 0.4));
+        const r = cy - Math.round(life * 7);
+        ctx.globalAlpha = (1 - life) * 0.8;
+        tile(ctx, c, r, pal.smoke + '0.9)', '', '');
+      }
+      ctx.globalAlpha = 1;
+    }
+    // weather particles (from the live forecast)
+    if (flakes.length) {
+      ctx.font = CHAR_FONT;
+      ctx.fillStyle = night ? 'rgba(237,230,242,.7)' : 'rgba(255,255,255,.9)';
+      for (const f of flakes) ctx.fillText(f.ch, f.x, f.y);
+      ctx.font = FONT;
+    }
+    // geese in a V: they scatter from the pointer and regroup
+    if (flock) {
+      ctx.font = CHAR_FONT; ctx.fillStyle = pal.bird;
+      for (const b of flock.birds) {
+        const flap = Math.sin(t * (6 + b.fright * 10) + b.ph) > 0 ? 'v' : '^';
+        ctx.fillText(steady ? 'v' : flap, b.x, b.y);
+      }
+      ctx.font = FONT;
+    }
+  }
+
+  function update(dt) {
+    t += dt;
+    if (lapse) lapseMin += dt * 24;                // one simulated hour every 2.5 seconds
+    const wind = live.wind != null ? live.wind : 6;
+    for (const cl of clouds) {
+      cl.x += dt * cl.speed * (0.4 + wind / 12);
+      if (cl.x > cols + 2) cl.x = -cl.shape[0].length - 2;
+    }
+    if (canoe) {
+      canoe.x += dt * 0.35 * canoe.dir;
+      if (canoe.x > house.c - 9) canoe.dir = -1;
+      if (canoe.x < cols * 0.08) canoe.dir = 1;
+    }
+    // cats take turns in the windows
+    catTimer -= dt;
+    if (catTimer <= 0) {
+      catTimer = 2.5 + Math.random() * 4;
+      const i = Math.floor(Math.random() * 4);
+      windowCats[i] = windowCats[i] ? 0 : 1;
+      if (windowCats.reduce((a, b) => a + b, 0) > 2) windowCats[(i + 2) % 4] = 0;
+    }
+    // geese: the V glides across; each bird springs toward its slot but flees the pointer
+    nextFlock -= dt;
+    if (!flock && nextFlock <= 0) newFlock();
+    if (flock) {
+      flock.x += flock.dir * dt * 48;
+      flock.y += Math.sin(t * 0.7) * dt * 4;
+      const REACH = 140;
+      for (const b of flock.birds) {
+        let ax = (flock.x + b.ox - b.x) * 3.2, ay = (flock.y + b.oy - b.y) * 3.2;   // spring to formation
+        const dx = b.x - pointer.x, dy = b.y - pointer.y, d = Math.hypot(dx, dy);
+        if (d < REACH && d > 0.01) {
+          const push = (1 - d / REACH) * 2600;
+          ax += dx / d * push; ay += dy / d * push - push * 0.35;               // away, and a little upward
+          b.fright = Math.min(1, b.fright + dt * 4);
+        } else b.fright = Math.max(0, b.fright - dt * 0.8);
+        b.vx = (b.vx + ax * dt) * Math.pow(0.12, dt);
+        b.vy = (b.vy + ay * dt) * Math.pow(0.12, dt);
+        b.x += b.vx * dt; b.y += b.vy * dt;
+      }
+      if (flock.x < -260 || flock.x > W + 260) { flock = null; nextFlock = 7 + Math.random() * 9; }
+    }
+    // precipitation
+    const kind = lapse ? 'none' : precip(live.code);
+    const want = kind === 'none' ? 0 : Math.round((W * H) / (kind === 'snow' ? 9000 : 6000));
+    while (flakes.length < want) flakes.push({ x: Math.random() * W, y: Math.random() * H, ch: kind === 'snow' ? (Math.random() > 0.5 ? '*' : '·') : '|', v: kind === 'snow' ? 18 + Math.random() * 22 : 260 + Math.random() * 120 });
+    if (flakes.length > want) flakes.length = want;
+    const drift = (live.wind || 0) * ((live.windDir != null && live.windDir > 180) ? 1 : -1) * 1.2;
+    for (const f of flakes) {
+      f.y += f.v * dt; f.x += drift * dt + (kind === 'snow' ? Math.sin(t + f.y * 0.02) * 0.3 : 0);
+      if (f.y > H) { f.y = -10; f.x = Math.random() * W; }
+      if (f.x > W) f.x = 0; else if (f.x < 0) f.x = W;
+    }
+  }
+
+  function frame(ts) {
+    rafId = requestAnimationFrame(frame);
+    const now = ts / 1000;
+    const dt = last ? Math.min(0.1, now - last) : 0;
+    last = now; acc += dt;
+    if (acc < 1 / 30) return;
+    update(acc); acc = 0;
+    render(false);
+  }
+  function start() { if (!rafId) { last = 0; acc = 0; rafId = requestAnimationFrame(frame); } }
+  function stop() { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } }
+  function sync() { (!paused && !document.hidden && !reduce.matches) ? start() : (stop(), render(true)); }
+
+  /* time-lapse button */
+  const ff = document.getElementById('ff');
+  function toggleLapse() {
+    if (reduce.matches) return;
+    lapse = !lapse; lapseMin = 0;
+    ff.setAttribute('aria-pressed', String(lapse));
+    updateCard();
+  }
+  ff.addEventListener('click', toggleLapse);
+  if (reduce.matches) ff.hidden = true;
+
+  document.addEventListener('visibilitychange', sync);
+  reduce.addEventListener ? reduce.addEventListener('change', sync) : reduce.addListener(sync);
+  let rt = 0;
+  addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { layout(); if (!rafId) render(true); }, 150); });
+
+  const at = parseFloat(new URLSearchParams(location.search).get('at'));
+  if (!isNaN(at)) previewMin = ((at - labelleTime().hours + 24) % 24) * 60;
+  const liveCard = document.querySelector('.live');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([en]) => {
+      paused = !en.isIntersecting;               // nothing to animate when the sky is off-screen
+      sync();
+    }, { threshold: 0.02 }).observe(document.getElementById('top'));
+    new IntersectionObserver(([en]) => liveCard.classList.toggle('away', en.intersectionRatio > 0.25), { threshold: [0, 0.25, 0.5] })
+      .observe(document.getElementById('below'));
+  }
+  layout();
+  setPhase(labelleTime().hours);
+  render(true);
+  sync();
+  updateCard();
+  fetchWeather();
+  setInterval(fetchWeather, 15 * 60 * 1000);
+  setInterval(updateCard, 20 * 1000);
+  setInterval(() => { if (lapse) updateCard(); }, 500);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { buildStatic(); if (!rafId) render(true); });
+})();
+</script>
+</body>
+</html>
