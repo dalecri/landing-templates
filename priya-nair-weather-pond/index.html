@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Priya Nair · Field Dossier & Pond Survey, Guelph</title>
+  <!-- Google Fonts: Fraunces (editorial field-guide serif) + JetBrains Mono (technical specimen stamps) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Rich Deep-Jade Pond & Rite-in-the-Rain Field Paper Palette */
+      --pond-day: #2F564D;
+      --paper: rgba(249, 246, 236, 0.92);
+      --paper-solid: #F7F3E6;
+      --paper-tint: rgba(242, 237, 221, 0.94);
+      --ink: #162822;
+      --graphite: #455B53;
+      --rule-line: rgba(27, 77, 62, 0.14);
+      --border-ink: rgba(22, 40, 34, 0.26);
+      --moss: #1E5643;
+      --cobalt: #1E4E79;
+      --vermilion: #B84A32;
+      --grid-line: rgba(30, 86, 67, 0.06);
+      --shadow-paper: 0 14px 36px rgba(9, 24, 20, 0.28), 0 3px 8px rgba(9, 24, 20, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--pond-day);
+      color: var(--ink);
+      font-family: 'Fraunces', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: var(--pond-day);
+      line-height: 1.62;
+    }
+
+    /* Crisp surveying-flag focus ring */
+    :focus-visible {
+      outline: 2px solid var(--cobalt) !important;
+      outline-offset: 3px !important;
+    }
+
+    /* 1. FIXED FULL-VIEWPORT DAYLIGHT ASCII POND CANVAS */
+    #pond-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      width: 100vw;
+      height: 100vh;
+      display: block;
+      cursor: crosshair;
+    }
+
+    /* 2. CONTENT WRAPPER: pointer-events: none so clicks pass through open water */
+    .page-wrapper {
+      position: relative;
+      z-index: 1;
+      pointer-events: none;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 24px 120px;
+    }
+
+    /* Restore pointer events on all interactive field sheets & controls */
+    .field-sheet,
+    .specimen-card,
+    .index-slip,
+    .top-bar,
+    .pond-controls,
+    a,
+    button,
+    input,
+    footer {
+      pointer-events: auto;
+    }
+
+    /* Waterproof Field-Paper Surface with subtle millimeter survey grid */
+    .field-sheet {
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 22px 22px;
+      border: 1px solid var(--border-ink);
+      border-radius: 6px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-paper);
+      position: relative;
+    }
+
+    /* Corner brass paper-clip / registration tick decoration */
+    .field-sheet::after {
+      content: "⌜ ⌟";
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--graphite);
+      opacity: 0.45;
+      pointer-events: none;
+    }
+
+    /* STICKY TOP DOSSIER TAB BAR */
+    .top-bar-wrap {
+      position: sticky;
+      top: 14px;
+      z-index: 30;
+      margin-bottom: 42px;
+      pointer-events: none;
+    }
+
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 10px 18px;
+      background: rgba(249, 246, 236, 0.94);
+      border: 1px solid var(--border-ink);
+      border-bottom: 2px solid var(--moss);
+      border-radius: 6px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(18, 40, 32, 0.12);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .brand {
+      font-weight: 600;
+      font-size: 0.84rem;
+      letter-spacing: 0.08em;
+      color: var(--ink);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      white-space: nowrap;
+    }
+
+    .brand-wave {
+      color: var(--moss);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--graphite);
+      text-decoration: none;
+      font-size: 0.76rem;
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: all 0.16s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: rgba(30, 86, 67, 0.07);
+      border-color: rgba(30, 86, 67, 0.18);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 4px;
+      border: 1px solid var(--ink);
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background: var(--moss);
+      color: #F9F6EC;
+      border-color: var(--moss);
+      box-shadow: 2px 2px 0 rgba(22, 40, 34, 0.22);
+    }
+
+    .btn-primary:hover {
+      background: #154031;
+      border-color: #154031;
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.55);
+      color: var(--ink);
+      border-color: var(--border-ink);
+    }
+
+    .btn-ghost:hover {
+      background: #FFFFFF;
+      border-color: var(--moss);
+      color: var(--moss);
+    }
+
+    .top-cta {
+      padding: 6px 13px;
+      font-size: 0.73rem;
+    }
+
+    /* ASYMMETRIC FIELD DESK LAYOUT: Left open water channels so the pond breathes */
+    .desk-stage {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* HERO FIELD DOSSIER (Left-anchored clipboard sheet, leaving right side open water) */
+    .hero {
+      grid-column: 1 / span 8;
+      padding: 34px 36px 30px;
+      margin-bottom: 24px;
+      border-top: 4px solid var(--moss);
+    }
+
+    .dossier-stamp-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed var(--border-ink);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--moss);
+      font-weight: 600;
+    }
+
+    .coord-stamp {
+      font-size: 0.68rem;
+      color: var(--graphite);
+      background: rgba(30, 86, 67, 0.08);
+      padding: 2px 8px;
+      border-radius: 3px;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.95rem, 4vw, 2.85rem);
+      font-weight: 600;
+      line-height: 1.12;
+      margin-bottom: 18px;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+
+    .hero-lede {
+      font-size: 1.04rem;
+      color: var(--ink);
+      margin-bottom: 18px;
+      max-width: 58ch;
+    }
+
+    .persona-quote {
+      font-size: 0.98rem;
+      font-style: italic;
+      color: var(--moss);
+      background: rgba(30, 86, 67, 0.06);
+      border-left: 3px solid var(--moss);
+      padding: 10px 16px;
+      margin-bottom: 22px;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .water-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--graphite);
+      margin-bottom: 18px;
+    }
+
+    .water-hint::before {
+      content: "↳ FIELD NOTE: ";
+      color: var(--vermilion);
+      font-weight: 600;
+    }
+
+    .weather-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--paper-solid);
+      border: 1px solid var(--border-ink);
+      border-left: 3px solid var(--cobalt);
+      border-radius: 4px;
+      padding: 7px 13px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--ink);
+    }
+
+    .weather-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cobalt);
+      box-shadow: 0 0 0 3px rgba(30, 78, 121, 0.18);
+      flex-shrink: 0;
+    }
+
+    /* FLOATING WATER-QUALITY / NOW TELEMETRY SLIP (Right column beside Hero) */
+    .now-aside {
+      grid-column: 9 / span 4;
+      padding: 24px 22px;
+      border-top: 4px solid var(--cobalt);
+      transform: rotate(0.6deg);
+    }
+
+    /* SECTION HEADERS (Stamped Dossier Labels) */
+    .section {
+      grid-column: 1 / -1;
+      margin-top: 28px;
+    }
+
+    .section-header {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--paper-solid);
+      border: 1px solid var(--border-ink);
+      border-left: 4px solid var(--moss);
+      padding: 6px 16px;
+      border-radius: 4px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 12px rgba(17, 38, 31, 0.08);
+      pointer-events: auto;
+    }
+
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--vermilion);
+      letter-spacing: 0.06em;
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    /* 3-CARD GRIDS (Work Specimen Sheets & Field Notes) */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .specimen-card,
+    .index-slip {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .specimen-card:hover,
+    .index-slip:hover {
+      transform: translateY(-3px);
+      border-color: var(--moss);
+      box-shadow: 0 16px 36px rgba(17, 38, 31, 0.18);
+    }
+
+    /* Blueprint / Cyanotype pond quadrat thumbnail */
+    .ascii-thumb {
+      background: #E2ECE8;
+      border: 1px solid rgba(30, 86, 67, 0.25);
+      border-radius: 4px;
+      padding: 10px 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      line-height: 1.35;
+      color: var(--moss);
+      margin-bottom: 16px;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .ascii-thumb .koi-accent {
+      color: var(--vermilion);
+      font-weight: 600;
+    }
+
+    .card-title {
+      font-size: 1.14rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+
+    .card-desc {
+      font-size: 0.92rem;
+      color: var(--graphite);
+      margin-bottom: 18px;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--moss);
+      border-top: 1px dashed var(--border-ink);
+      padding-top: 10px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    /* Field Note Index Slips (Lined Notebook Look) */
+    .index-slip {
+      background-color: var(--paper-tint);
+      background-image: repeating-linear-gradient(
+        transparent,
+        transparent 25px,
+        var(--rule-line) 25px,
+        var(--rule-line) 26px
+      );
+      border-top: 3px solid var(--vermilion);
+    }
+
+    .note-date {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--vermilion);
+      background: rgba(184, 74, 50, 0.1);
+      padding: 2px 8px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* NOW LIST INSIDE TELEMETRY ASIDE */
+    .now-heading {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--cobalt);
+      border-bottom: 1px dashed var(--border-ink);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .now-list {
+      list-style: none;
+      display: grid;
+      gap: 11px;
+    }
+
+    .now-list li {
+      font-size: 0.85rem;
+      color: var(--ink);
+      line-height: 1.45;
+      padding-left: 14px;
+      position: relative;
+    }
+
+    .now-list li::before {
+      content: "•";
+      color: var(--cobalt);
+      font-weight: 700;
+      position: absolute;
+      left: 0;
+    }
+
+    .now-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.74rem;
+      color: var(--moss);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+
+    /* BOTTOM SPLIT: ABOUT BIO CARD (7 cols) + TIMELINE LOG (5 cols) */
+    .about-panel {
+      grid-column: 1 / span 7;
+      padding: 28px 30px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .ascii-portrait {
+      background: #E2ECE8;
+      border: 1px solid rgba(30, 86, 67, 0.28);
+      border-radius: 4px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      line-height: 1.28;
+      color: var(--moss);
+      white-space: pre;
+      margin: 0;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .about-copy p {
+      font-size: 0.95rem;
+      color: var(--ink);
+      margin-bottom: 12px;
+    }
+
+    .about-copy p:last-child {
+      margin-bottom: 0;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--graphite);
+      font-size: 0.75rem;
+    }
+
+    /* SECTION 05: THE LONG WAY HERE (Core-Sample Logbook) */
+    .path-panel {
+      grid-column: 8 / span 5;
+      padding: 26px 28px;
+    }
+
+    .path-list {
+      list-style: none;
+      border-left: 2px solid var(--moss);
+      margin-left: 6px;
+      padding-left: 20px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .path-item {
+      position: relative;
+      font-size: 0.88rem;
+      color: var(--ink);
+      line-height: 1.45;
+    }
+
+    .path-item::before {
+      content: "";
+      position: absolute;
+      left: -26px;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--paper-solid);
+      border: 2px solid var(--moss);
+    }
+
+    .path-year {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--vermilion);
+      margin-right: 6px;
+    }
+
+    /* CONTACT POSTCARD CLOSE */
+    .contact-panel {
+      grid-column: 3 / span 8;
+      margin-top: 28px;
+      margin-bottom: 36px;
+      padding: 32px 34px;
+      text-align: center;
+      border: 2px solid var(--border-ink);
+    }
+
+    .contact-panel h2 {
+      font-size: 1.55rem;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+
+    .contact-panel p {
+      font-size: 0.95rem;
+      color: var(--graphite);
+      max-width: 52ch;
+      margin: 0 auto 20px;
+    }
+
+    .email-pill {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #F9F6EC;
+      background: var(--moss);
+      border: 1px solid var(--moss);
+      padding: 9px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.84rem;
+      box-shadow: 3px 3px 0 rgba(22, 40, 34, 0.2);
+      transition: background 0.18s ease, transform 0.15s ease;
+    }
+
+    .email-pill:hover {
+      background: #154031;
+      transform: translateY(-1px);
+    }
+
+    /* FOOTER STAMP */
+    .site-footer {
+      grid-column: 1 / -1;
+      padding: 16px 22px;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--graphite);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* BOTTOM-RIGHT BRASS / PAPER POND CONTROLS PILL */
+    .pond-controls {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 10px;
+      background: rgba(249, 246, 236, 0.95);
+      border: 1px solid var(--border-ink);
+      border-bottom: 2px solid var(--moss);
+      border-radius: 6px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(17, 38, 31, 0.18);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+    }
+
+    .controls-label {
+      color: var(--moss);
+      font-weight: 600;
+      padding: 0 6px 0 4px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-size: 0.65rem;
+    }
+
+    .ctrl-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--graphite);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 3px 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .ctrl-btn:hover {
+      color: var(--ink);
+      background: rgba(30, 86, 67, 0.08);
+    }
+
+    .ctrl-btn[aria-pressed="true"] {
+      color: #F9F6EC;
+      background: var(--moss);
+      border-color: var(--moss);
+      font-weight: 600;
+    }
+
+    .ctrl-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border-ink);
+      margin: 0 3px;
+    }
+
+    /* RESPONSIVE BREAKPOINTS */
+    @media (max-width: 920px) {
+      .hero,
+      .now-aside,
+      .about-panel,
+      .path-panel,
+      .contact-panel {
+        grid-column: 1 / -1;
+      }
+      .now-aside {
+        transform: none;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .about-panel {
+        grid-template-columns: 1fr;
+      }
+      .ascii-portrait {
+        justify-self: start;
+      }
+      .hero {
+        padding: 24px 20px;
+      }
+      .site-footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links {
+        display: none;
+      }
+      .page-wrapper {
+        padding: 12px 14px 115px;
+      }
+      .pond-controls {
+        left: 12px;
+        right: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED FULL-VIEWPORT DAYLIGHT ASCII POND CANVAS (Decorative, aria-hidden) -->
+  <canvas id="pond-canvas" aria-hidden="true"></canvas>
+
+  <!-- FOREGROUND FIELD NOTEBOOK WRAPPER -->
+  <div class="page-wrapper">
+
+    <!-- STICKY TOP FIELD BAR -->
+    <div class="top-bar-wrap">
+      <header class="top-bar">
+        <a href="#top" class="brand">
+          <span>PRIYA NAIR</span>
+          <span class="brand-wave" aria-hidden="true">≋</span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <ul class="nav-links">
+            <li><a href="#work">01.Work</a></li>
+            <li><a href="#notes">02.Notes</a></li>
+            <li><a href="#now">03.Now</a></li>
+            <li><a href="#about">04.About</a></li>
+            <li><a href="#path">05.Path</a></li>
+          </ul>
+        </nav>
+        <a href="#contact" class="btn btn-primary top-cta">Write to me</a>
+      </header>
+    </div>
+
+    <main id="top" class="desk-stage">
+      <!-- HERO FIELD CLIPBOARD SHEET -->
+      <section class="hero field-sheet" aria-labelledby="hero-heading">
+        <div class="dossier-stamp-row">
+          <p class="eyebrow">FRESHWATER ECOLOGIST · GUELPH, ONTARIO</p>
+          <span class="coord-stamp">43.5448° N, 80.2482° W · WATERSHED DOSSIER</span>
+        </div>
+        <h1 id="hero-heading">Ponds keep the weather's diary.</h1>
+        <p class="hero-lede">
+          I'm Priya Nair. I study the stormwater ponds scattered through Guelph: unglamorous, hardworking little ecosystems that catch the city's rain and quietly fill up with frogs, beetles, herons, and data. This page is my portfolio and field notebook. The pond behind it is showing Guelph's actual weather right now, which is usually the first thing I'd tell you anyway.
+        </p>
+        <p class="persona-quote">
+          “Every pond in this city is a weather diary that learned to hold water.”
+        </p>
+        <div class="hero-actions">
+          <a href="#work" class="btn btn-primary">See the work</a>
+          <a href="#notes" class="btn btn-ghost">Read the field notes</a>
+        </div>
+        <p class="water-hint">click the water. Somebody comes to look.</p>
+        <div class="weather-chip" aria-live="polite">
+          <span class="weather-dot" aria-hidden="true"></span>
+          <span id="weather-chip-text">Guelph now: checking the sky over Speed River…</span>
+        </div>
+      </section>
+
+      <!-- SECTION 03: NOW (Pinned right beside the Hero like a live field-status slip) -->
+      <aside id="now" class="now-aside field-sheet" aria-labelledby="now-title">
+        <div class="now-heading">
+          <span id="now-title">03 // Now</span>
+          <span>OCT LOG</span>
+        </div>
+        <ul class="now-list">
+          <li>
+            <strong class="now-label">Sampling:</strong> the autumn drawdown set, before freeze-up.
+          </li>
+          <li>
+            <strong class="now-label">Listening:</strong> nothing calls in October; the recorders are in for repair and the quiet is data too.
+          </li>
+          <li>
+            <strong class="now-label">Writing:</strong> the After the Rain write-up, month three, getting shorter and better.
+          </li>
+          <li>
+            <strong class="now-label">Reading:</strong> a history of municipal drainage, for fun, which surprises everyone.
+          </li>
+          <li>
+            <strong class="now-label">Waiting for:</strong> the first real storm of the season, professionally and personally.
+          </li>
+        </ul>
+      </aside>
+
+      <!-- SECTION 01: WORK SPECIMEN RECORDS -->
+      <section id="work" class="section" aria-labelledby="work-title">
+        <div class="section-header">
+          <span class="section-num">01</span>
+          <h2 id="work-title" class="section-title">Work &amp; Survey Records</h2>
+        </div>
+
+        <div class="card-grid">
+          <article class="specimen-card field-sheet">
+            <div>
+              <pre class="ascii-thumb" aria-hidden="true">  |   .  |  °  .  |
+ ·  ( o )  .  |  (° )
+~ ~ ~ <span class="koi-accent">&gt;&lt;(((&gt;</span> ~ ~ ~ ~
+  .  °   .   ( o )  ·</pre>
+              <h3 class="card-title">After the Rain</h3>
+              <p class="card-desc">
+                Post-storm sampling across 14 city ponds: what a 40mm rainfall actually delivers to a pond, and in what order.
+              </p>
+            </div>
+            <footer class="card-meta">field study · 2023–present</footer>
+          </article>
+
+          <article class="specimen-card field-sheet">
+            <div>
+              <pre class="ascii-thumb" aria-hidden="true">  (( · ))   .    (( ° ))
+ ·  <span class="koi-accent">@..@</span>  ~ ~  ·   ( o )
+~ ~ (----) ~ ~ <span class="koi-accent">&lt;)))&gt;&lt;</span> ~
+  .  °   (( · ))   .   ·</pre>
+              <h3 class="card-title">The Frog Call Index</h3>
+              <p class="card-desc">
+                A spring listening survey: volunteers, a free app, and forty evenings of counting who is singing where.
+              </p>
+            </div>
+            <footer class="card-meta">community science · 2024, 2025</footer>
+          </article>
+
+          <article class="specimen-card field-sheet">
+            <div>
+              <pre class="ascii-thumb" aria-hidden="true">[DRAIN #04]══╗  .  ·  °
+             ╚═► ( o ) ~
+~ ~  .  <span class="koi-accent">&gt;&lt;((°&gt;</span>  ~ ~ ( · )
+[DRAIN #09]════► ° . ~ ~</pre>
+              <h3 class="card-title">The Inlet Atlas</h3>
+              <p class="card-desc">
+                Every storm drain feeding three ponds, mapped and photographed, so 'somewhere upstream' becomes an address.
+              </p>
+            </div>
+            <footer class="card-meta">mapping · 2022</footer>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECTION 02: FIELD NOTES -->
+      <section id="notes" class="section" aria-labelledby="notes-title">
+        <div class="section-header">
+          <span class="section-num">02</span>
+          <h2 id="notes-title" class="section-title">Field notes</h2>
+        </div>
+
+        <div class="card-grid">
+          <article class="index-slip field-sheet">
+            <div>
+              <p class="note-date">Oct 21</p>
+              <h3 class="card-title">First frost, first skim</h3>
+              <p class="card-desc">
+                What a millimetre of ice changes: the surface stops taking wind notes for three hours at dawn, dissolved oxygen holds its breath around the cattail stems, and the diving beetles act like somebody locked the front door.
+              </p>
+            </div>
+            <footer class="card-meta">pond #07 · 06:40 EST</footer>
+          </article>
+
+          <article class="index-slip field-sheet">
+            <div>
+              <p class="note-date">Sep 30</p>
+              <h3 class="card-title">The heron has a route</h3>
+              <p class="card-desc">
+                One bird, five ponds, a timetable you could set a watch by. He works the riprap stone by the south culvert at 7:15, judges my waders at 7:20, and lifts off for Clair Road before my conductivity probe settles.
+              </p>
+            </div>
+            <footer class="card-meta">south-end circuit · overcast</footer>
+          </article>
+
+          <article class="index-slip field-sheet">
+            <div>
+              <p class="note-date">Aug 12</p>
+              <h3 class="card-title">On loving unglamorous water</h3>
+              <p class="card-desc">
+                Why the pond behind the mall matters more, ecologically, than the postcard lake: it takes the road salt, the tire dust, and the sudden warm July cloudburst, and still manages to raise chorus frogs by June.
+              </p>
+            </div>
+            <footer class="card-meta">essay · notebook XIV</footer>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECTION 04: ABOUT (Left 7 columns) -->
+      <section id="about" class="about-panel field-sheet" aria-labelledby="about-title">
+        <pre class="ascii-portrait" aria-label="ASCII illustration of Priya holding a pond sampling dip-net">   ,---.
+  ( o.o )  _
+   | - |  / \
+  /|___|\| o |
+   |   |  \_/
+  /  |  \  |
+ |___|___| |
+ ~~~~~~~~~~'~~</pre>
+        <div class="about-copy">
+          <div class="dossier-stamp-row" style="margin-bottom: 12px; padding-bottom: 8px;">
+            <span class="section-num">04</span>
+            <h2 id="about-title" class="section-title">About the Researcher</h2>
+          </div>
+          <p>
+            Priya Nair grew up in Mississauga, downstream of everything, and got her start counting frogs on a school trip she was supposed to be supervising. She did a master's on constructed wetlands at Guelph, stayed for the ponds, and now splits her time between fieldwork for the city's stormwater program and the volunteer survey she cannot stop improving. She owns four pairs of waders, one good net, and strong opinions about storm drains, which she will share at very little provocation.
+          </p>
+          <p>
+            34 · Guelph, Ontario · Field notebook &amp; personal archive
+          </p>
+        </div>
+      </section>
+
+      <!-- SECTION 05: THE LONG WAY HERE (Right 5 columns beside About) -->
+      <section id="path" class="path-panel field-sheet" aria-labelledby="path-title">
+        <div class="dossier-stamp-row" style="margin-bottom: 14px; padding-bottom: 8px;">
+          <span class="section-num">05</span>
+          <h2 id="path-title" class="section-title">The long way here</h2>
+        </div>
+        <ol class="path-list">
+          <li class="path-item">
+            <span class="path-year">2013 —</span>First frog count, age 21: hooked by a spring peeper chorus.
+          </li>
+          <li class="path-item">
+            <span class="path-year">2017 —</span>Master's, University of Guelph: constructed wetlands and their uninvited guests.
+          </li>
+          <li class="path-item">
+            <span class="path-year">2019 —</span>First stormwater pond survey for the city.
+          </li>
+          <li class="path-item">
+            <span class="path-year">2022 —</span>The Inlet Atlas, drawn drain by drain.
+          </li>
+          <li class="path-item">
+            <span class="path-year">2024 —</span>The Frog Call Index goes public; 300 volunteers, one very surprised heron.
+          </li>
+        </ol>
+      </section>
+
+      <!-- CONTACT DISPATCH CARD -->
+      <section id="contact" class="contact-panel field-sheet" aria-labelledby="contact-title">
+        <h2 id="contact-title">Write to Priya.</h2>
+        <p>
+          For pond questions, frog reports, volunteer nights, or arguments about storm drains: <strong>hello@priyanair.pond</strong> (a fictional address for this prototype). She answers between rain events.
+        </p>
+        <a href="mailto:hello@priyanair.pond" class="email-pill">hello@priyanair.pond</a>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="site-footer field-sheet">
+        <p>Design prototype. Priya Nair is fictional; the weather is real, via Open-Meteo. Pond adapted from the Weather Pond piece.</p>
+        <p>© 2026 Priya Nair (fictional) · Guelph, Ontario · Filed by weather.</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- BOTTOM-RIGHT POND CONTROLS -->
+  <aside class="pond-controls" aria-label="Pond weather controls">
+    <span class="controls-label">Pond</span>
+    <button type="button" class="ctrl-btn weather-btn" data-mode="live" aria-pressed="true">Live</button>
+    <button type="button" class="ctrl-btn weather-btn" data-mode="clear" aria-pressed="false">Clear</button>
+    <button type="button" class="ctrl-btn weather-btn" data-mode="rain" aria-pressed="false">Rain</button>
+    <button type="button" class="ctrl-btn weather-btn" data-mode="snow" aria-pressed="false">Snow</button>
+    <button type="button" class="ctrl-btn weather-btn" data-mode="storm" aria-pressed="false">Storm</button>
+    <span class="ctrl-divider" aria-hidden="true"></span>
+    <button type="button" id="pause-btn" class="ctrl-btn" aria-pressed="false">Pause</button>
+  </aside>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =====================================================================
+         1. WEATHER STATE & OPEN-METEO FETCH FOR GUELPH, ONTARIO
+         ===================================================================== */
+      // Guelph, Ontario: latitude 43.5448, longitude -80.2482, timezone America/Toronto
+      const GUELPH_WEATHER_URL =
+        'https://api.open-meteo.com/v1/forecast?latitude=43.5448&longitude=-80.2482&current=temperature_2m,weather_code,wind_speed_10m&timezone=America%2FToronto';
+
+      const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let prefersReducedMotion = reducedMotionQuery.matches;
+      let userPaused = false;
+      let isPageHidden = document.hidden;
+
+      // Active control selection: 'live' | 'clear' | 'rain' | 'snow' | 'storm'
+      let selectedControl = 'live';
+
+      // Engine mode: 'clear' | 'cloudy' | 'rain' | 'snow' | 'storm'
+      let activeEngineMode = 'clear';
+
+      let fetchedWeather = {
+        ok: false,
+        tempC: null,
+        windKmh: 0,
+        code: 0,
+        conditionText: 'calm clear',
+        engineMode: 'clear'
+      };
+
+      const weatherChipText = document.getElementById('weather-chip-text');
+      const weatherBtns = document.querySelectorAll('.weather-btn');
+      const pauseBtn = document.getElementById('pause-btn');
+
+      function mapWmoCodeToPond(wmo, windKmh) {
+        if (wmo >= 95) {
+          return { conditionText: 'thunderstorm', engineMode: 'storm' };
+        }
+        if ((wmo >= 71 && wmo <= 77) || wmo === 85 || wmo === 86) {
+          return { conditionText: 'snowfall', engineMode: 'snow' };
+        }
+        if ((wmo >= 51 && wmo <= 67) || (wmo >= 80 && wmo <= 82)) {
+          const desc = (wmo === 65 || wmo === 82) ? 'heavy rain' : 'light rain';
+          return { conditionText: desc, engineMode: 'rain' };
+        }
+        if (wmo === 45 || wmo === 48) {
+          return { conditionText: 'misty fog', engineMode: 'cloudy' };
+        }
+        if (wmo === 3) {
+          return { conditionText: 'overcast', engineMode: 'cloudy' };
+        }
+        if (wmo === 2) {
+          return { conditionText: 'partly cloudy', engineMode: 'cloudy' };
+        }
+        if (wmo === 1) {
+          return { conditionText: 'mainly clear', engineMode: 'clear' };
+        }
+        if (windKmh >= 28) {
+          return { conditionText: 'clear and breezy', engineMode: 'clear' };
+        }
+        return { conditionText: 'clear sky', engineMode: 'clear' };
+      }
+
+      function updateWeatherChip() {
+        if (selectedControl !== 'live') {
+          weatherChipText.textContent =
+            'Guelph pond override: ' + selectedControl + ' (by hand). Click Live for actual sky.';
+          return;
+        }
+        if (fetchedWeather.ok) {
+          weatherChipText.textContent =
+            'Guelph now: ' + Math.round(fetchedWeather.tempC) + '°C, ' +
+            fetchedWeather.conditionText + '. The pond approves.';
+        } else {
+          weatherChipText.textContent =
+            'Guelph now: unreachable, so the pond is calm. So is Priya.';
+        }
+      }
+
+      async function fetchGuelphWeather() {
+        try {
+          const res = await fetch(GUELPH_WEATHER_URL, { cache: 'no-store' });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          if (!data || !data.current) throw new Error('Invalid response');
+
+          const temp = data.current.temperature_2m;
+          const code = data.current.weather_code;
+          const wind = data.current.wind_speed_10m || 0;
+          const mapped = mapWmoCodeToPond(code, wind);
+
+          fetchedWeather = {
+            ok: true,
+            tempC: temp,
+            windKmh: wind,
+            code: code,
+            conditionText: mapped.conditionText,
+            engineMode: mapped.engineMode
+          };
+        } catch (_) {
+          fetchedWeather = {
+            ok: false,
+            tempC: null,
+            windKmh: 0,
+            code: 0,
+            conditionText: 'calm clear',
+            engineMode: 'clear'
+          };
+        }
+
+        updateWeatherChip();
+        if (selectedControl === 'live') {
+          applyEngineWeather(fetchedWeather.engineMode);
+        }
+      }
+
+      /* =====================================================================
+         2. DAYLIGHT MINERAL-JADE ASCII POND ENGINE
+         ===================================================================== */
+      const canvas = document.getElementById('pond-canvas');
+      const ctx = canvas.getContext('2d');
+
+      const CELL_W = 14;
+      const CELL_H = 21;
+      let cols = 80;
+      let rows = 40;
+      let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      const ripples = [];
+      const koiList = [];
+      const lilyPads = [];
+      const particles = [];
+
+      // Soft lightning pulse for storms (never under prefers-reduced-motion)
+      let lastLightningAt = -15000;
+      let lightningAlpha = 0;
+
+      function initPondScene() {
+        lilyPads.length = 0;
+        const padCount = Math.max(7, Math.floor((cols * rows) / 520));
+        for (let i = 0; i < padCount; i++) {
+          lilyPads.push({
+            x: 4 + Math.random() * Math.max(8, cols - 8),
+            y: 3 + Math.random() * Math.max(8, rows - 6),
+            r: 2.1 + Math.random() * 1.4,
+            notch: Math.random() * Math.PI * 2,
+            hasBloom: i % 3 === 0
+          });
+        }
+
+        if (koiList.length === 0) {
+          // Classic Weather-Pond High-Contrast Koi Palettes
+          const koiPalettes = [
+            { name: 'beni-red', head: '#FF5A36', body: '#FF4522', pattern: '#FF784E', tail: '#FF9E6D', shadow: '#1B3831' },
+            { name: 'yamabuki-gold', head: '#FFC436', body: '#FFB11B', pattern: '#FFD966', tail: '#FFE590', shadow: '#1B3831' },
+            { name: 'kohaku', head: '#FF4D2E', body: '#FFF9EB', pattern: '#FF4D2E', tail: '#FFF9EB', shadow: '#1B3831' },
+            { name: 'persimmon', head: '#FF7733', body: '#F26422', pattern: '#FFA057', tail: '#FFC085', shadow: '#1B3831' },
+            { name: 'shiro-utsuri', head: '#FFF7E8', body: '#1A2623', pattern: '#FFF7E8', tail: '#FF5A36', shadow: '#1B3831' },
+            { name: ' platinum-ogon', head: '#FFFDF7', body: '#E8F2EE', pattern: '#FFD166', tail: '#FFFFFF', shadow: '#1B3831' },
+            { name: 'tancho', head: '#FF3B24', body: '#FFF9EB', pattern: '#FFF9EB', tail: '#FFD8C9', shadow: '#1B3831' }
+          ];
+          for (let i = 0; i < 8; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            koiList.push({
+              x: 8 + Math.random() * Math.max(10, cols - 16),
+              y: 6 + Math.random() * Math.max(10, rows - 12),
+              vx: Math.cos(angle) * 0.13,
+              vy: Math.sin(angle) * 0.08,
+              speed: 0.11 + Math.random() * 0.04,
+              phase: Math.random() * Math.PI * 2,
+              palette: koiPalettes[i % koiPalettes.length],
+              depth: 0.15, // 0 = bright surface koi, 1 = deep shadow
+              wakeTimer: 0,
+              targetX: null,
+              targetY: null,
+              curiousFrames: 0
+            });
+          }
+        }
+      }
+
+      function syncParticles(mode) {
+        const target =
+          mode === 'storm' ? 110 :
+          mode === 'rain' ? 70 :
+          mode === 'snow' ? 55 : 0;
+
+        while (particles.length < target) {
+          particles.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            vy: mode === 'snow' ? (0.45 + Math.random() * 0.5) : (6.0 + Math.random() * 4.5),
+            vx: mode === 'storm' ? -2.0 : (mode === 'rain' ? -0.4 : 0),
+            drift: Math.random() * Math.PI * 2,
+            alpha: 0.25 + Math.random() * 0.55,
+            char: mode === 'snow' ? (Math.random() > 0.5 ? '*' : '•') : (mode === 'storm' ? '/' : '|'),
+            mode: mode
+          });
+        }
+        if (particles.length > target) {
+          particles.length = target;
+        }
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.mode = mode;
+          p.vy = mode === 'snow' ? (0.45 + Math.random() * 0.5) : (6.0 + Math.random() * 4.5);
+          p.vx = mode === 'storm' ? -2.0 : (mode === 'rain' ? -0.4 : 0);
+          p.char = mode === 'snow' ? (Math.random() > 0.5 ? '*' : '•') : (mode === 'storm' ? '/' : '|');
+        }
+      }
+
+      function applyEngineWeather(mode) {
+        activeEngineMode = mode;
+        syncParticles(mode);
+        if (prefersReducedMotion || userPaused) {
+          renderSingleFrame();
+        }
+      }
+
+      function spawnRipple(colX, rowY, maxR, strength) {
+        if (ripples.length > 45) ripples.shift();
+        ripples.push({
+          x: colX,
+          y: rowY,
+          r: 0.35,
+          maxR: maxR || (6.5 + Math.random() * 4.5),
+          speed: 0.15 + Math.random() * 0.05,
+          strength: strength || 1.0
+        });
+      }
+
+      // Clicking the water casts a ripple and summons a curious koi shadow toward it
+      canvas.addEventListener('pointerdown', function (e) {
+        const c = e.clientX / CELL_W;
+        const r = e.clientY / CELL_H;
+        spawnRipple(c, r, 11.5, 1.35);
+
+        // Summon nearest 2 koi to investigate the ripple
+        const byDist = koiList.slice().sort(function (a, b) {
+          return Math.hypot(a.x - c, a.y - r) - Math.hypot(b.x - c, b.y - r);
+        });
+
+        for (let i = 0; i < Math.min(2, byDist.length); i++) {
+          byDist[i].targetX = c + (i === 0 ? 0 : (Math.random() * 3 - 1.5));
+          byDist[i].targetY = r + (i === 0 ? 0 : (Math.random() * 2.5 - 1.25));
+          byDist[i].curiousFrames = 240;
+        }
+
+        if (prefersReducedMotion || userPaused) {
+          renderSingleFrame();
+        }
+      });
+
+      function resizePond() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        cols = Math.ceil(w / CELL_W) + 1;
+        rows = Math.ceil(h / CELL_H) + 1;
+        initPondScene();
+
+        if (prefersReducedMotion || userPaused) {
+          renderSingleFrame();
+        }
+      }
+
+      let resizeTimeout = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(resizePond, 130);
+      });
+
+      function updatePond(now) {
+        const mode = activeEngineMode;
+
+        // Weather-driven surface ripples
+        if (mode === 'rain' && Math.random() < 0.42) {
+          spawnRipple(Math.random() * cols, Math.random() * rows, 4.8, 0.8);
+        } else if (mode === 'storm') {
+          if (Math.random() < 0.78) {
+            spawnRipple(Math.random() * cols, Math.random() * rows, 6.2, 1.1);
+          }
+          // Subtle storm lightning pulse (never under prefers-reduced-motion, at most once every 9s)
+          if (!prefersReducedMotion && now - lastLightningAt > 9200 && Math.random() < 0.008) {
+            lightningAlpha = 0.16;
+            lastLightningAt = now;
+          }
+        } else if (mode === 'snow' && Math.random() < 0.09) {
+          spawnRipple(Math.random() * cols, Math.random() * rows, 3.2, 0.45);
+        }
+
+        if (lightningAlpha > 0) {
+          lightningAlpha = Math.max(0, lightningAlpha - 0.007);
+        }
+
+        // Expand and fade ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rp = ripples[i];
+          rp.r += rp.speed;
+          if (rp.r >= rp.maxR) {
+            ripples.splice(i, 1);
+          }
+        }
+
+        // Update swimming ASCII koi
+        const speedMod =
+          mode === 'storm' ? 1.45 :
+          mode === 'snow' ? 0.58 : 1.0;
+
+        const baseDepth =
+          mode === 'snow' ? 0.55 :
+          mode === 'storm' ? 0.35 :
+          mode === 'clear' ? 0.08 : 0.16;
+
+        for (let i = 0; i < koiList.length; i++) {
+          const k = koiList[i];
+          k.phase += 0.16 * speedMod;
+          k.wakeTimer++;
+
+          // Occasional subtle wake ripple from swimming koi near the surface
+          if (k.depth < 0.3 && k.wakeTimer % 52 === 0 && Math.random() < 0.45) {
+            spawnRipple(k.x, k.y, 2.8, 0.32);
+          }
+
+          if (k.curiousFrames > 0 && k.targetX !== null) {
+            k.curiousFrames--;
+            const dx = k.targetX - k.x;
+            const dy = k.targetY - k.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist > 1.6) {
+              const targetAngle = Math.atan2(dy, dx);
+              const curAngle = Math.atan2(k.vy, k.vx);
+              let delta = targetAngle - curAngle;
+              while (delta > Math.PI) delta -= Math.PI * 2;
+              while (delta < -Math.PI) delta += Math.PI * 2;
+              const nextAngle = curAngle + delta * 0.09;
+              const spd = k.speed * 1.55;
+              k.vx = Math.cos(nextAngle) * spd;
+              k.vy = Math.sin(nextAngle) * spd * 0.72;
+            } else {
+              // Arrival ripple when koi noses the surface
+              if (k.curiousFrames === 44) {
+                spawnRipple(k.x, k.y, 5.2, 0.75);
+              }
+              k.curiousFrames = Math.min(k.curiousFrames, 44);
+            }
+            // Curious koi rises right to the sunlit surface
+            k.depth += (0.0 - k.depth) * 0.09;
+          } else {
+            k.targetX = null;
+            k.targetY = null;
+            const turn = (Math.random() - 0.5) * 0.055;
+            const angle = Math.atan2(k.vy, k.vx) + turn;
+            const spd = k.speed * speedMod;
+            k.vx = Math.cos(angle) * spd;
+            k.vy = Math.sin(angle) * spd * 0.72;
+            k.depth += (baseDepth - k.depth) * 0.035;
+          }
+
+          k.x += k.vx;
+          k.y += k.vy;
+
+          const pad = 4;
+          if (k.x < pad) { k.x = pad; k.vx = Math.abs(k.vx); }
+          if (k.x > cols - pad) { k.x = cols - pad; k.vx = -Math.abs(k.vx); }
+          if (k.y < pad) { k.y = pad; k.vy = Math.abs(k.vy); }
+          if (k.y > rows - pad) { k.y = rows - pad; k.vy = -Math.abs(k.vy); }
+        }
+
+        // Update precipitation particles
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          if (p.mode === 'snow') {
+            p.drift += 0.025;
+            p.x += Math.sin(p.drift) * 0.6;
+            p.y += p.vy;
+          } else {
+            p.x += p.vx;
+            p.y += p.vy;
+          }
+          if (p.y > h) {
+            p.y = -12;
+            p.x = Math.random() * w;
+          }
+          if (p.x < -15) p.x = w + 10;
+          if (p.x > w + 15) p.x = -10;
+        }
+      }
+
+      function drawPond(now) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const mode = activeEngineMode;
+
+        // Deep Mineral-Teal Pond Water Palette so bright ASCII koi & ripples pop clearly
+        let bg = '#2F564D';
+        if (mode === 'clear') bg = '#2D594F';
+        else if (mode === 'cloudy') bg = '#2B4E46';
+        else if (mode === 'rain') bg = '#25453F';
+        else if (mode === 'snow') bg = '#315254';
+        else if (mode === 'storm') bg = '#1D3733';
+
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, w, h);
+
+        // Soft lightning brightness pulse
+        if (lightningAlpha > 0 && !prefersReducedMotion) {
+          ctx.fillStyle = 'rgba(245, 252, 248, ' + lightningAlpha.toFixed(3) + ')';
+          ctx.fillRect(0, 0, w, h);
+        }
+
+        ctx.font = '13px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const t = (prefersReducedMotion || userPaused) ? 1.0 : now * 0.0014;
+
+        // 1. ASCII Pond Grid: Ripples & Ambient Water Shimmer
+        for (let r = 0; r < rows; r++) {
+          const py = r * CELL_H + CELL_H * 0.5;
+          for (let c = 0; c < cols; c++) {
+            const px = c * CELL_W + CELL_W * 0.5;
+
+            // Check expanding ripples
+            let rippleAmp = 0;
+            for (let i = 0; i < ripples.length; i++) {
+              const rp = ripples[i];
+              const dist = Math.hypot(c - rp.x, (r - rp.y) * 1.45);
+              const delta = Math.abs(dist - rp.r);
+              if (delta < 0.85) {
+                const fade = (1 - rp.r / rp.maxR) * rp.strength;
+                rippleAmp += (1 - delta / 0.85) * fade;
+              }
+            }
+
+            if (rippleAmp > 0.14) {
+              const rCh = rippleAmp > 0.62 ? 'o' : (rippleAmp > 0.34 ? '°' : '·');
+              const a = Math.min(0.92, 0.35 + rippleAmp * 0.65);
+              ctx.fillStyle = 'rgba(188, 236, 224, ' + a.toFixed(2) + ')';
+              ctx.fillText(rCh, px, py);
+              continue;
+            }
+
+            // Ambient water shimmer
+            if ((c + r * 3) % 7 === 0) {
+              const wave = Math.sin(c * 0.38 + r * 0.48 + t);
+              let ch = ' ';
+              let col = 'rgba(164, 218, 204, 0.20)';
+
+              if (mode === 'clear') {
+                ch = wave > 0.52 ? '·' : ' ';
+                col = 'rgba(180, 232, 218, 0.24)';
+              } else if (mode === 'storm') {
+                ch = wave > 0.15 ? '≈' : '~';
+                col = 'rgba(165, 215, 208, 0.30)';
+              } else if (mode === 'snow') {
+                ch = wave > 0.45 ? '·' : ' ';
+                col = 'rgba(205, 235, 240, 0.24)';
+              } else {
+                ch = wave > 0.22 ? '~' : '·';
+                col = 'rgba(168, 220, 208, 0.24)';
+              }
+
+              if (ch !== ' ') {
+                ctx.fillStyle = col;
+                ctx.fillText(ch, px, py);
+              }
+            }
+          }
+        }
+
+        // 2. Swimming Weather-Pond ASCII Koi (Drawn UNDER lily pads so fish can swim beneath foliage)
+        // Classic Weather-Pond multi-character fish anatomy: ><(((º> or <º)))>< with undulating spine & pectoral fins
+        for (let i = 0; i < koiList.length; i++) {
+          const k = koiList[i];
+          const heading = Math.atan2(k.vy, k.vx);
+          const dirX = Math.cos(heading);
+          const dirY = Math.sin(heading);
+          const perpX = -dirY;
+          const perpY = dirX;
+          const facingRight = dirX >= 0;
+
+          // Classic directional ASCII brackets matching the fish's swimming direction
+          const ribChar = facingRight ? '(' : ')';
+          const tailForkChar = facingRight ? '<' : '>';
+          const noseChar = facingRight ? '>' : '<';
+          const finLeftChar = facingRight ? '/' : '\\';
+          const finRightChar = facingRight ? '\\' : '/';
+
+          // Spine segments from nose (0) to tail tip (6) -> forms ><(((º> or <º)))><
+          const spine = [
+            { ch: noseChar, dist: 0.0, wag: 0.04, part: 'head' },
+            { ch: 'º', dist: 0.85, wag: 0.08, part: 'head' },
+            { ch: ribChar, dist: 1.70, wag: 0.18, part: 'body', hasFins: true },
+            { ch: ribChar, dist: 2.50, wag: 0.32, part: 'pattern' },
+            { ch: ribChar, dist: 3.30, wag: 0.48, part: 'body' },
+            { ch: tailForkChar, dist: 4.15, wag: 0.68, part: 'tail' },
+            { ch: '~', dist: 5.00, wag: 0.92, part: 'tail' }
+          ];
+
+          ctx.save();
+          ctx.font = '600 15px "JetBrains Mono", monospace';
+
+          // First pass: soft underwater shadow offset slightly down-right
+          ctx.globalAlpha = Math.max(0.18, 0.42 - k.depth * 0.25);
+          ctx.fillStyle = k.palette.shadow;
+          for (let s = 0; s < spine.length; s++) {
+            const seg = spine[s];
+            const wag = (prefersReducedMotion || userPaused) ? 0 : Math.sin(k.phase - s * 0.65) * seg.wag;
+            const gx = k.x - dirX * seg.dist + perpX * wag;
+            const gy = k.y - dirY * seg.dist * 0.72 + perpY * wag * 0.72;
+            ctx.fillText(seg.ch, gx * CELL_W + CELL_W * 0.5 + 3, gy * CELL_H + CELL_H * 0.5 + 4);
+          }
+
+          // Second pass: vivid koi body & pectoral fins
+          const surfaceVis = Math.max(0.38, 1 - k.depth * 0.65);
+          ctx.globalAlpha = surfaceVis;
+
+          for (let s = spine.length - 1; s >= 0; s--) {
+            const seg = spine[s];
+            const wag = (prefersReducedMotion || userPaused) ? 0 : Math.sin(k.phase - s * 0.65) * seg.wag;
+            const gx = k.x - dirX * seg.dist + perpX * wag;
+            const gy = k.y - dirY * seg.dist * 0.72 + perpY * wag * 0.72;
+
+            // Draw fluttering pectoral fins on the front rib segment
+            if (seg.hasFins) {
+              const finSpread = 0.88 + ((prefersReducedMotion || userPaused) ? 0 : Math.sin(k.phase * 1.2) * 0.16);
+              ctx.fillStyle = k.palette.tail;
+              ctx.fillText(
+                finLeftChar,
+                (gx + perpX * finSpread) * CELL_W + CELL_W * 0.5,
+                (gy + perpY * finSpread * 0.72) * CELL_H + CELL_H * 0.5
+              );
+              ctx.fillText(
+                finRightChar,
+                (gx - perpX * finSpread) * CELL_W + CELL_W * 0.5,
+                (gy - perpY * finSpread * 0.72) * CELL_H + CELL_H * 0.5
+              );
+            }
+
+            if (seg.part === 'head') ctx.fillStyle = k.palette.head;
+            else if (seg.part === 'pattern') ctx.fillStyle = k.palette.pattern;
+            else if (seg.part === 'tail') ctx.fillStyle = k.palette.tail;
+            else ctx.fillStyle = k.palette.body;
+
+            ctx.fillText(seg.ch, gx * CELL_W + CELL_W * 0.5, gy * CELL_H + CELL_H * 0.5);
+          }
+
+          ctx.restore();
+        }
+
+        // 3. Botanical Lily Pads & Water-Lily Blooms (Drawn OVER koi so fish can slip under pads)
+        for (let r = 0; r < rows; r++) {
+          const py = r * CELL_H + CELL_H * 0.5;
+          for (let c = 0; c < cols; c++) {
+            const px = c * CELL_W + CELL_W * 0.5;
+            for (let l = 0; l < lilyPads.length; l++) {
+              const pad = lilyPads[l];
+              const dx = c - pad.x;
+              const dy = (r - pad.y) * 1.35;
+              const dist = Math.hypot(dx, dy);
+              if (dist <= pad.r) {
+                const ang = Math.atan2(dy, dx);
+                if (Math.abs(ang - pad.notch) > 0.28) {
+                  if (dist < 0.7 && pad.hasBloom) {
+                    ctx.fillStyle = '#FF7E6B';
+                    ctx.fillText('❀', px, py);
+                  } else if (dist > pad.r - 0.55) {
+                    ctx.fillStyle = '#589A76';
+                    ctx.fillText('o', px, py);
+                  } else {
+                    ctx.fillStyle = '#73B891';
+                    ctx.fillText('♣', px, py);
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+
+        // 4. Precipitation Particles (Rain / Snow / Storm)
+        if (particles.length > 0) {
+          ctx.save();
+          ctx.font = '13px "JetBrains Mono", monospace';
+          for (let i = 0; i < particles.length; i++) {
+            const p = particles[i];
+            if (p.mode === 'snow') {
+              ctx.fillStyle = 'rgba(255, 255, 255, ' + Math.min(0.95, p.alpha + 0.25).toFixed(2) + ')';
+            } else {
+              ctx.fillStyle = 'rgba(185, 232, 242, ' + (p.alpha * 0.76).toFixed(2) + ')';
+            }
+            ctx.fillText(p.char, p.x, p.y);
+          }
+          ctx.restore();
+        }
+      }
+
+      function renderSingleFrame() {
+        drawPond(performance.now());
+      }
+
+      /* =====================================================================
+         3. CONTROLS, VISIBILITY PAUSE & ANIMATION LOOP
+         ===================================================================== */
+      let rafId = null;
+
+      function loop(now) {
+        if (prefersReducedMotion || userPaused || isPageHidden) {
+          rafId = null;
+          return;
+        }
+        updatePond(now);
+        drawPond(now);
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function syncLoopState() {
+        if (!prefersReducedMotion && !userPaused && !isPageHidden && !rafId) {
+          rafId = requestAnimationFrame(loop);
+        } else if (prefersReducedMotion || userPaused) {
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+          renderSingleFrame();
+        }
+      }
+
+      weatherBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          const mode = btn.getAttribute('data-mode');
+          selectedControl = mode;
+
+          weatherBtns.forEach(function (b) {
+            b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+          });
+
+          updateWeatherChip();
+
+          if (mode === 'live') {
+            applyEngineWeather(fetchedWeather.engineMode);
+          } else {
+            applyEngineWeather(mode);
+          }
+        });
+      });
+
+      pauseBtn.addEventListener('click', function () {
+        userPaused = !userPaused;
+        pauseBtn.setAttribute('aria-pressed', userPaused ? 'true' : 'false');
+        pauseBtn.textContent = userPaused ? 'Resume' : 'Pause';
+        syncLoopState();
+      });
+
+      document.addEventListener('visibilitychange', function () {
+        isPageHidden = document.hidden;
+        if (isPageHidden && rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        } else if (!isPageHidden) {
+          syncLoopState();
+        }
+      });
+
+      reducedMotionQuery.addEventListener('change', function (e) {
+        prefersReducedMotion = e.matches;
+        syncLoopState();
+      });
+
+      window.onload = function () {
+        resizePond();
+        syncLoopState();
+
+        // Fetch Guelph, Ontario weather on load and every 15 minutes
+        fetchGuelphWeather();
+        setInterval(fetchGuelphWeather, 15 * 60 * 1000);
+      };
+    })();
+  </script>
+</body>
+</html>
