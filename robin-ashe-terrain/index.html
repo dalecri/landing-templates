@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robin Ashe · maps of places I've walked</title>
+<meta name="description" content="The personal site of Robin Ashe, a cartographer and map illustrator in Revelstoke, BC.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#140F1D;
+    --glass:rgba(26,17,36,.58);
+    --glass-soft:rgba(26,17,36,.42);
+    --border:rgba(215,190,235,.16);
+    --text:#F7EAD9;
+    --muted:#BFB2CF;
+    --faint:#8f8299;
+    --violet:#C3A3DD;
+    --lake:#7FB8D9;
+    --ink:#2A1E3F;
+    --mono:"Space Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+    --serif:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:24px}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+  body{margin:0;background:var(--bg);color:var(--text);font:14.5px/1.7 var(--mono);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--violet);outline-offset:3px;border-radius:8px}
+  p{margin:0}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  #terrain{position:fixed;inset:0;z-index:0;width:100vw;height:100vh;display:block}
+
+  /* content layer lets pointer events fall through to empty space (banking still works) */
+  .shell{
+    position:relative;z-index:1;pointer-events:none;
+    display:grid;grid-template-columns:292px minmax(0,1fr);gap:28px;
+    max-width:1180px;margin:0 auto;padding:22px 22px 80px;
+  }
+  .glass, a, button, summary, details, pre, figure, .side{pointer-events:auto}
+  .glass{background:var(--glass);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+
+  /* ---------- sidebar ---------- */
+  .side{
+    position:sticky;top:22px;align-self:start;
+    height:calc(100vh - 44px);min-height:520px;
+    display:flex;flex-direction:column;padding:24px 22px 18px;overflow:auto;
+  }
+  .mark{margin:0 0 14px;font:11px/1.05 var(--mono);color:var(--violet);white-space:pre}
+  .mark .c{color:var(--text)}
+  .name{font:400 40px/1 var(--serif);letter-spacing:-.01em;margin:0}
+  .role{color:var(--muted);font-size:12.5px;margin-top:8px;line-height:1.5}
+  .where{margin-top:16px;font-size:12px;color:var(--muted);display:grid;gap:4px}
+  .where b{color:var(--lake);font-weight:400}
+  .avail{display:inline-flex;align-items:center;gap:8px}
+  .avail i{width:7px;height:7px;border-radius:50%;background:var(--lake);box-shadow:0 0 0 3px rgba(127,184,217,.2)}
+
+  .index{list-style:none;margin:26px 0 0;padding:16px 0 0;border-top:1px solid var(--border);display:grid;gap:2px;counter-reset:i}
+  .index a{display:flex;gap:12px;align-items:baseline;padding:5px 8px;margin:0 -8px;border-radius:8px;text-decoration:none;color:var(--muted);font-size:13px;transition:color .2s,background .2s}
+  .index a span{color:var(--faint);font-size:11px;min-width:2ch}
+  .index a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+  .index a.on{color:var(--text)}
+  .index a.on span{color:var(--violet)}
+  .index a.on::after{content:'';flex:1;border-bottom:1px dashed rgba(195,163,221,.45);transform:translateY(-4px)}
+
+  .tctl{margin-top:auto;padding-top:18px;border-top:1px solid var(--border);display:flex;align-items:center;flex-wrap:wrap;gap:4px;font-size:11px}
+  .tctl .lbl{color:var(--faint);letter-spacing:.12em;text-transform:uppercase;margin-right:6px}
+  .tctl button{font:11px/1 var(--mono);color:var(--muted);background:transparent;border:1px solid transparent;border-radius:999px;padding:6px 8px;cursor:pointer}
+  .tctl button:hover{color:var(--text)}
+  .tctl button[aria-pressed="true"]{background:var(--violet);color:var(--ink)}
+  .tctl #tpause{border-color:rgba(195,163,221,.4);color:var(--violet);margin-left:auto}
+  .tctl #tpause[aria-pressed="true"]{background:rgba(195,163,221,.15);color:var(--violet)}
+  @media (prefers-reduced-motion: reduce){ .tctl #tpause{display:none} }
+
+  /* ---------- main column ---------- */
+  main{display:flex;flex-direction:column;gap:clamp(64px,12vh,130px);padding-bottom:40px}
+  .label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--lake);margin:0 0 14px;display:flex;gap:10px;align-items:center}
+  .label::after{content:'';flex:0 0 40px;border-top:1px solid rgba(127,184,217,.45)}
+  h1,h2,h3{margin:0;font-weight:400}
+  h2{font:400 clamp(30px,4vw,44px)/1.08 var(--serif);letter-spacing:-.01em}
+  h2 em, h1 em{color:var(--violet)}
+  .panel{padding:clamp(24px,3.4vw,38px)}
+
+  /* hello */
+  .hello{margin-top:clamp(30px,12vh,140px);max-width:700px}
+  .hello h1{font:400 clamp(42px,6.4vw,74px)/1.02 var(--serif);letter-spacing:-.015em}
+  .hello .intro{margin-top:22px;color:var(--muted);font-size:15px;max-width:58ch}
+  .hello .intro b{color:var(--text);font-weight:400}
+  .sig{margin:26px 0 0;font:12px/1.1 var(--mono);white-space:pre;color:var(--faint);overflow:hidden}
+  .sig .c{color:var(--text)}.sig .v{color:var(--violet)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{display:inline-flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);padding:6px 12px;border-radius:999px;background:rgba(20,15,29,.5);border:1px solid var(--border);text-decoration:none}
+  .chip b{color:var(--text);font-weight:400}
+  a.chip:hover{border-color:rgba(195,163,221,.5);color:var(--text)}
+  .hint{margin-top:22px;font-size:12px;color:var(--faint);font-style:italic}
+  .hint b{color:var(--violet);font-style:normal}
+
+  /* work index */
+  .work-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap;margin-bottom:8px}
+  .work-head p{color:var(--muted);font-size:13px;max-width:36ch}
+  .projects{margin-top:22px;border-top:1px solid var(--border)}
+  .proj{border-bottom:1px solid var(--border)}
+  .proj summary{
+    list-style:none;cursor:pointer;display:grid;grid-template-columns:3ch 1fr auto 5ch 2ch;gap:18px;align-items:baseline;
+    padding:18px 6px;border-radius:10px;transition:background .2s;
+  }
+  .proj summary::-webkit-details-marker{display:none}
+  .proj summary:hover{background:rgba(255,255,255,.035)}
+  .proj .no{color:var(--faint);font-size:12px}
+  .proj .ttl{font:400 clamp(22px,2.6vw,30px)/1.1 var(--serif)}
+  .proj .kind{color:var(--muted);font-size:12px;text-align:right}
+  .proj .yr{color:var(--lake);font-size:12px;text-align:right}
+  .proj .arr{color:var(--violet);transition:transform .25s;display:inline-block;text-align:center}
+  .proj[open] .arr{transform:rotate(45deg)}
+  .proj[open] .ttl{color:var(--violet)}
+  .proj-body{display:grid;grid-template-columns:minmax(0,250px) 1fr;gap:26px;padding:4px 6px 26px calc(3ch + 24px)}
+  .thumb{margin:0;padding:14px 12px;border-radius:12px;background:rgba(20,15,29,.62);border:1px solid rgba(255,255,255,.07);font:12px/1.2 var(--mono);white-space:pre;overflow:hidden;color:#7B4B94;align-self:start}
+  .thumb .r{color:#D96C4F}.thumb .c{color:#F7EAD9}.thumb .w{color:#7FB8D9}.thumb .v{color:#4A3263}.thumb .k{color:var(--lake)}
+  .proj-body .lead{color:var(--text);font-size:14.5px}
+  .proj-body dl{margin:16px 0 0;display:grid;gap:12px}
+  .proj-body dt{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet)}
+  .proj-body dd{margin:2px 0 0;color:var(--muted);font-size:13.5px}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:16px 0 0;padding:0}
+  .tags li{font-size:11px;color:var(--muted);padding:3px 9px;border-radius:999px;border:1px solid var(--border)}
+  @media (max-width:760px){
+    .proj summary{grid-template-columns:3ch 1fr 2ch;gap:12px}
+    .proj .kind{display:none}
+    .proj .yr{grid-column:2;grid-row:2;text-align:left;margin-top:-10px}
+    .proj-body{grid-template-columns:1fr;padding-left:6px}
+  }
+
+  /* field notes */
+  .notes{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+  @media (max-width:1040px){ .notes{grid-template-columns:1fr} }
+  .note{padding:22px 22px 20px;display:flex;flex-direction:column;gap:12px;background:var(--glass-soft)}
+  .note:nth-child(2){transform:translateY(22px)}
+  .note:nth-child(3){transform:translateY(8px)}
+  @media (max-width:1040px){ .note:nth-child(n){transform:none} }
+  .note time{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--lake)}
+  .note time span{color:var(--faint)}
+  .note p{color:var(--muted);font-size:13.5px}
+  .note p::first-letter{font:400 26px/0 var(--serif);color:var(--text)}
+  .note .sketch{margin:0;font:11px/1.15 var(--mono);white-space:pre;color:var(--faint)}
+  .note .sketch .k{color:var(--violet)}.note .sketch .c{color:var(--text)}.note .sketch .w{color:var(--lake)}
+
+  /* now */
+  .now{max-width:760px}
+  .now ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:0}
+  .now li{display:grid;grid-template-columns:12ch 1fr;gap:18px;padding:14px 0;border-bottom:1px dashed var(--border)}
+  .now li:last-child{border-bottom:0}
+  .now li b{font-weight:400;color:var(--violet);font-size:12.5px}
+  .now li span{color:var(--muted)}
+  .now .updated{margin-top:16px;font-size:11.5px;color:var(--faint)}
+  @media (max-width:560px){ .now li{grid-template-columns:1fr;gap:2px} }
+
+  /* about */
+  .about{display:grid;grid-template-columns:auto 1fr;gap:34px;align-items:start}
+  @media (max-width:860px){ .about{grid-template-columns:1fr} }
+  .portrait{margin:0;font:13px/1.25 var(--mono);color:var(--muted);white-space:pre;padding:16px 18px;border-radius:14px;background:rgba(20,15,29,.62);border:1px solid rgba(255,255,255,.07)}
+  .portrait .a{color:var(--violet)}
+  .portrait figcaption{font-size:11px;color:var(--faint);margin-top:10px;white-space:normal}
+  .about blockquote{margin:0 0 20px;font:400 italic clamp(22px,2.6vw,28px)/1.3 var(--serif);color:var(--text)}
+  .about .bio{color:var(--muted)}
+  .about .bio + .bio{margin-top:12px}
+  .facts{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:14px 26px}
+  @media (max-width:560px){ .facts{grid-template-columns:1fr} }
+  .facts li{font-size:13px;color:var(--muted)}
+  .facts li b{display:block;font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--lake);margin-bottom:2px}
+
+  /* path */
+  .path{list-style:none;padding:0;margin:22px 0 0;position:relative}
+  .path::before{content:'';position:absolute;left:5px;top:8px;bottom:8px;border-left:1px dashed rgba(195,163,221,.4)}
+  .path li{position:relative;padding:0 0 22px 32px}
+  .path li::before{content:'';position:absolute;left:0;top:7px;width:11px;height:11px;border-radius:50%;background:var(--bg);border:1px solid var(--violet)}
+  .path li:first-child::before{background:var(--violet)}
+  .path .yr{font-size:11.5px;color:var(--lake);letter-spacing:.06em}
+  .path h3{font:400 22px/1.2 var(--serif);margin-top:2px}
+  .path p{color:var(--muted);font-size:13.5px;margin-top:4px;max-width:60ch}
+  .tools{margin-top:8px;color:var(--faint);font-size:12.5px}
+  .tools b{color:var(--muted);font-weight:400}
+
+  /* contact */
+  .write{text-align:left}
+  .write .big{display:inline-block;margin-top:18px;font:400 clamp(28px,4.6vw,52px)/1.1 var(--serif);color:var(--text);text-decoration:none;border-bottom:1px solid rgba(195,163,221,.5);word-break:break-word}
+  .write .big:hover{color:var(--violet)}
+  .write .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:8px;font:700 12.5px/1 var(--mono);text-decoration:none;cursor:pointer;padding:11px 16px;border-radius:999px;border:1px solid var(--text);background:var(--text);color:var(--ink)}
+  .btn:hover{filter:brightness(1.05)}
+  .btn.ghost{background:transparent;color:var(--violet);border-color:rgba(195,163,221,.55)}
+  .btn.ghost:hover{background:rgba(195,163,221,.12)}
+  .write p.muted{color:var(--muted);margin-top:18px;max-width:56ch}
+  .write .copied{font-size:12px;color:var(--lake);min-height:1.4em}
+
+  .foot{margin-top:10px;padding:18px 22px;font-size:11.5px;color:var(--faint);display:flex;flex-direction:column;gap:4px;background:var(--glass-soft)}
+
+  /* ---------- small screens: sidebar becomes a header card ---------- */
+  @media (max-width:900px){
+    .shell{grid-template-columns:1fr;gap:22px;padding:14px 14px 60px}
+    .side{position:relative;top:0;height:auto;min-height:0}
+    .index{grid-template-columns:repeat(2,1fr);gap:0 12px}
+    .index a.on::after{display:none}
+    .hello{margin-top:10px}
+    .note:nth-child(n){transform:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="terrain" aria-hidden="true"></canvas>
+
+<div class="shell">
+  <aside class="side glass" aria-label="About this site">
+<pre class="mark" aria-hidden="true">     <span class="c">/\</span>
+ /\ /  \/\
+/  V      \</pre>
+    <p class="name">Robin Ashe</p>
+    <p class="role">cartographer, map illustrator,<br>slow hiker</p>
+    <div class="where">
+      <span>Revelstoke, BC · <b id="clock">local time</b></span>
+      <span class="avail"><i aria-hidden="true"></i>open to spring '27 projects</span>
+    </div>
+    <nav aria-label="Sections">
+      <ol class="index">
+        <li><a href="#hello"><span>01</span>Hello</a></li>
+        <li><a href="#work"><span>02</span>Work</a></li>
+        <li><a href="#notes"><span>03</span>Field notes</a></li>
+        <li><a href="#now"><span>04</span>Now</a></li>
+        <li><a href="#about"><span>05</span>About me</a></li>
+        <li><a href="#path"><span>06</span>Path</a></li>
+        <li><a href="#write"><span>07</span>Write to me</a></li>
+      </ol>
+    </nav>
+    <div class="tctl" role="group" aria-label="Background terrain speed">
+      <span class="lbl">Terrain</span>
+      <button type="button" data-speed="0.2" aria-pressed="true">0.2x</button>
+      <button type="button" data-speed="0.5" aria-pressed="false">0.5x</button>
+      <button type="button" data-speed="1" aria-pressed="false">1x</button>
+      <button type="button" id="tpause" aria-pressed="false">Pause</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- 01 hello -->
+    <section id="hello" class="hello panel glass" aria-labelledby="hello-title">
+      <p class="label">01 · Hello</p>
+      <h1 id="hello-title">Hi, I'm Robin. I draw maps of places I've <em>walked.</em></h1>
+      <p class="intro">I spent nine seasons on trail crews and survey teams in the Columbia Mountains, then moved indoors (mostly) to draw them. Every line in my work has been <b>walked, checked, and walked again</b>, so the map still makes sense when the signal is gone and the light is going.</p>
+<pre class="sig" aria-hidden="true">      <span class="c">/\</span>        <span class="c">/\</span>  <span class="c">/\</span>
+ /\  /  \  /\  /  \/  \   /\
+/  \/    \/  \/        \_/  \__  <span class="v">~ r.a.</span></pre>
+      <div class="chips">
+        <span class="chip">walking <b>the Monashees, again</b></span>
+        <span class="chip">drawing <b>Mt. Revelstoke in relief</b></span>
+        <a class="chip" href="#write">say hi <b>↓</b></a>
+      </div>
+      <p class="hint">the mountains behind this page drift past at <b>0.2x</b>. That's about my hiking pace.</p>
+    </section>
+
+    <!-- 02 work -->
+    <section id="work" class="panel glass" aria-labelledby="work-title">
+      <p class="label">02 · Selected work</p>
+      <div class="work-head">
+        <h2 id="work-title">Things I've <em>made</em>, 2023 to now.</h2>
+        <p>Four projects I'm proud of. Open one to see what I was asked, what I did, and what happened next.</p>
+      </div>
+      <div class="projects">
+        <details class="proj">
+          <summary><span class="no">01</span><span class="ttl">Revelstoke Trail Atlas</span><span class="kind">self-published atlas</span><span class="yr">2025</span><span class="arr" aria-hidden="true">+</span></summary>
+          <div class="proj-body">
+<pre class="thumb" aria-hidden="true">         <span class="c">/\</span>
+    <span class="r">/\</span>  <span class="r">/  \</span>    <span class="r">/\</span>
+   /  \/    \__/  \
+ _/  <span class="k">o--o--o</span>   <span class="v">...</span> \_
+<span class="w">~~~~~~~~~</span><span class="v">.......</span><span class="w">~~~~</span></pre>
+            <div>
+              <p class="lead">Six day-hike sheets around town, from cedar valley floors to the alpine. I reissue it every spring.</p>
+              <dl>
+                <div><dt>Why</dt><dd>Friends kept handing visitors photocopied sketches. I wanted one honest set of maps I'd give my own family.</dd></div>
+                <div><dt>How</dt><dd>Walked all six routes twice, in June and again in October, to catch seasonal junctions and washouts.</dd></div>
+                <div><dt>After</dt><dd>Stocked in four local shops and the visitor centre. Search-and-rescue call-outs on two of the routes dropped the next summer.</dd></div>
+              </dl>
+              <ul class="tags"><li>field survey</li><li>QGIS</li><li>print production</li></ul>
+            </div>
+          </div>
+        </details>
+        <details class="proj">
+          <summary><span class="no">02</span><span class="ttl">Rogers Pass winter panels</span><span class="kind">trailhead signage</span><span class="yr">2024</span><span class="arr" aria-hidden="true">+</span></summary>
+          <div class="proj-body">
+<pre class="thumb" aria-hidden="true">      <span class="c">/\</span>      <span class="c">/\</span>
+     <span class="c">/**\</span>  <span class="c">/\</span><span class="c">/**\</span>
+    <span class="r">/ ** \/**\  **\</span>
+   /  <span class="k">!</span>   \  <span class="k">!</span> \   \
+  / <span class="v">:  .   :  .  :</span>  \</pre>
+            <div>
+              <p class="lead">Ski-touring ascents, avalanche terrain ratings and safe exits, for the Glacier Backcountry Society.</p>
+              <dl>
+                <div><dt>Why</dt><dd>Six faded panels that nobody could read in a snowstorm, which is exactly when people need them.</dd></div>
+                <div><dt>How</dt><dd>Simplified the terrain ratings into three shapes with two forecasters, then tested drafts at the trailheads with gloves on.</dd></div>
+                <div><dt>After</dt><dd>Up for the 2024 to 2025 season, and now the template for the society's next four sites.</dd></div>
+              </dl>
+              <ul class="tags"><li>hazard mapping</li><li>signage</li><li>AST 2</li></ul>
+            </div>
+          </div>
+        </details>
+        <details class="proj">
+          <summary><span class="no">03</span><span class="ttl">The Monashees, Slow</span><span class="kind">guidebook maps</span><span class="yr">2024</span><span class="arr" aria-hidden="true">+</span></summary>
+          <div class="proj-body">
+<pre class="thumb" aria-hidden="true">   <span class="r">/\</span>          <span class="r">/\</span>
+  /  \  <span class="r">/\</span>   <span class="r">/\</span> /  \
+ /    \/  \_/  \/    \
+/ <span class="k">1</span> <span class="v">-</span> <span class="k">2</span> <span class="v">-</span> <span class="k">3</span> <span class="v">-</span> <span class="k">4</span> <span class="v">-</span> \
+<span class="w">~~</span> <span class="v">.  .  .  .  .  .</span> <span class="w">~~</span></pre>
+            <div>
+              <p class="lead">A four-day traverse split into kind stages, with water sources and bail-outs marked by hand. Published by Kootenay Press.</p>
+              <dl>
+                <div><dt>Why</dt><dd>People usually rush this traverse. The publisher and I both wanted a book that felt unhurried.</dd></div>
+                <div><dt>How</dt><dd>Eight spreads, one per half day, with hand-lettered notes wherever I'd have wanted a friend to warn me.</dd></div>
+                <div><dt>After</dt><dd>A second printing in under a year, and a nomination for a regional book design award.</dd></div>
+              </dl>
+              <ul class="tags"><li>book design</li><li>hand lettering</li><li>route research</li></ul>
+            </div>
+          </div>
+        </details>
+        <details class="proj">
+          <summary><span class="no">04</span><span class="ttl">Basin wayfinding</span><span class="kind">trail system</span><span class="yr">2023</span><span class="arr" aria-hidden="true">+</span></summary>
+          <div class="proj-body">
+<pre class="thumb" aria-hidden="true">  <span class="k">[P]</span>-----<span class="k">+</span>-----<span class="k">[*]</span>
+        |    <span class="r">/\</span>
+   <span class="v">..</span>   <span class="k">+</span>---<span class="r">/  \</span>
+       <span class="v">/</span>   <span class="r">/    \</span>
+<span class="w">~~~~~~</span><span class="v">~~~~~~~~~~~~</span><span class="w">~</span></pre>
+            <div>
+              <p class="lead">Junction markers and you-are-here maps for 40 km of connected community trails in the Columbia Basin.</p>
+              <dl>
+                <div><dt>Why</dt><dd>Three volunteer groups, three trail systems, three sign styles. Visitors got lost exactly at the seams.</dd></div>
+                <div><dt>How</dt><dd>One symbol set, one colour per difficulty, and every junction numbered so a phone call can say "I'm at 14".</dd></div>
+                <div><dt>After</dt><dd>Wrong-turn reports at the shared junctions fell by more than half in the first season.</dd></div>
+              </dl>
+              <ul class="tags"><li>wayfinding</li><li>systems</li><li>Illustrator</li></ul>
+            </div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- 03 field notes -->
+    <section id="notes" aria-labelledby="notes-title">
+      <div class="panel glass" style="padding-bottom:22px">
+        <p class="label">03 · Field notes</p>
+        <h2 id="notes-title">From the <em>notebook</em> in my back pocket.</h2>
+      </div>
+      <div class="notes">
+        <article class="note glass">
+          <time datetime="2026-10-12">12 Oct 2026 <span>· Begbie Creek</span></time>
+<pre class="sketch" aria-hidden="true">  <span class="c">/\</span>    <span class="c">/\</span>
+ /  \==<span class="k">X</span>=/  \    bridge: gone
+<span class="w">~~~~~~~~~~~~~~</span>   ford: cold</pre>
+          <p>First proper snow above 1,800 m. The footbridge at km 4 washed out in spring and nobody has replaced it, so next year's sheet gets a dashed line and a ford symbol. Contour was not impressed by the ford.</p>
+        </article>
+        <article class="note glass">
+          <time datetime="2026-09-28">28 Sep 2026 <span>· drafting desk</span></time>
+<pre class="sketch" aria-hidden="true">   <span class="k">z</span>
+    <span class="k">z</span>     17 turns
+   <span class="k">z</span>      drawn as 9
+    <span class="k">z</span></pre>
+          <p>A whole day on one switchback stack. Seventeen turns, drawn as nine, because nobody counts past nine when they're tired. That's most of the job, honestly: deciding what to leave out.</p>
+        </article>
+        <article class="note glass">
+          <time datetime="2026-08-03">3 Aug 2026 <span>· Rogers Pass</span></time>
+<pre class="sketch" aria-hidden="true">  you are here <span class="k">*</span>
+       |   <span class="k">?</span>    <span class="k">?</span>
+  ---<span class="k">+</span>---<span class="k">+</span>----<span class="k">+</span>---</pre>
+          <p>Proof-walk with a friend who'd never seen the draft. She hesitated at two junctions, so both are getting redrawn. Hesitation is the most useful feedback I get.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 04 now -->
+    <section id="now" class="now panel glass" aria-labelledby="now-title">
+      <p class="label">04 · Now</p>
+      <h2 id="now-title">What I'm <em>up to</em> this season.</h2>
+      <ul>
+        <li><b>walking</b><span>The Monashee traverse again, re-checking water sources for the second printing.</span></li>
+        <li><b>drawing</b><span>A hand-shaded relief map of Mount Revelstoke for the town's archive.</span></li>
+        <li><b>reading</b><span>Old Swiss topo manuals, trying to learn how they made rock look like rock.</span></li>
+        <li><b>avoiding</b><span>Social media. Write me an email instead, I like those.</span></li>
+      </ul>
+      <p class="updated">Updated October 2026 · inspired by the /now page idea</p>
+    </section>
+
+    <!-- 05 about -->
+    <section id="about" class="panel glass" aria-labelledby="about-title">
+      <p class="label">05 · About me</p>
+      <h2 id="about-title" class="sr">About me</h2>
+      <div class="about">
+        <figure class="portrait" style="margin:0" aria-label="ASCII self-portrait with Contour the dog">
+<pre style="margin:0;font:inherit" aria-hidden="true">    <span class="a">__/\__</span>
+   <span class="a">/______\</span>
+    | o o |
+    |  ^  |
+    \ '-' /
+  ___|   |___
+ /  [map]    \
+ |  |    |   |
+   <span class="a">~</span> Contour <span class="a">~</span></pre>
+          <figcaption>self-portrait, with head of QA</figcaption>
+        </figure>
+        <div>
+          <blockquote>“A map is a promise somebody makes about a place they have been. I try to only promise things I have stood on.”</blockquote>
+          <p class="bio">I work from one room above a bakery in Revelstoke. Most weeks are split between the drafting desk and a trail somewhere, checking a junction or a creek crossing that changed over the winter.</p>
+          <p class="bio">I came to maps sideways: through trail work, then survey work, then years of drawing every hike in the back of a notebook until people started asking for copies.</p>
+          <ul class="facts">
+            <li><b>favourite ridge</b>Keystone Standard Basin rim, around 7 am</li>
+            <li><b>co-worker</b>Contour, border collie, has walked every route here</li>
+            <li><b>fuel</b>whatever the bakery downstairs burns first</li>
+            <li><b>worst mistake</b>a creek on the wrong side of a ridge, 2021. It's why I proof on foot.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 path -->
+    <section id="path" class="panel glass" aria-labelledby="path-title">
+      <p class="label">06 · Path</p>
+      <h2 id="path-title">How I <em>got here.</em></h2>
+      <ol class="path">
+        <li><span class="yr">2022 to now</span><h3>Independent cartographer</h3><p>Trail maps, trailhead panels and guidebook cartography for clubs, lodges and towns across the Columbia Mountains.</p></li>
+        <li><span class="yr">2019 to 2022</span><h3>Survey technician, Selkirk Geomatics</h3><p>GPS field survey and terrain modelling for trail planning and environmental assessments.</p></li>
+        <li><span class="yr">2015 to 2019</span><h3>Trail crew lead</h3><p>Four seasons building and fixing alpine trail. I learned what a map leaves out the hard way.</p></li>
+        <li><span class="yr">2014</span><h3>Diploma, Geographic Information Systems</h3><p>And a long habit of sketching every hike in the back of a notebook.</p></li>
+      </ol>
+      <p class="tools"><b>tools:</b> QGIS · Illustrator · GPS survey · DEM processing · relief shading · hand lettering · AST 2 · wilderness first aid</p>
+    </section>
+
+    <!-- 07 write -->
+    <section id="write" class="write panel glass" aria-labelledby="write-title">
+      <p class="label">07 · Write to me</p>
+      <h2 id="write-title">Got a mountain that needs a <em>map?</em></h2>
+      <a class="big" href="mailto:robin@robinashe.example" id="email">robin@robinashe.example</a>
+      <div class="row">
+        <button class="btn" type="button" id="copy">Copy email</button>
+        <a class="btn ghost" href="#work">See my work again</a>
+        <span class="copied" id="copied" aria-live="polite"></span>
+      </div>
+      <p class="muted">I take on a handful of projects a season: trail maps, trailhead panels, guidebook maps, and the odd illustrated map of someone's favourite place. I reply within two days, unless I'm on a ridge.</p>
+    </section>
+
+    <footer class="foot glass">
+      <span>Design prototype. Robin Ashe and every client, colleague and project here are fictional; the mountains are real code, adapted from ASCII Terrain Flyover.</span>
+      <span>© 2026 Robin Ashe (fictional) · made slowly in Revelstoke, BC</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+/* ---------- personal bits ---------- */
+(() => {
+  // live local time in Revelstoke
+  const clock = document.getElementById('clock');
+  let fmt;
+  try { fmt = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Vancouver', hour: 'numeric', minute: '2-digit' }); }
+  catch (e) { fmt = null; }
+  const tick = () => { if (fmt) clock.textContent = fmt.format(new Date()).replace(/\./g, '') + ' PT'; };
+  tick(); setInterval(tick, 30000);
+
+  // copy email
+  const copyBtn = document.getElementById('copy'), copied = document.getElementById('copied');
+  const addr = document.getElementById('email').textContent.trim();
+  copyBtn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(addr); copied.textContent = 'Copied. Talk soon.'; }
+    catch (e) { copied.textContent = addr; }
+    setTimeout(() => { copied.textContent = ''; }, 2600);
+  });
+
+  // index highlights the section in view
+  const links = [...document.querySelectorAll('.index a')];
+  const map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        links.forEach(a => a.classList.remove('on'));
+        const a = map.get(en.target.id);
+        if (a) a.classList.add('on');
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    map.forEach((_, id) => { const s = document.getElementById(id); if (s) io.observe(s); });
+  }
+  links[0].classList.add('on');
+})();
+
+/* ---------- background: ASCII terrain flyover ---------- */
+(() => {
+  'use strict';
+
+  let SPEED = 0.2;                     // this page flies at 0.2x of the original cruise
+  const BASE_RATE = 5;                 // world units per second at 1x (the original piece's cruise)
+
+  const GL = ' .:-=+*#%@~';
+  const WATER = 10;
+  const FREQ = 0.06;
+  const LO = 0.0832, HI = 0.8013;      // fBm normalisation: lakes ~18%, peaks ~6%
+  const HS = 4, WL = 0.28, ALT = 0.8;
+  const D0 = 2, DSPAN = 60;            // dist = 2 + pow(t, 1.7) * 60
+  const NB = 6, NS = 6, NF = 6;
+  const CW = 10, CH = 15;
+
+  function hash(x, y) {
+    let h = Math.imul(x | 0, 374761393) ^ Math.imul(y | 0, 668265263);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  }
+  function noise(x, y) {
+    const xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+    const u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    const a = hash(xi, yi), b = hash(xi + 1, yi), c = hash(xi, yi + 1), d = hash(xi + 1, yi + 1);
+    return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
+  }
+  function fbm(x, z) {
+    let s = 0, a = 0.5, f = 1, n = 0;
+    for (let o = 0; o < 4; o++) { s += a * noise(x * f + o * 17.3, z * f - o * 9.1); n += a; a *= 0.5; f *= 2.03; }
+    return s / n;
+  }
+  const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const heightAt = (x, z) => Math.pow(clamp01((fbm(x * FREQ, z * FREQ) - LO) / (HI - LO)), 1.4);
+  const bandOf = h => h < WL ? 0 : h < 0.45 ? 2 : h < 0.65 ? 3 : h < 0.82 ? 4 : 5;
+
+  // colour LUT: band x shade x distance fog
+  const BASE = ['#274B73', '#7FB8D9', '#4A3263', '#7B4B94', '#D96C4F', '#F7EAD9'];
+  const FOG = [58, 35, 64];
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  const lut = [];
+  for (let b = 0; b < NB; b++) {
+    const base = hexRgb(BASE[b]);
+    for (let s = 0; s < NS; s++) {
+      const shade = 0.45 + (s / (NS - 1)) * 0.85;
+      const lit = shade <= 1 ? mix([12, 8, 18], base, shade) : mix(base, [255, 245, 230], (shade - 1) * 0.6);
+      for (let f = 0; f < NF; f++) {
+        const c = mix(lit, FOG, (f / (NF - 1)) * 0.88);
+        lut.push(`rgb(${c.map(v => Math.round(Math.min(255, v))).join(',')})`);
+      }
+    }
+  }
+  const buckets = lut.map(() => []);
+
+  const canvas = document.getElementById('terrain');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  const FONT = '12px "Space Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+
+  let W, H, cols, rows, ox, oy, horizon, stars = [];
+  let camZ = 0, camY = 3, bankX = 0, roll = 0, time = 0, mouseNX = 0;
+  let paused = false, rafId = 0, last = 0, acc = 0;
+
+  function computeFrame(emit) {
+    const F = (rows - horizon) * 2.2;
+    const fov = 0.55 + 0.25 * ALT;
+    const N = Math.max(60, Math.min(220, rows * 2));
+    const top = new Int16Array(cols);
+    for (let c = 0; c < cols; c++) {
+      const nx = (c - cols / 2) / (cols / 2);
+      const rollOff = roll * nx * rows * 0.03;
+      let ymin = rows;
+      for (let i = 0; i < N && ymin > 0; i++) {
+        const t = i / (N - 1);
+        const d = D0 + Math.pow(t, 1.7) * DSPAN;
+        const wx = bankX + nx * d * fov + roll * (1 - t) * 3;   // lower (nearer) rows shift more
+        const wz = camZ + d;
+        const h = heightAt(wx, wz);
+        const hp = Math.max(h, WL);
+        let yr = Math.ceil(horizon + (camY - hp * HS) * F / d + rollOff - 0.5);
+        if (yr >= ymin) continue;
+        if (yr < 0) yr = 0;
+        const fi = Math.min(NF - 1, Math.round(Math.pow(clamp01((d - 12) / (DSPAN - 10)), 1.15) * 0.88 * (NF - 1)));
+        let band = bandOf(h), gi, si;
+        if (band === 0) {
+          if (noise(wx * 0.35, wz * 0.35 - time * 0.8) > 0.62) band = 1;
+          si = 3; gi = WATER;
+        } else {
+          const diff = hp - Math.max(heightAt(wx - 1.5, wz), WL);   // sun from the left
+          const shade = Math.max(0.45, Math.min(1.3, 1 + diff * 7));
+          si = Math.min(NS - 1, Math.max(0, Math.round((shade - 0.45) / 0.85 * (NS - 1))));
+          gi = 1 + Math.min(8, Math.floor(clamp01(0.18 + 0.5 * h + (shade - 1) * 0.8) * 9));
+        }
+        const key = (band * NS + si) * NF + fi;
+        for (let r = yr; r < ymin; r++) emit(c, r, gi, key);
+        ymin = yr;
+      }
+      top[c] = ymin;
+    }
+    return top;
+  }
+
+  function groundAhead() {
+    let g = 0;
+    for (let k = 0; k <= 8; k += 2) g = Math.max(g, Math.max(heightAt(bankX, camZ + k), WL));
+    return g * HS;
+  }
+
+  function mulberry32(seed) {
+    return () => {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function resize() {
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    W = innerWidth; H = innerHeight;
+    canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    cols = Math.max(20, Math.ceil(W / CW)); rows = Math.max(20, Math.ceil(H / CH));
+    ox = (W - cols * CW) / 2; oy = (H - rows * CH) / 2;
+    horizon = Math.round(rows * 0.18);
+    const rnd = mulberry32(1027);
+    stars = [];
+    for (let i = 0, n = Math.floor(cols * horizon * 0.05); i < n; i++) {
+      stars.push({ c: (rnd() * cols) | 0, r: (rnd() * Math.max(1, horizon - 2)) | 0, ch: rnd() > 0.85 ? '+' : '.', a: 0.18 + rnd() * 0.35, ph: rnd() * 6.28, sp: 0.3 + rnd() * 0.7 });
+    }
+  }
+
+  const px = c => ox + c * CW + CW / 2;
+  const py = r => oy + (r + 1) * CH - 4;
+
+  function render(steady) {
+    const g = ctx.createLinearGradient(0, oy, 0, oy + horizon * CH);
+    g.addColorStop(0, '#140F1D'); g.addColorStop(1, '#3A2340');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.font = FONT; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+
+    ctx.fillStyle = '#CBBFE0';
+    for (const s of stars) {
+      ctx.globalAlpha = steady ? s.a : s.a * (0.6 + 0.4 * Math.sin(time * s.sp + s.ph));
+      ctx.fillText(s.ch, px(s.c), py(s.r));
+    }
+    ctx.globalAlpha = 1;
+
+    // low sun on the left
+    const sc = Math.round(cols * 0.24), sr = horizon - 3;
+    const gx = px(sc), gy = py(sr + 1) - 5, R = CH * 5;
+    const glow = ctx.createRadialGradient(gx, gy, 0, gx, gy, R);
+    glow.addColorStop(0, 'rgba(255,190,130,0.2)'); glow.addColorStop(1, 'rgba(255,190,130,0)');
+    ctx.fillStyle = glow; ctx.fillRect(gx - R, gy - R, 2 * R, 2 * R);
+    const sun = ['*#*', '###', '*#*'];
+    for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) {
+      ctx.fillStyle = sun[j][i] === '#' ? '#FFE3B0' : '#F2A86A';
+      ctx.fillText(sun[j][i], px(sc - 1 + i), py(sr + j));
+    }
+
+    for (const b of buckets) b.length = 0;
+    const top = computeFrame((c, r, gi, key) => buckets[key].push(c, r, gi));
+    ctx.fillStyle = '#100B16';
+    for (let c = 0; c < cols; c++) if (top[c] < rows) ctx.fillRect(ox + c * CW, oy + top[c] * CH, CW, (rows - top[c]) * CH + 1);
+    for (let k = 0; k < buckets.length; k++) {
+      const bk = buckets[k];
+      if (!bk.length) continue;
+      ctx.fillStyle = lut[k];
+      for (let i = 0; i < bk.length; i += 3) ctx.fillText(GL[bk[i + 2]], px(bk[i]), py(bk[i + 1]));
+    }
+  }
+
+  function update(dt) {
+    time += dt;
+    camZ += dt * BASE_RATE * SPEED;
+    const prev = bankX;
+    bankX += (mouseNX * 18 - bankX) * (1 - Math.pow(0.5, dt / 1.4));   // subtle, slow bank
+    const rollTarget = Math.max(-1, Math.min(1, (bankX - prev) / Math.max(dt, 1e-3) / 14));
+    roll += (rollTarget - roll) * (1 - Math.pow(0.5, dt / 0.5));
+    camY += (groundAhead() + ALT - camY) * (1 - Math.pow(0.5, dt / 0.8));
+  }
+
+  function frame(ts) {
+    rafId = requestAnimationFrame(frame);
+    const now = ts / 1000;
+    const dt = last ? Math.min(0.1, now - last) : 0;
+    last = now; acc += dt;
+    if (acc < 1 / 24) return;            // 24fps: plenty for walking pace, kind to the glass blur
+    update(acc); acc = 0;
+    render(false);
+  }
+  function start() { if (!rafId) { last = 0; acc = 0; rafId = requestAnimationFrame(frame); } }
+  function stop() { if (rafId) { cancelAnimationFrame(rafId); rafId = 0; } }
+  function staticFrame() { camZ = camZ || 140; camY = groundAhead() + ALT; render(true); }
+  function sync() { (!paused && !document.hidden && !reduce.matches) ? start() : (stop(), staticFrame()); }
+
+  // banking listens on window, so it works over empty areas between panels
+  addEventListener('pointermove', e => { mouseNX = Math.max(-1, Math.min(1, (e.clientX / W) * 2 - 1)); }, { passive: true });
+
+  // controls
+  const speedBtns = document.querySelectorAll('[data-speed]');
+  const pauseBtn = document.getElementById('tpause');
+  speedBtns.forEach(b => b.addEventListener('click', () => {
+    SPEED = +b.dataset.speed;
+    speedBtns.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+  }));
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.setAttribute('aria-pressed', String(paused));
+    pauseBtn.textContent = paused ? 'Play' : 'Pause';
+    sync();
+  });
+
+  document.addEventListener('visibilitychange', sync);
+  reduce.addEventListener ? reduce.addEventListener('change', sync) : reduce.addListener(sync);
+
+  let rt = 0;
+  addEventListener('resize', () => {
+    clearTimeout(rt);
+    rt = setTimeout(() => { resize(); if (!rafId) staticFrame(); }, 150);
+  });
+
+  resize();
+  if (reduce.matches) camZ = 140;
+  camY = groundAhead() + ALT;
+  render(reduce.matches);
+  sync();
+  // repaint once the web font arrives so the first frames aren't in the fallback font
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (!rafId) staticFrame(); });
+})();
+
+</script>
+</body>
+</html>
