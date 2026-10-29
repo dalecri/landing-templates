@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mark's Essays</title>
+<meta name="description" content="Essays by Mark on business, faith, and the state of the world.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FAF7F1;
+    --paper-deep:#F2ECE0;
+    --ink:#1C1A17;
+    --ink-soft:#3F3A33;
+    --muted:#6A635A;
+    --rule:#E2D9C8;
+    --green:#2F5233;
+    --gold:#B08D3E;
+    --gold-text:#7A5F22; /* darker gold for small text contrast */
+    --display:"Fraunces", Georgia, "Times New Roman", serif;
+    --masthead:"Archivo", "Helvetica Neue", Arial, sans-serif;
+    --body:"Newsreader", Georgia, "Times New Roman", serif;
+    --sans:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{font-size:18px;-webkit-text-size-adjust:100%}
+  @media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth} }
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  img,svg{display:block}
+  [hidden]{display:none !important}
+  .wrap{max-width:68rem;margin:0 auto;padding-left:max(1.5rem, env(safe-area-inset-left, 0px));padding-right:max(1.5rem, env(safe-area-inset-right, 0px))}
+  body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:30;background:var(--paper)}
+  .visually-hidden{position:absolute !important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  :focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:2px}
+  [tabindex="-1"]:focus{outline:none}
+  section[id], header[id]{scroll-margin-top:84px}
+
+  .skip{position:absolute;left:1rem;top:-4rem;z-index:50;background:var(--green);color:#fff;padding:.7rem 1rem;font-family:var(--sans);font-size:.9rem;text-decoration:none}
+  .skip:focus{top:1rem}
+
+  /* Slow drawn underline */
+  .draw{
+    color:inherit;text-decoration:none;
+    background-image:linear-gradient(currentColor,currentColor);
+    background-repeat:no-repeat;background-position:0 100%;background-size:0% 1px;
+    transition:background-size .7s cubic-bezier(.2,.6,.2,1);
+    padding-bottom:1px;
+  }
+  a:hover .draw, a:focus-visible .draw, a.draw:hover, a.draw:focus-visible{background-size:100% 1px}
+
+  /* Top bar */
+  .topbar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:20;background:rgba(250,247,241,.95);border-bottom:1px solid var(--rule)}
+  @supports (backdrop-filter:blur(4px)){ .topbar{background:rgba(250,247,241,.86);backdrop-filter:blur(6px)} }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;min-height:64px}
+  .brand{display:inline-flex;align-items:center;gap:.65rem;min-height:44px;color:var(--green);text-decoration:none}
+  .brand svg{width:40px;height:40px}
+  .brand-name{font-family:var(--masthead);font-weight:700;font-stretch:110%;font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink)}
+  .site-nav ul{display:flex;gap:.1rem;list-style:none;margin:0;padding:0}
+  .site-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 .7rem;font-family:var(--sans);font-size:.82rem;letter-spacing:.04em;color:var(--ink);text-decoration:none}
+  .menu-btn{display:none;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;background:transparent;border:1px solid var(--rule);border-radius:999px;font-family:var(--sans);font-size:.85rem;color:var(--ink);cursor:pointer}
+  .menu-btn .bars{width:16px;height:10px;border-top:1.5px solid currentColor;border-bottom:1.5px solid currentColor;position:relative}
+  .menu-btn .bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px solid currentColor;transform:translateY(-50%)}
+
+  /* Masthead */
+  .masthead{text-align:center;padding:3.75rem 0 1.5rem}
+  .masthead h1{
+    font-family:var(--masthead);font-weight:700;font-stretch:110%;
+    font-size:clamp(4rem,18vw,9rem);line-height:1;letter-spacing:.12em;
+    margin:0 0 .25em;padding-left:.12em; /* balance trailing letter-spacing */
+    color:#2A2622;
+    text-shadow:0 1px 0 rgba(255,255,255,.9), 0 -1px 0 rgba(0,0,0,.2), 0 0 1px rgba(28,26,23,.25);
+  }
+  .rule-seal{display:flex;align-items:center;gap:1rem;max-width:30rem;margin:0 auto 1.25rem;color:var(--gold)}
+  .rule-seal::before,.rule-seal::after{content:"";flex:1;height:1px;background:currentColor;opacity:.55}
+  .rule-seal svg{width:34px;height:34px}
+  .tagline{font-style:italic;color:var(--muted);font-size:1.05rem;max-width:30rem;margin:0 auto}
+
+  /* Hero */
+  .welcome{font-family:var(--display);font-weight:350;font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.45;color:var(--ink-soft);text-align:center;max-width:38rem;margin:2.75rem auto 3.25rem}
+  .featured{position:relative;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);padding:2.75rem 0 3rem;display:grid;grid-template-columns:minmax(0,1fr);justify-items:start}
+  .featured h2{font-family:var(--display);font-weight:450;font-size:clamp(2.1rem,5.5vw,3.6rem);line-height:1.08;margin:.6rem 0 1rem;max-width:20ch}
+  .featured h2 a{color:var(--ink);text-decoration:none}
+  .featured h2 a::after{content:"";position:absolute;inset:0}
+  .featured .excerpt{font-size:1.25rem;line-height:1.55;color:var(--ink-soft);max-width:38rem;margin:0 0 1.25rem}
+  .read-on{font-family:var(--sans);font-size:.85rem;letter-spacing:.04em;color:var(--green);margin-top:1rem}
+
+  .kicker{margin:0;font-family:var(--sans);font-size:.9rem;font-weight:600;font-stretch:110%;font-variant-caps:all-small-caps;letter-spacing:.14em;color:var(--green)}
+  .meta{margin:0;font-family:var(--sans);font-size:.8rem;color:var(--muted)}
+
+  /* Section headings */
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;border-bottom:1px solid var(--ink);margin:4.75rem 0 0;padding-bottom:.6rem}
+  .section-head h2{font-family:var(--display);font-weight:500;font-size:1.8rem;margin:0}
+  .section-head p{margin:0;font-family:var(--sans);font-size:.8rem;color:var(--muted)}
+
+  /* Latest list */
+  .entries{max-width:52rem}
+  .entry{position:relative;display:grid;grid-template-columns:10rem minmax(0,1fr);grid-template-areas:"kick title" "meta excerpt";column-gap:2rem;row-gap:.35rem;padding:1.75rem 0;border-bottom:1px solid var(--rule)}
+  .entry .kicker{grid-area:kick;padding-top:.35rem}
+  .entry .meta{grid-area:meta}
+  .entry-title{grid-area:title;margin:0;font-family:var(--display);font-weight:500;font-size:1.45rem;line-height:1.25}
+  .entry-title a{color:var(--ink);text-decoration:none}
+  .entry-title a::after{content:"";position:absolute;inset:0}
+  .entry .excerpt{grid-area:excerpt;margin:0;color:var(--ink-soft);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* Section blocks */
+  .sections{display:grid;grid-template-columns:minmax(0,1fr);gap:1.5rem;margin-top:1.75rem}
+  @media (min-width:960px){ .sections{grid-template-columns:repeat(3,minmax(0,1fr))} }
+  .block{background:#FFFDF8;border:1px solid var(--rule);border-top:3px solid var(--green);padding:1.75rem 1.6rem 1.5rem}
+  .block h3{font-family:var(--display);font-weight:500;font-size:1.6rem;margin:0 0 .35rem}
+  .block .desc{font-style:italic;color:var(--muted);margin:0 0 1.25rem;line-height:1.5}
+  .block ul{list-style:none;margin:0;padding:0}
+  .block li{border-top:1px solid var(--rule)}
+  .block li a{display:block;padding:.85rem 0;min-height:44px;color:var(--ink);text-decoration:none}
+  .block h4{margin:0 0 .15rem;font-family:var(--display);font-weight:500;font-size:1.12rem;line-height:1.3}
+  .block .empty{color:var(--muted);font-style:italic;border-top:1px solid var(--rule);padding-top:.85rem;margin:0}
+
+  /* About */
+  .about{display:grid;grid-template-columns:17rem minmax(0,1fr);gap:3rem;align-items:start;margin-top:2rem}
+  .portrait-wrap{margin:0;display:flex;flex-direction:column;gap:.7rem}.portrait{aspect-ratio:4/5;max-width:100%;border:1px solid var(--ink);background:var(--paper);padding:16px;box-shadow:inset 0 0 0 10px var(--paper), inset 0 0 0 11px var(--gold)}.pixel-pfp{width:100%;height:100%;image-rendering:pixelated}.portrait-wrap figcaption{font-family:var(--sans);font-size:.75rem;color:var(--muted);letter-spacing:.02em}
+    .about-text{max-width:36rem}
+  .about-text p{margin:0 0 1.1em;font-size:1.08rem}
+  .about-list{list-style:none;padding:1rem 0 0;margin:1.5rem 0 0;border-top:1px solid var(--rule);font-family:var(--sans);font-size:.88rem;color:var(--ink-soft)}
+  .about-list li::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:.6rem;vertical-align:middle}
+  .placeholder-note{font-family:var(--sans);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-text)}
+
+  /* Subscribe */
+  .subscribe{margin-top:5.5rem;background:var(--paper-deep);border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);padding:3.5rem 0;text-align:center}
+  .subscribe h2{font-family:var(--display);font-weight:500;font-size:1.9rem;margin:0 0 .4rem}
+  .subscribe p{margin:0 auto 1.5rem;max-width:30rem;color:var(--ink-soft)}
+  .sub-form{display:flex;gap:.6rem;justify-content:center;max-width:30rem;margin:0 auto;text-align:left}
+  .sub-form .field{flex:1;display:flex;flex-direction:column;gap:.3rem}
+  .sub-form label{font-family:var(--sans);font-size:.78rem;color:var(--muted)}
+  .sub-form input{min-height:48px;padding:0 .9rem;font:inherit;font-size:1rem;color:var(--ink);background:#FFFDF8;border:1px solid #B9AF9E;border-radius:2px}
+  .sub-form button{align-self:flex-end;min-height:48px;padding:0 1.4rem;font-family:var(--sans);font-size:.9rem;letter-spacing:.04em;color:#fff;background:var(--green);border:0;border-radius:2px;cursor:pointer}
+  .sub-form button:hover{background:#26432A}
+  .thanks{font-family:var(--display);font-size:1.25rem;color:var(--green);margin:0}
+
+  /* Footer */
+  .site-footer{text-align:center;padding:3rem 0 3.5rem;color:var(--muted)}
+  .site-footer svg{width:48px;height:48px;margin:0 auto .9rem;color:var(--green)}
+  .site-footer p{margin:0;font-family:var(--sans);font-size:.8rem;letter-spacing:.03em}
+
+  /* Reading view */
+  .essay{max-width:40rem;margin:0 auto;padding:2.25rem 0 3rem}
+  .back{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.85rem;color:var(--green);text-decoration:none;margin-bottom:1.5rem}
+  .essay h1{font-family:var(--display);font-weight:450;font-size:clamp(2.2rem,6vw,3.5rem);line-height:1.1;margin:.5rem 0 1rem}
+  .essay-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;margin-bottom:2.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--rule)}
+  .sample-note{font-family:var(--sans);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-text);border:1px solid var(--gold);padding:.15rem .55rem;border-radius:2px}
+  .prose{font-size:1.17rem;line-height:1.72;max-width:33em}
+  .prose p{margin:0 0 1.3em}
+  .dateline{font-family:var(--display);font-style:italic;color:var(--green);margin-right:.15em}
+  .signoff{display:flex;justify-content:center;margin:3rem 0 2.5rem;color:var(--green)}
+  .signoff svg{width:76px;height:76px;transform:rotate(-8deg);opacity:.88}
+  .essay-nav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;border-top:1px solid var(--rule);padding-top:1.25rem}
+  .essay-nav a{display:inline-flex;align-items:center;min-height:44px;font-family:var(--sans);font-size:.85rem;color:var(--green);text-decoration:none}
+
+  .share{display:flex;flex-direction:column;align-items:center;gap:.75rem;margin:0 0 2.5rem}
+  .share-label{margin:0;font-family:var(--sans);font-weight:600;font-stretch:110%;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .share-row{display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem}
+  .share-btn{width:44px;height:44px;display:inline-grid;place-items:center;padding:0;border:1px solid var(--rule);border-radius:50%;background:transparent;color:var(--ink-soft);cursor:pointer;text-decoration:none;transition:color .3s ease, border-color .3s ease}
+  .share-btn:hover{color:var(--green);border-color:var(--green)}
+  .share-btn svg{width:18px;height:18px}
+  .share-status{min-height:1.3em;margin:0;font-family:var(--sans);font-size:.8rem;color:var(--green)}
+  .share-url{width:100%;max-width:28rem;min-height:44px;padding:0 .8rem;font-family:var(--sans);font-size:.85rem;color:var(--ink);background:#FFFDF8;border:1px solid #B9AF9E;border-radius:2px}
+  .noscript{max-width:40rem;margin:2rem auto;padding:1rem 1.25rem;border:1px solid var(--gold);font-family:var(--sans);font-size:.9rem}
+
+  .fade{animation:fade .55s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Mobile */
+  @media (max-width:719px){
+    html{font-size:17px}
+    .wrap{padding-left:max(1.15rem, env(safe-area-inset-left, 0px));padding-right:max(1.15rem, env(safe-area-inset-right, 0px))}
+    .menu-btn{display:inline-flex}
+    .site-nav ul{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--rule);padding-block:.4rem 1rem;padding-left:max(1.15rem, env(safe-area-inset-left, 0px));padding-right:max(1.15rem, env(safe-area-inset-right, 0px))}
+    .site-nav.open ul{display:flex}
+    .site-nav a{width:100%;font-size:1rem;padding:0;border-bottom:1px solid var(--rule)}
+    .site-nav li:last-child a{border-bottom:0}
+    .masthead{padding-top:2.75rem}
+    .entry{grid-template-columns:minmax(0,1fr);grid-template-areas:"kick" "title" "meta" "excerpt"}
+    .entry .kicker{padding-top:0}
+    .about{grid-template-columns:minmax(0,1fr);gap:2rem}
+    .portrait-wrap{max-width:15rem}
+    .sub-form{flex-direction:column}
+    .sub-form button{align-self:stretch}
+    .section-head{flex-direction:column;gap:.2rem}
+    .prose{font-size:1.1rem}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- The seal: defined once, reused everywhere with <use href="#seal"> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="seal" viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="30" fill="none" stroke="currentColor" stroke-width="1.6"/>
+      <circle cx="32" cy="32" r="25.4" fill="none" stroke="currentColor" stroke-width="0.8"/>
+      <circle cx="32" cy="4.3" r="0.95" fill="currentColor"/>
+      <circle cx="32" cy="59.7" r="0.95" fill="currentColor"/>
+      <circle cx="4.3" cy="32" r="0.95" fill="currentColor"/>
+      <circle cx="59.7" cy="32" r="0.95" fill="currentColor"/>
+      <text x="32" y="33.5" text-anchor="middle" dominant-baseline="middle" font-family="Fraunces, Georgia, serif" font-size="27" font-weight="500" fill="currentColor">M</text>
+    </symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Mark, home">
+      <svg aria-hidden="true"><use href="#seal"/></svg>
+      <span class="brand-name">Mark</span>
+    </a>
+    <nav class="site-nav" id="site-nav" aria-label="Primary">
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-list">
+        <span class="bars" aria-hidden="true"></span>Menu
+      </button>
+      <ul id="nav-list">
+        <li><a href="#latest"><span class="draw">Latest</span></a></li>
+        <li><a href="#business"><span class="draw">Business</span></a></li>
+        <li><a href="#spiritual"><span class="draw">Spiritual</span></a></li>
+        <li><a href="#world-affairs"><span class="draw">World Affairs</span></a></li>
+        <li><a href="#about"><span class="draw">About</span></a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <noscript><p class="noscript">The essays on this page need JavaScript to display. Please open it in a regular web browser.</p></noscript>
+  <!-- HOME VIEW -->
+  <div id="home-view">
+    <div class="wrap">
+      <header class="masthead" id="top" tabindex="-1">
+        <h1>MARK</h1>
+        <div class="rule-seal"><svg aria-hidden="true"><use href="#seal"/></svg></div>
+        <p class="tagline">[Tagline to come — a line about a life of paying attention.]</p>
+      </header>
+
+      <!-- Placeholder welcome: replace with Mark's own two sentences -->
+      <p class="welcome">Welcome, and thank you for stopping by. This is where I set down what I’ve been thinking about, slowly and in my own words.</p>
+
+      <section aria-label="Featured essay">
+        <div id="featured"></div>
+      </section>
+
+      <section id="latest" tabindex="-1" aria-labelledby="latest-h">
+        <div class="section-head">
+          <h2 id="latest-h">Latest essays</h2>
+          <p id="count-label"></p>
+        </div>
+        <div class="entries" id="entries"></div>
+      </section>
+
+      <section id="browse" aria-labelledby="browse-h">
+        <div class="section-head">
+          <h2 id="browse-h">Browse by section</h2>
+        </div>
+        <div class="sections" id="sections"></div>
+      </section>
+
+      <section id="about" tabindex="-1" aria-labelledby="about-h">
+        <div class="section-head">
+          <h2 id="about-h">About Mark</h2>
+          <p class="placeholder-note">Placeholder biography</p>
+        </div>
+        <div class="about">
+          <figure class="portrait-wrap">
+            <div class="portrait"><svg class="pixel-pfp" viewBox="0 0 24 30" shape-rendering="crispEdges" role="img" aria-label="Pixel-art placeholder portrait of Mark"><rect width="24" height="30" fill="#E9E1D1"/><rect x="8" y="3" width="8" height="1" fill="#CFC9BE"/><rect x="7" y="4" width="10" height="1" fill="#CFC9BE"/><rect x="6" y="5" width="12" height="1" fill="#CFC9BE"/><rect x="6" y="6" width="1" height="1" fill="#CFC9BE"/><rect x="7" y="6" width="1" height="1" fill="#A39C90"/><rect x="8" y="6" width="8" height="1" fill="#E9C6A3"/><rect x="16" y="6" width="1" height="1" fill="#A39C90"/><rect x="17" y="6" width="1" height="1" fill="#CFC9BE"/><rect x="6" y="7" width="1" height="1" fill="#CFC9BE"/><rect x="7" y="7" width="10" height="1" fill="#E9C6A3"/><rect x="17" y="7" width="1" height="1" fill="#CFC9BE"/><rect x="6" y="8" width="1" height="1" fill="#CFC9BE"/><rect x="7" y="8" width="1" height="1" fill="#E9C6A3"/><rect x="8" y="8" width="3" height="1" fill="#A39C90"/><rect x="11" y="8" width="2" height="1" fill="#E9C6A3"/><rect x="13" y="8" width="3" height="1" fill="#A39C90"/><rect x="16" y="8" width="1" height="1" fill="#E9C6A3"/><rect x="17" y="8" width="1" height="1" fill="#CFC9BE"/><rect x="5" y="9" width="1" height="1" fill="#C99B75"/><rect x="6" y="9" width="1" height="1" fill="#E9C6A3"/><rect x="7" y="9" width="4" height="1" fill="#2A2622"/><rect x="11" y="9" width="2" height="1" fill="#E9C6A3"/><rect x="13" y="9" width="4" height="1" fill="#2A2622"/><rect x="17" y="9" width="1" height="1" fill="#E9C6A3"/><rect x="18" y="9" width="1" height="1" fill="#C99B75"/><rect x="5" y="10" width="1" height="1" fill="#C99B75"/><rect x="6" y="10" width="1" height="1" fill="#E9C6A3"/><rect x="7" y="10" width="1" height="1" fill="#2A2622"/><rect x="8" y="10" width="1" height="1" fill="#DDE4DC"/><rect x="9" y="10" width="1" height="1" fill="#2A2622"/><rect x="10" y="10" width="4" height="1" fill="#2A2622"/><rect x="14" y="10" width="1" height="1" fill="#2A2622"/><rect x="15" y="10" width="1" height="1" fill="#DDE4DC"/><rect x="16" y="10" width="1" height="1" fill="#2A2622"/><rect x="17" y="10" width="1" height="1" fill="#E9C6A3"/><rect x="18" y="10" width="1" height="1" fill="#C99B75"/><rect x="5" y="11" width="1" height="1" fill="#C99B75"/><rect x="6" y="11" width="1" height="1" fill="#E9C6A3"/><rect x="7" y="11" width="1" height="1" fill="#2A2622"/><rect x="8" y="11" width="2" height="1" fill="#DDE4DC"/><rect x="10" y="11" width="1" height="1" fill="#2A2622"/><rect x="11" y="11" width="2" height="1" fill="#E9C6A3"/><rect x="13" y="11" width="1" height="1" fill="#2A2622"/><rect x="14" y="11" width="2" height="1" fill="#DDE4DC"/><rect x="16" y="11" width="1" height="1" fill="#2A2622"/><rect x="17" y="11" width="1" height="1" fill="#E9C6A3"/><rect x="18" y="11" width="1" height="1" fill="#C99B75"/><rect x="6" y="12" width="1" height="1" fill="#E9C6A3"/><rect x="7" y="12" width="4" height="1" fill="#2A2622"/><rect x="11" y="12" width="2" height="1" fill="#C99B75"/><rect x="13" y="12" width="4" height="1" fill="#2A2622"/><rect x="17" y="12" width="1" height="1" fill="#E9C6A3"/><rect x="6" y="13" width="4" height="1" fill="#E9C6A3"/><rect x="10" y="13" width="4" height="1" fill="#C99B75"/><rect x="14" y="13" width="4" height="1" fill="#E9C6A3"/><rect x="6" y="14" width="2" height="1" fill="#E9C6A3"/><rect x="8" y="14" width="8" height="1" fill="#BEB8AD"/><rect x="16" y="14" width="2" height="1" fill="#E9C6A3"/><rect x="6" y="15" width="4" height="1" fill="#BEB8AD"/><rect x="10" y="15" width="4" height="1" fill="#9A5A44"/><rect x="14" y="15" width="4" height="1" fill="#BEB8AD"/><rect x="6" y="16" width="12" height="1" fill="#BEB8AD"/><rect x="7" y="17" width="10" height="1" fill="#BEB8AD"/><rect x="8" y="18" width="1" height="1" fill="#C99B75"/><rect x="9" y="18" width="6" height="1" fill="#BEB8AD"/><rect x="15" y="18" width="1" height="1" fill="#C99B75"/><rect x="9" y="19" width="6" height="1" fill="#C99B75"/><rect x="5" y="20" width="4" height="1" fill="#2F5233"/><rect x="9" y="20" width="2" height="1" fill="#FAF7F1"/><rect x="11" y="20" width="2" height="1" fill="#C99B75"/><rect x="13" y="20" width="2" height="1" fill="#FAF7F1"/><rect x="15" y="20" width="4" height="1" fill="#2F5233"/><rect x="4" y="21" width="7" height="1" fill="#2F5233"/><rect x="11" y="21" width="2" height="1" fill="#FAF7F1"/><rect x="13" y="21" width="7" height="1" fill="#2F5233"/><rect x="3" y="22" width="1" height="1" fill="#2F5233"/><rect x="4" y="22" width="1" height="1" fill="#24402A"/><rect x="5" y="22" width="14" height="1" fill="#2F5233"/><rect x="19" y="22" width="1" height="1" fill="#24402A"/><rect x="20" y="22" width="1" height="1" fill="#2F5233"/><rect x="2" y="23" width="1" height="1" fill="#2F5233"/><rect x="3" y="23" width="1" height="1" fill="#24402A"/><rect x="4" y="23" width="16" height="1" fill="#2F5233"/><rect x="20" y="23" width="1" height="1" fill="#24402A"/><rect x="21" y="23" width="1" height="1" fill="#2F5233"/><rect x="1" y="24" width="1" height="1" fill="#2F5233"/><rect x="2" y="24" width="1" height="1" fill="#24402A"/><rect x="3" y="24" width="5" height="1" fill="#2F5233"/><rect x="8" y="24" width="1" height="1" fill="#B08D3E"/><rect x="9" y="24" width="12" height="1" fill="#2F5233"/><rect x="21" y="24" width="1" height="1" fill="#24402A"/><rect x="22" y="24" width="1" height="1" fill="#2F5233"/><rect x="0" y="25" width="1" height="1" fill="#2F5233"/><rect x="1" y="25" width="1" height="1" fill="#24402A"/><rect x="2" y="25" width="20" height="1" fill="#2F5233"/><rect x="22" y="25" width="1" height="1" fill="#24402A"/><rect x="23" y="25" width="1" height="1" fill="#2F5233"/><rect x="0" y="26" width="1" height="1" fill="#2F5233"/><rect x="1" y="26" width="1" height="1" fill="#24402A"/><rect x="2" y="26" width="20" height="1" fill="#2F5233"/><rect x="22" y="26" width="1" height="1" fill="#24402A"/><rect x="23" y="26" width="1" height="1" fill="#2F5233"/><rect x="0" y="27" width="1" height="1" fill="#2F5233"/><rect x="1" y="27" width="1" height="1" fill="#24402A"/><rect x="2" y="27" width="20" height="1" fill="#2F5233"/><rect x="22" y="27" width="1" height="1" fill="#24402A"/><rect x="23" y="27" width="1" height="1" fill="#2F5233"/><rect x="0" y="28" width="1" height="1" fill="#2F5233"/><rect x="1" y="28" width="1" height="1" fill="#24402A"/><rect x="2" y="28" width="20" height="1" fill="#2F5233"/><rect x="22" y="28" width="1" height="1" fill="#24402A"/><rect x="23" y="28" width="1" height="1" fill="#2F5233"/><rect x="0" y="29" width="1" height="1" fill="#2F5233"/><rect x="1" y="29" width="1" height="1" fill="#24402A"/><rect x="2" y="29" width="20" height="1" fill="#2F5233"/><rect x="22" y="29" width="1" height="1" fill="#24402A"/><rect x="23" y="29" width="1" height="1" fill="#2F5233"/></svg></div>
+            <figcaption>Pixel portrait, placeholder until a real photo is chosen</figcaption>
+          </figure>
+          <div class="about-text">
+            <p>[I spent most of my working life in business, and the most useful things I learned there had little to do with money and a great deal to do with people.]</p>
+            <p>[Faith has been the steady thread underneath it all. I don’t write as an expert on it, only as someone who has kept practising and kept paying attention.]</p>
+            <p>[These days I read, walk, spend time with my family, and try to make sense of the world without letting it make me anxious. This site is where I think out loud.]</p>
+            <ul class="about-list">
+              <li>Writing about: business, faith, the state of the world.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="subscribe" aria-labelledby="sub-h">
+      <div class="wrap">
+        <h2 id="sub-h">New essays by email</h2>
+        <p>An occasional letter when something new is published. Nothing else.</p>
+        <!-- Front-end only for now: connect to a mailing service later -->
+        <form class="sub-form" id="sub-form" novalidate>
+          <div class="field">
+            <label for="sub-email">Email address</label>
+            <input id="sub-email" type="email" name="email" autocomplete="email" required placeholder="you@example.com">
+          </div>
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="thanks" id="sub-thanks" tabindex="-1" hidden>Thank you. The next essay will find its way to you.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- READING VIEW -->
+  <div id="reader-view" class="wrap" hidden></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <svg aria-hidden="true"><use href="#seal"/></svg>
+    <p>© 2026 Mark. Written by hand, published with care.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   POSTS: add a new essay by adding one object here.
+   date: "YYYY-MM-DD". category must match a SECTIONS name.
+   featured: true pins it to the hero (otherwise newest is used).
+   sample: true shows the "Sample essay" note.
+   ============================================================ */
+const POSTS = [
+  {
+    id: "reading-the-news",
+    category: "World Affairs",
+    title: "Reading the News Without Losing Your Peace",
+    date: "2026-10-14",
+    featured: true,
+    sample: true,
+    excerpt: "I used to think staying informed meant staying alarmed. These days I read less news, more slowly, and I understand the world better for it.",
+    body: [
+      "For most of my adult life I read the paper the way some men smoke: first thing in the morning, compulsively, and with a vague sense that it wasn’t doing me much good. When the paper became a phone, the habit got worse. There was always another update, another headline written to make my pulse jump, and I mistook the jumping for understanding.",
+      "A few years ago I made a small rule. I would read the news once a day, sitting down, and never in bed. It sounds trivial. It changed a great deal. Once the news stopped arriving in a constant drip, I could see it for what most of it is: the same handful of stories, reported again and again, each time in a slightly louder voice.",
+      "I also started asking a simple question of every story: will this matter in a month? Surprisingly often the honest answer is no. The things that will matter, a change in law, a war that is spreading, a quiet shift in how people earn a living, are usually reported in fewer words and with less excitement. You have to go looking for them.",
+      "None of this is an argument for looking away. I care what happens in the world, perhaps more than I did when I was soaking in it. But caring is not the same as consuming. There is a kind of attention that helps you act wisely, and a kind that just leaves you tired and afraid. I’m trying to practise the first.",
+      "If you take anything from this, let it be permission. You are allowed to close the tab. The world will still be there in the morning, and you will meet it better rested."
+    ]
+  },
+  {
+    id: "beginning-the-day-slowly",
+    category: "Spiritual",
+    title: "On Beginning the Day Slowly",
+    date: "2026-10-02",
+    sample: true,
+    excerpt: "The first half hour of the morning sets the weather for the rest of the day. I’ve learned to guard it like something borrowed.",
+    body: [
+      "I am up before the house most mornings. Not out of discipline, really, but because at my age the body keeps its own hours. For years I filled that quiet with the radio, or email, or a list of what had to be done. Then one winter, for reasons I can’t fully explain, I stopped.",
+      "Now the first half hour goes like this. I make coffee and I drink it at the window. I don’t read. I say a short prayer, mostly the same one, and then I sit with whatever comes. Some days that is gratitude. Some days it is worry, and I let it be there without trying to solve it before breakfast.",
+      "What surprised me was how much the rest of the day changed. I am slower to anger. I listen better. When something goes wrong at ten o’clock, I have a little reserve to draw on, as though I had put something in the bank before the doors opened.",
+      "I don’t think there is anything mystical in this, or rather, I think the mystical is closer to ordinary life than we assume. Every tradition I respect has some version of beginning the day by turning toward what is larger than you. The form matters less than the turning.",
+      "So my advice, for what it is worth: give the morning back to yourself. Ten minutes is enough to start. Leave the phone in another room. See what is there when nothing is asking for your attention."
+    ]
+  },
+  {
+    id: "what-a-handshake-meant",
+    category: "Business",
+    title: "What a Handshake Used to Mean",
+    date: "2026-09-18",
+    sample: true,
+    excerpt: "Early in my career, the most important agreements I made were never written down. I’ve been thinking about what we lost when that changed, and what we didn’t.",
+    body: [
+      "The first real deal I was part of was closed in a diner. Two men, a pot of coffee, and a handshake at the end. The lawyers drew up papers weeks later, but everyone at that table understood that the papers were a formality. The agreement had already happened, and it lived in the two people who made it.",
+      "I don’t want to romanticise it. Handshake deals favoured people who already knew each other, and they could leave the newcomer out in the cold. Contracts protect people, and I have been grateful for a good one more than once.",
+      "But something was carried in the handshake that a contract cannot hold. It was a statement about character: I am the kind of person who does what he says, and I am trusting that you are too. When you broke that kind of promise, you didn’t just lose a client. You lost your name in that town.",
+      "In my experience the best businesses still run on that understanding, whatever paperwork sits underneath. The customers who stay, and the employees who stay, do so because over time they learned your word was good. No clause can manufacture that. It is built one kept promise at a time, often when no one would have noticed if you’d broken it.",
+      "So sign the contract. Read it carefully. And then behave as though the handshake is the thing that really counts, because in the long run it is."
+    ]
+  },
+  {
+    id: "what-i-tell-my-grandchildren",
+    category: "World Affairs",
+    title: "What I Tell My Grandchildren About the World",
+    date: "2026-09-03",
+    sample: true,
+    excerpt: "They ask me whether things are getting worse. I try to give them an honest answer, which is more complicated, and more hopeful, than either yes or no.",
+    body: [
+      "My oldest grandchild asked me last summer whether the world was falling apart. She asked it casually, the way children ask the hardest questions, between bites of a sandwich. I realised I didn’t want to give her either of the easy answers.",
+      "The easy pessimistic answer is yes: look at the wars, the weather, the anger. The easy optimistic answer is that every generation thinks the sky is falling and it never does. Both are a way of ending the conversation. Neither is quite true.",
+      "What I told her was this. Some things are better than they have ever been. Fewer children die young. More people can read. Medicine does things my parents would have called miracles. And some things are genuinely difficult, and will need her generation’s best effort to fix. Both are real at once, and a grown-up is someone who can hold both without falling over.",
+      "I also told her that the news is not the world. The news is a list of what went wrong today, because that is its job. Most of the world, most days, is people going to work, raising children and helping neighbours, and none of that makes the paper.",
+      "Finally I told her that she will not have to fix everything, only her part. That seemed to help. It helps me too."
+    ]
+  },
+  {
+    id: "gratitude-is-a-discipline",
+    category: "Spiritual",
+    title: "Gratitude Is a Discipline",
+    date: "2026-08-20",
+    sample: true,
+    excerpt: "We talk about gratitude as a feeling that visits us. I’ve come to think it’s closer to a muscle, and like most muscles, it weakens when it isn’t used.",
+    body: [
+      "When I was younger I assumed grateful people were simply people who had more to be grateful for. Good health, good luck, a comfortable life. It took me a long time, and a few hard years, to see that I had it backwards.",
+      "The most grateful man I ever knew was a neighbour who lost nearly everything in his fifties: his business, his savings, and later his wife. He was not a cheerful man by temperament. But every evening, he told me once, he wrote down three things from that day that were good. Small things. A letter from his son. Tomatoes that finally ripened.",
+      "He called it his accounting. I thought it was a little sentimental when he first described it. I don’t think so now. He was training his eyes to see what was actually in front of him, rather than only what was missing.",
+      "I’ve kept my own version of that practice for about ten years. Some nights the list comes easily. Some nights I have to look hard, and those are the nights it matters most. It has not made my troubles smaller. It has made me larger in relation to them, which is a different and better thing.",
+      "Gratitude, I think, is not what you feel when life is good. It is what you practise so that you can still see clearly when it isn’t."
+    ]
+  },
+  {
+    id: "best-advice-never-took",
+    category: "Business",
+    title: "The Best Advice I Never Took",
+    date: "2026-08-06",
+    sample: true,
+    excerpt: "An old mentor once told me to slow down and choose fewer things. I nodded, thanked him, and ignored him for twenty years.",
+    body: [
+      "I was thirty-one and very sure of myself when a man I admired took me to lunch and told me I was doing too much. I had three projects on the go, a side venture, and a habit of saying yes to anyone who asked. He said, kindly, that I would do better work if I did half as much of it.",
+      "I thanked him. I may even have written it down. Then I went back to the office and took on a fourth project.",
+      "It took me two decades to understand what he meant. Spreading yourself thin feels like ambition, but it is often a way of avoiding the harder choice: deciding what matters most and accepting that the rest will go undone. Every yes I said back then was also a quiet no to doing something properly.",
+      "The best years of my working life came later, when I finally learned to turn things down. Fewer clients, served well. Fewer commitments, kept fully. I earned less in some years and was prouder of all of them.",
+      "If you are young and busy and reading this, I don’t expect you to listen any more than I did. But I’ll say it anyway, as he said it to me. Choose fewer things. Do them well. You will be surprised how much of the rest never needed doing."
+    ]
+  }
+];
+
+const SECTIONS = [
+  { name: "Business",      slug: "business",      desc: "Lessons from a working life: people, deals, and doing things properly." },
+  { name: "Spiritual",     slug: "spiritual",     desc: "Notes on faith, gratitude, and the interior life." },
+  { name: "World Affairs", slug: "world-affairs", desc: "Trying to make sense of the headlines, slowly." }
+];
+
+/* ---------- helpers ---------- */
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const parts = d => { const [y,m,day] = d.split("-").map(Number); return {y, m, day}; };
+const fmtDate = d => { const p = parts(d); return `${MONTHS[p.m-1]} ${p.day}, ${p.y}`; };
+const dateline = d => { const p = parts(d); return `${MONTHS[p.m-1]} ${p.y} —`; };
+const readTime = p => Math.max(1, Math.round(p.body.join(" ").split(/\s+/).length / 220)) + " min read";
+const sorted = () => [...POSTS].sort((a,b) => b.date.localeCompare(a.date));
+const href = p => "#essay-" + p.id;
+const seal = (label) => `<svg ${label ? `role="img" aria-label="${esc(label)}"` : 'aria-hidden="true"'}><use href="#seal"/></svg>`;
+
+const ICON = {
+  mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>',
+  facebook: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H7.9v3h2.6V21h3z"/></svg>',
+  x: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3l-6.6 7.6L22 21h-6.1l-4.8-6.2L5.6 21h-3l7.1-8.1L2.3 3h6.2l4.3 5.7L17.8 3zm-1 16.2h1.7L7.3 4.7H5.5l11.3 14.5z"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 3.5a2 2 0 110 4 2 2 0 010-4zM3 9h3v12H3V9zm6 0h2.9v1.7h.1c.4-.8 1.4-1.9 3.1-1.9 3.3 0 3.9 2.2 3.9 5V21h-3v-6.4c0-1.5 0-3.5-2.1-3.5s-2.5 1.6-2.5 3.4V21H9V9z"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l1.3-3.8A8 8 0 1 1 8.1 19L4 20z"/><path d="M9.2 8.2c-.4.9.1 2.6 1.6 4.1s3.2 2 4.1 1.6l.6-1.2-1.7-.9-.8.7c-.9-.4-1.8-1.3-2.2-2.2l.7-.8-.9-1.7-1.4.4z" fill="currentColor" stroke="none"/></svg>',
+  link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>'
+};
+const shareUrl = p => location.href.split("#")[0] + href(p);
+function shareBlock(p){
+  const u = encodeURIComponent(shareUrl(p)), t = encodeURIComponent(p.title);
+  const links = [
+    ["Share by email", "mailto:?subject=" + t + "&body=" + t + "%0A%0A" + u, ICON.mail],
+    ["Share on Facebook", "https://www.facebook.com/sharer/sharer.php?u=" + u, ICON.facebook],
+    ["Share on X", "https://twitter.com/intent/tweet?text=" + t + "&url=" + u, ICON.x],
+    ["Share on LinkedIn", "https://www.linkedin.com/sharing/share-offsite/?url=" + u, ICON.linkedin],
+    ["Share on WhatsApp", "https://wa.me/?text=" + t + "%20" + u, ICON.whatsapp]
+  ];
+  return `
+      <section class="share" aria-label="Share this essay">
+        <p class="share-label">Share this essay</p>
+        <div class="share-row">
+          ${links.map(([label, url, icon]) => `<a class="share-btn" href="${url}" target="_blank" rel="noopener noreferrer" aria-label="${label}" title="${label}">${icon}</a>`).join("")}
+          <button type="button" class="share-btn" id="copy-link" aria-label="Copy link" title="Copy link">${ICON.link}</button>
+        </div>
+        <p class="share-status" id="share-status" role="status"></p>
+        <input class="share-url" id="share-url" type="text" readonly hidden aria-label="Link to this essay" value="${esc(shareUrl(p))}">
+      </section>`;
+}
+
+const homeView = document.getElementById("home-view");
+const readerView = document.getElementById("reader-view");
+
+/* ---------- home rendering ---------- */
+function renderHome(){
+  const list = sorted();
+  const feat = list.find(p => p.featured) || list[0];
+
+  document.getElementById("featured").innerHTML = feat ? `
+    <article class="featured">
+      <p class="kicker">Featured essay · ${esc(feat.category)}</p>
+      <h2><a href="${href(feat)}"><span class="draw">${esc(feat.title)}</span></a></h2>
+      <p class="excerpt">${esc(feat.excerpt)}</p>
+      <p class="meta"><time datetime="${feat.date}">${fmtDate(feat.date)}</time> · ${readTime(feat)}</p>
+      <p class="read-on" aria-hidden="true">Read the essay →</p>
+    </article>` : "";
+
+  document.getElementById("count-label").textContent = `${list.length} essays`;
+
+  document.getElementById("entries").innerHTML = list.map(p => `
+    <article class="entry">
+      <p class="kicker">${esc(p.category)}</p>
+      <h3 class="entry-title"><a href="${href(p)}"><span class="draw">${esc(p.title)}</span></a></h3>
+      <p class="meta"><time datetime="${p.date}">${fmtDate(p.date)}</time> · ${readTime(p)}</p>
+      <p class="excerpt">${esc(p.excerpt)}</p>
+    </article>`).join("");
+
+  document.getElementById("sections").innerHTML = SECTIONS.map(s => {
+    const own = list.filter(p => p.category === s.name).slice(0, 2);
+    return `
+    <section class="block" id="${s.slug}" tabindex="-1" aria-labelledby="h-${s.slug}">
+      <p class="kicker">Section</p>
+      <h3 id="h-${s.slug}">${esc(s.name)}</h3>
+      <p class="desc">${esc(s.desc)}</p>
+      ${own.length ? `<ul>${own.map(p => `
+        <li><a href="${href(p)}">
+          <h4><span class="draw">${esc(p.title)}</span></h4>
+          <span class="meta">${fmtDate(p.date)} · ${readTime(p)}</span>
+        </a></li>`).join("")}</ul>`
+      : `<p class="empty">Essays coming soon.</p>`}
+    </section>`;
+  }).join("");
+}
+
+/* ---------- reading view ---------- */
+function renderEssay(p){
+  const list = sorted();
+  const next = list[(list.indexOf(p) + 1) % list.length];
+  const [first, ...rest] = p.body;
+  readerView.innerHTML = `
+    <article class="essay fade">
+      <a class="back" href="#latest"><span class="draw">← All essays</span></a>
+      <p class="kicker">${esc(p.category)}</p>
+      <h1 tabindex="-1">${esc(p.title)}</h1>
+      <div class="essay-meta">
+        <p class="meta"><time datetime="${p.date}">${fmtDate(p.date)}</time> · ${readTime(p)}</p>
+        ${p.sample ? `<span class="sample-note">Sample essay</span>` : ""}
+      </div>
+      <div class="prose">
+        <p><span class="dateline">${dateline(p.date)}</span> ${esc(first || "")}</p>
+        ${rest.map(t => `<p>${esc(t)}</p>`).join("")}
+      </div>
+      <div class="signoff">${seal("Mark’s seal")}</div>
+      ${shareBlock(p)}
+      <nav class="essay-nav" aria-label="Essay navigation">
+        <a href="#latest"><span class="draw">← All essays</span></a>
+        ${next && next !== p ? `<a href="${href(next)}"><span class="draw">Next: ${esc(next.title)} →</span></a>` : ""}
+      </nav>
+    </article>`;
+}
+
+/* ---------- routing (hash-based, works from file:// and static hosts) ---------- */
+let savedScroll = 0;
+function route(){
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h.startsWith("essay-")) {
+    const p = POSTS.find(x => x.id === h.slice(6));
+    if (p) return openEssay(p);
+  }
+  showHome(h);
+}
+function openEssay(p){
+  if (!homeView.hidden) savedScroll = window.scrollY;
+  homeView.hidden = true;
+  readerView.hidden = false;
+  renderEssay(p);
+  window.scrollTo({top: 0, behavior: "instant"});
+  readerView.querySelector("h1").focus({preventScroll: true});
+  document.title = p.title + " · Mark's Essays";
+  closeMenu();
+}
+function showHome(target){
+  const wasReading = !readerView.hidden;
+  readerView.hidden = true;
+  readerView.innerHTML = "";
+  homeView.hidden = false;
+  document.title = "Mark's Essays";
+  closeMenu();
+  if (!wasReading) return; // normal in-page anchors scroll natively
+  const el = target && document.getElementById(target);
+  if (el) { el.scrollIntoView({behavior: "instant"}); el.focus({preventScroll: true}); }
+  else window.scrollTo({top: savedScroll, behavior: "instant"});
+}
+
+/* ---------- mobile menu ---------- */
+const nav = document.getElementById("site-nav");
+const menuBtn = nav.querySelector(".menu-btn");
+function closeMenu(){ nav.classList.remove("open"); menuBtn.setAttribute("aria-expanded", "false"); }
+menuBtn.addEventListener("click", () => {
+  const open = nav.classList.toggle("open");
+  menuBtn.setAttribute("aria-expanded", String(open));
+});
+nav.addEventListener("click", e => { if (e.target.closest("a")) closeMenu(); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && nav.classList.contains("open")) { closeMenu(); menuBtn.focus(); }
+});
+
+/* ---------- copy link ---------- */
+readerView.addEventListener("click", e => {
+  if (!e.target.closest("#copy-link")) return;
+  const status = document.getElementById("share-status");
+  const field = document.getElementById("share-url");
+  const fallback = () => { field.hidden = false; field.focus(); field.select(); status.textContent = "Select and copy the link below."; };
+  try {
+    navigator.clipboard.writeText(field.value).then(() => { status.textContent = "Link copied."; }, fallback);
+  } catch (err) { fallback(); }
+});
+
+/* ---------- subscribe (front-end only) ---------- */
+document.getElementById("sub-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const input = document.getElementById("sub-email");
+  if (!input.checkValidity()) { input.reportValidity(); return; }
+  e.target.hidden = true;
+  const t = document.getElementById("sub-thanks");
+  t.hidden = false;
+  t.focus();
+});
+
+renderHome();
+window.addEventListener("hashchange", route);
+route();
+</script>
+</body>
+</html>
