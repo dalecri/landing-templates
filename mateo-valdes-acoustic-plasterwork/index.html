@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mateo Valdés — Acoustic Plasterwork</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Alpha Lyrae';
+      src: local('Alpha Lyrae');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --bg: #18161E; /* Soft twilight lavender-slate ground */
+      --surface: rgba(33, 30, 42, 0.76);
+      --border: rgba(244, 238, 248, 0.14);
+      --text: #F4EEF8; /* Pale pastel lilac-chalk */
+      --muted: #B6ACC4; /* Soft dusty lavender */
+      --accent: #F4A698; /* Pastel Oaxacan peach-terracotta limewash */
+      --accent-secondary: #A8D5BA; /* Pastel agave sage */
+      --font-ui: 'Space Mono', monospace;
+      --font-display: 'Alpha Lyrae', 'Space Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      font-size: 13px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Signature Technique: Full-viewport interactive ASCII acoustic field */
+    #ascii-chamber {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* Structural Blueprint Grid (Holds structure even if canvas is removed) */
+    .chamber-frame {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-rows: auto 1fr auto;
+      min-height: 100vh;
+      padding: 28px;
+      gap: 24px;
+    }
+
+    /* Top Bar: Live Oaxaca Telemetry */
+    .bar-top {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 14px;
+    }
+
+    .telemetry {
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .telemetry-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent-secondary);
+      box-shadow: 0 0 8px var(--accent-secondary);
+    }
+
+    /* Left Column: Primary Name & Bio */
+    .manifesto-zone {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-right: 24px;
+      pointer-events: none;
+    }
+
+    .primary-name {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 8.5vw, 7.2rem);
+      line-height: 0.92;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      margin-top: 1vh;
+      color: var(--text);
+    }
+
+    .primary-name span {
+      display: block;
+      color: var(--accent);
+    }
+
+    .about-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      max-width: 54ch;
+      color: var(--muted);
+      background: var(--surface);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      border-radius: 8px;
+      pointer-events: auto;
+      margin-top: 32px;
+    }
+
+    .pixel-avatar {
+      width: 76px;
+      height: 76px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #141219;
+      image-rendering: pixelated;
+      shape-rendering: crispEdges;
+      box-shadow: inset 0 0 12px rgba(244, 166, 152, 0.08);
+    }
+
+    .about-text {
+      margin: 0;
+    }
+
+    /* Right Column: Interactive Acoustic Ledger (Projects) */
+    .ledger-zone {
+      align-self: center;
+      background: var(--surface);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .project-list {
+      list-style: none;
+    }
+
+    .project-item {
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .project-item:last-child {
+      border-bottom: none;
+    }
+
+    .project-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background-color: var(--accent);
+      transform: scaleY(0);
+      transition: transform 0.2s ease;
+    }
+
+    .project-item:hover,
+    .project-item.active {
+      background-color: rgba(244, 166, 152, 0.11);
+    }
+
+    .project-item.active::before {
+      transform: scaleY(1);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+
+    .project-title {
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .project-item.active .project-title {
+      color: var(--accent);
+    }
+
+    .project-hz {
+      font-size: 11px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .project-desc {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Bottom Bar: Single Contact Line & Acoustic Readout */
+    .bar-bottom {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .contact-line a {
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 2px;
+      transition: color 0.2s ease;
+    }
+
+    .contact-line a:hover {
+      color: var(--accent);
+    }
+
+    .wave-readout {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* 390px and Mobile Viewport Adaptation */
+    @media (max-width: 820px) {
+      .chamber-frame {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto auto;
+        padding: 18px;
+        gap: 20px;
+      }
+
+      .bar-top {
+        justify-content: flex-start;
+      }
+
+      .manifesto-zone {
+        padding-right: 0;
+        gap: 20px;
+      }
+
+      .primary-name {
+        font-size: clamp(2.75rem, 14vw, 4.2rem);
+        margin-top: 4px;
+      }
+
+      .about-card {
+        margin-top: 0;
+        max-width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+      }
+
+      .pixel-avatar {
+        width: 64px;
+        height: 64px;
+      }
+
+      .project-item {
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="ascii-chamber" aria-hidden="true"></canvas>
+
+  <main class="chamber-frame">
+    <header class="bar-top">
+      <div class="telemetry">
+        <span class="telemetry-dot"></span>
+        <span id="oaxaca-weather">Oaxaca de Juárez · 17.07°N 96.72°W · 24°C · 48% RH</span>
+      </div>
+    </header>
+
+    <section class="manifesto-zone">
+      <h1 class="primary-name">
+        Mateo
+        <span>Valdés</span>
+      </h1>
+
+      <div class="about-card">
+        <!-- 16x16 Pastel Pixel Portrait of Mateo (Oaxacan sun-hat, plaster-dusted apron, glasses) -->
+        <svg class="pixel-avatar" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pixel portrait of Mateo Valdés">
+          <!-- Subtle acoustic corner markers -->
+          <rect x="1" y="1" width="1" height="1" fill="#A8D5BA" opacity="0.5"/>
+          <rect x="14" y="1" width="1" height="1" fill="#A8D5BA" opacity="0.5"/>
+          <!-- Woven Oaxacan work hat crown & brim (pastel lilac-oat & peach band) -->
+          <rect x="5" y="1" width="6" height="2" fill="#D8C6EC"/>
+          <rect x="4" y="2" width="8" height="1" fill="#F4A698"/>
+          <rect x="2" y="3" width="12" height="1" fill="#F4EEF8"/>
+          <!-- Wavy dark lavender hair & sideburns -->
+          <rect x="4" y="4" width="8" height="1" fill="#3B334A"/>
+          <rect x="4" y="5" width="1" height="4" fill="#3B334A"/>
+          <rect x="11" y="5" width="1" height="4" fill="#3B334A"/>
+          <!-- Face (warm pastel peach skin tone) -->
+          <rect x="5" y="5" width="6" height="6" fill="#F4A698"/>
+          <!-- Ears -->
+          <rect x="3" y="6" width="1" height="2" fill="#E29385"/>
+          <rect x="12" y="6" width="1" height="2" fill="#E29385"/>
+          <!-- Pastel sage wire-frame glasses & dark eyes -->
+          <rect x="5" y="6" width="2" height="2" fill="#A8D5BA"/>
+          <rect x="9" y="6" width="2" height="2" fill="#A8D5BA"/>
+          <rect x="7" y="6" width="2" height="1" fill="#A8D5BA"/>
+          <rect x="6" y="6" width="1" height="1" fill="#18161E"/>
+          <rect x="10" y="6" width="1" height="1" fill="#18161E"/>
+          <!-- Beard & mustache (dusty lavender-charcoal with lime plaster flecks) -->
+          <rect x="5" y="9" width="6" height="2" fill="#4A415C"/>
+          <rect x="6" y="10" width="4" height="2" fill="#4A415C"/>
+          <rect x="7" y="9" width="2" height="1" fill="#F4A698"/>
+          <rect x="5" y="10" width="1" height="1" fill="#F4EEF8"/>
+          <!-- Pastel sage collar & lime-plaster dusted work apron -->
+          <rect x="3" y="12" width="10" height="4" fill="#A8D5BA"/>
+          <rect x="5" y="12" width="6" height="4" fill="#D8C6EC"/>
+          <rect x="5" y="11" width="1" height="2" fill="#B6ACC4"/>
+          <rect x="10" y="11" width="1" height="2" fill="#B6ACC4"/>
+          <!-- Plaster specks on apron -->
+          <rect x="6" y="14" width="2" height="1" fill="#F4EEF8"/>
+          <rect x="9" y="13" width="1" height="1" fill="#F4A698"/>
+        </svg>
+
+        <p class="about-text">
+          Working out of a courtyard kiln in Barrio de Jalatlaco, I formulate porous mineral renders from slaked Sierra Madre limestone, volcanic pumice, and chopped maguey fiber. Every wall is troweled to a site-specific thickness tuned to absorb standing vocal and mechanical frequencies without synthetic foam.
+        </p>
+      </div>
+    </section>
+
+    <section class="ledger-zone" aria-label="Selected Works">
+      <ul class="project-list" id="project-list">
+        <li class="project-item active" data-freq="0.045" data-damp="0.018" data-mode="1" tabindex="0">
+          <div class="project-header">
+            <span class="project-title">Mezcalería Silencio</span>
+            <span class="project-hz">180 Hz · RT60 0.4s</span>
+          </div>
+          <p class="project-desc">30mm raw pumice-lime vaulting to dampen glassware clatter in a forty-seat subterranean tasting room.</p>
+        </li>
+
+        <li class="project-item" data-freq="0.075" data-damp="0.024" data-mode="2" tabindex="0">
+          <div class="project-header">
+            <span class="project-title">Archivo Sonoro de Oaxaca</span>
+            <span class="project-hz">320 Hz · RT60 0.25s</span>
+          </div>
+          <p class="project-desc">Fluted cochineal-tinted acoustic baffles cast in situ for an archival field-recording listening library.</p>
+        </li>
+
+        <li class="project-item" data-freq="0.032" data-damp="0.012" data-mode="3" tabindex="0">
+          <div class="project-header">
+            <span class="project-title">Casa Pedregal Reading Room</span>
+            <span class="project-hz">110 Hz · RT60 0.5s</span>
+          </div>
+          <p class="project-desc">Monolithic volcanic-ash render erasing courtyard traffic hum across three cantilevered board-formed walls.</p>
+        </li>
+
+        <li class="project-item" data-freq="0.095" data-damp="0.030" data-mode="4" tabindex="0">
+          <div class="project-header">
+            <span class="project-title">Taller Gráfico Reforma</span>
+            <span class="project-hz">540 Hz · RT60 0.3s</span>
+          </div>
+          <p class="project-desc">High-density maguey-chaff ceiling coat absorbing cast-iron letterpress impact in a historic print shop.</p>
+        </li>
+
+        <li class="project-item" data-freq="0.058" data-damp="0.020" data-mode="5" tabindex="0">
+          <div class="project-header">
+            <span class="project-title">Capilla San Matías Annex</span>
+            <span class="project-hz">240 Hz · RT60 0.6s</span>
+          </div>
+          <p class="project-desc">Breathable slaked-lime restoration preserving unamplified choral warmth inside an eighteenth-century adobe nave.</p>
+        </li>
+      </ul>
+    </section>
+
+    <footer class="bar-bottom">
+      <div class="contact-line">
+        Site samples & acoustic consultations: <a href="mailto:mateo@valdesyeso.mx">mateo@valdesyeso.mx</a>
+      </div>
+      <div class="wave-readout" id="wave-readout">
+        CHAMBER MODE 01 · POROSITY 68%
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      // 1. Live Local Flavor: Open-Meteo for Oaxaca de Juárez (17.0732, -96.7266)
+      const weatherEl = document.getElementById('oaxaca-weather');
+      let ambientHumidityFactor = 1.0;
+
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=17.0732&longitude=-96.7266&current=temperature_2m,relative_humidity_2m')
+        .then(res => {
+          if (!res.ok) throw new Error('Offline');
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.current) {
+            const temp = Math.round(data.current.temperature_2m);
+            const rh = Math.round(data.current.relative_humidity_2m);
+            weatherEl.textContent = `Oaxaca de Juárez · 17.07°N 96.72°W · ${temp}°C · ${rh}% RH`;
+            // Humidity subtly alters lime plaster acoustic absorption in the simulation
+            ambientHumidityFactor = 0.85 + (rh / 100) * 0.35;
+          }
+        })
+        .catch(() => {
+          // Graceful fallback already populated in HTML
+        });
+
+      // 2. Signature Technique: Interactive ASCII Acoustic Wavefield
+      const canvas = document.getElementById('ascii-chamber');
+      const ctx = canvas.getContext('2d');
+
+      // Characters ordered from quiet/absorbed space to peak acoustic pressure
+      const glyphs = [' ', '·', ':', '-', '=', '+', '*', '#', '%', '@'];
+
+      let width = 0;
+      let height = 0;
+      const cellW = 14;
+      const cellH = 20;
+      let cols = 0;
+      let rows = 0;
+
+      // Simulation parameters driven by active project
+      let targetFreq = 0.045;
+      let currentFreq = 0.045;
+      let targetDamp = 0.018;
+      let currentDamp = 0.018;
+      let harmonicMode = 1;
+      let phase = 0;
+
+      // Pointer wave emitter
+      const pointer = {
+        x: window.innerWidth * 0.35,
+        y: window.innerHeight * 0.45,
+        tx: window.innerWidth * 0.35,
+        ty: window.innerHeight * 0.45,
+        energy: 0.4
+      };
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        cols = Math.ceil(width / cellW);
+        rows = Math.ceil(height / cellH);
+        ctx.font = '13px "Space Mono", monospace';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      function updatePointer(x, y) {
+        pointer.tx = x;
+        pointer.ty = y;
+        pointer.energy = Math.min(pointer.energy + 0.15, 1.25);
+      }
+
+      window.addEventListener('mousemove', e => updatePointer(e.clientX, e.clientY));
+      window.addEventListener('touchmove', e => {
+        if (e.touches[0]) {
+          updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      // 3. Project Ledger Interaction -> Retunes Acoustic Chamber
+      const items = document.querySelectorAll('.project-item');
+      const readout = document.getElementById('wave-readout');
+
+      function activateProject(item, index) {
+        items.forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+
+        targetFreq = parseFloat(item.dataset.freq);
+        targetDamp = parseFloat(item.dataset.damp);
+        harmonicMode = parseInt(item.dataset.mode, 10);
+        pointer.energy = 1.2;
+
+        const porosity = Math.round(58 + harmonicMode * 4.5);
+        readout.textContent = `CHAMBER MODE 0${index + 1} · POROSITY ${porosity}%`;
+      }
+
+      items.forEach((item, idx) => {
+        item.addEventListener('mouseenter', () => activateProject(item, idx));
+        item.addEventListener('click', () => activateProject(item, idx));
+        item.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            activateProject(item, idx);
+          }
+        });
+      });
+
+      // 4. Render Loop
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Smooth interpolation of acoustic parameters
+        currentFreq += (targetFreq - currentFreq) * 0.08;
+        currentDamp += (targetDamp - currentDamp) * 0.08;
+        pointer.x += (pointer.tx - pointer.x) * 0.12;
+        pointer.y += (pointer.ty - pointer.y) * 0.12;
+        pointer.energy = Math.max(0.35, pointer.energy * 0.985);
+        phase -= 0.055;
+
+        // Secondary harmonic anchor shifts with room mode
+        const anchorX = width * (0.2 + 0.12 * harmonicMode);
+        const anchorY = height * (0.75 - 0.09 * harmonicMode);
+
+        for (let r = 0; r < rows; r++) {
+          const y = r * cellH + cellH * 0.5;
+          for (let c = 0; c < cols; c++) {
+            const x = c * cellW + cellW * 0.5;
+
+            const dx1 = x - pointer.x;
+            const dy1 = y - pointer.y;
+            const dist1 = Math.sqrt(dx1 * dx1 + dy1 * dy1);
+
+            const dx2 = x - anchorX;
+            const dy2 = y - anchorY;
+            const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+            // Acoustic wave interference + plaster damping envelope
+            const damp1 = Math.exp(-dist1 * currentDamp * 0.12 * ambientHumidityFactor);
+            const damp2 = Math.exp(-dist2 * currentDamp * 0.09 * ambientHumidityFactor);
+
+            const wave1 = Math.sin(dist1 * currentFreq + phase) * damp1 * pointer.energy;
+            const wave2 = Math.cos(dist2 * (currentFreq * 0.75) - phase * 0.8) * damp2 * 0.65;
+            const standing = Math.sin((x * 0.012 * harmonicMode) + (y * 0.012)) * 0.18;
+
+            const combined = (wave1 + wave2 + standing + 1.2) * 0.42;
+            const clamped = Math.max(0, Math.min(0.99, combined));
+            const glyphIndex = Math.floor(clamped * glyphs.length);
+            const char = glyphs[glyphIndex];
+
+            if (char !== ' ') {
+              // High-pressure acoustic crests glow in soft pastel peach, mid-tones in pastel sage & lilac
+              if (glyphIndex >= 7) {
+                ctx.fillStyle = 'rgba(244, 166, 152, 0.78)'; /* Pastel peach-coral */
+              } else if (glyphIndex >= 5) {
+                ctx.fillStyle = 'rgba(168, 213, 186, 0.42)'; /* Pastel agave sage */
+              } else if (glyphIndex >= 3) {
+                ctx.fillStyle = 'rgba(216, 198, 236, 0.28)'; /* Soft pastel lilac */
+              } else {
+                ctx.fillStyle = 'rgba(182, 172, 196, 0.16)'; /* Muted lavender dust */
+              }
+              ctx.fillText(char, x, y);
+            }
+          }
+        }
+
+        requestAnimationFrame(render);
+      }
+
+      requestAnimationFrame(render);
+    })();
+  </script>
+</body>
+</html>
