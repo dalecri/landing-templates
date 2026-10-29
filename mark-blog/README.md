@@ -6,7 +6,7 @@ Origin: built 2026-10-28 by Claude from a prompt by Automata, at Cris's request 
 
 ## Files
 
-- `index.html` — everything (47,145 B).
+- `index.html` — everything (53,898 B).
 
 ## Dependencies
 

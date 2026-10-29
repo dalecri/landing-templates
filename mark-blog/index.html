@@ -56,39 +56,48 @@
 
   /* Top bar */
   .topbar{position:sticky;top:env(safe-area-inset-top, 0px);z-index:20;background:rgba(250,247,241,.95);border-bottom:1px solid var(--rule)}
-  @supports (backdrop-filter:blur(4px)){ .topbar{background:rgba(250,247,241,.86);backdrop-filter:blur(6px)} }
+  @supports (backdrop-filter:blur(4px)){ .topbar{background:rgba(250,247,241,.94);backdrop-filter:blur(8px)} }
   .topbar .wrap{display:flex;align-items:center;justify-content:space-between;min-height:64px}
   .brand{display:inline-flex;align-items:center;gap:.65rem;min-height:44px;color:var(--green);text-decoration:none}
   .brand svg{width:40px;height:40px}
   .brand-name{font-family:var(--masthead);font-weight:700;font-stretch:110%;font-size:.78rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink)}
+  .site-nav{display:flex;align-items:center;gap:.9rem}
+  .nav-clock{display:flex;align-items:center;gap:.4rem;margin:0;padding-right:1rem;border-right:1px solid var(--rule);font-family:var(--sans);font-size:.74rem;font-stretch:105%;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .nav-sep{color:var(--gold)}
+  #nav-time{color:var(--green)}
   .site-nav ul{display:flex;gap:.1rem;list-style:none;margin:0;padding:0}
   .site-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 .7rem;font-family:var(--sans);font-size:.82rem;letter-spacing:.04em;color:var(--ink);text-decoration:none}
-  .menu-btn{display:none;align-items:center;gap:.5rem;min-height:44px;padding:0 1rem;background:transparent;border:1px solid var(--rule);border-radius:999px;font-family:var(--sans);font-size:.85rem;color:var(--ink);cursor:pointer}
-  .menu-btn .bars{width:16px;height:10px;border-top:1.5px solid currentColor;border-bottom:1.5px solid currentColor;position:relative}
+  .menu-btn{display:none;align-items:center;justify-content:center;width:44px;height:44px;padding:0;background:transparent;border:1px solid var(--rule);border-radius:999px;font-family:var(--sans);font-size:.85rem;color:var(--ink);cursor:pointer}
+  .menu-btn .bars{width:18px;height:12px;border-top:1.5px solid currentColor;border-bottom:1.5px solid currentColor;position:relative}
   .menu-btn .bars::after{content:"";position:absolute;left:0;right:0;top:50%;border-top:1.5px solid currentColor;transform:translateY(-50%)}
 
   /* Masthead */
-  .masthead{text-align:center;padding:3.75rem 0 1.5rem}
+  .masthead{text-align:center;padding-block:3rem 1rem}
   .masthead h1{
     font-family:var(--masthead);font-weight:700;font-stretch:110%;
     font-size:clamp(4rem,18vw,9rem);line-height:1;letter-spacing:.12em;
-    margin:0 0 .25em;padding-left:.12em; /* balance trailing letter-spacing */
+    margin:0 0 .4rem;padding-left:.12em; /* balance trailing letter-spacing */
     color:#2A2622;
     text-shadow:0 1px 0 rgba(255,255,255,.9), 0 -1px 0 rgba(0,0,0,.2), 0 0 1px rgba(28,26,23,.25);
   }
-  .rule-seal{display:flex;align-items:center;gap:1rem;max-width:30rem;margin:0 auto 1.25rem;color:var(--gold)}
-  .rule-seal::before,.rule-seal::after{content:"";flex:1;height:1px;background:currentColor;opacity:.55}
-  .rule-seal svg{width:34px;height:34px}
   .tagline{font-style:italic;color:var(--muted);font-size:1.05rem;max-width:30rem;margin:0 auto}
 
+  /* Verse of the day */
+  .verse{max-width:34rem;margin:1.1rem auto 0;font-style:italic;font-size:.98rem;line-height:1.5;color:var(--muted);text-wrap:balance}
+  .verse-ref{margin-left:.5rem;font-family:var(--sans);font-style:normal;font-size:.72rem;letter-spacing:.06em;color:var(--gold-text);white-space:nowrap}
+
   /* Hero */
-  .welcome{font-family:var(--display);font-weight:350;font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.45;color:var(--ink-soft);text-align:center;max-width:38rem;margin:2.75rem auto 3.25rem}
-  .featured{position:relative;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);padding:2.75rem 0 3rem;display:grid;grid-template-columns:minmax(0,1fr);justify-items:start}
+  .welcome blockquote, .welcome p{margin:0}
+  .welcome figcaption{display:flex;align-items:center;justify-content:center;gap:.6rem;margin-top:1rem;font-family:var(--display);font-style:italic;font-size:1.05rem;color:var(--green)}
+  .welcome figcaption::before{content:"";width:1.75rem;height:1px;background:var(--gold)}
+  .welcome{font-family:var(--display);font-weight:350;font-size:clamp(1.3rem,3vw,1.7rem);line-height:1.45;color:var(--ink-soft);text-align:center;max-width:38rem;margin:2rem auto 2.25rem}
+  .featured{position:relative;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule);padding-block:2.25rem 2.75rem;display:grid;grid-template-columns:minmax(0,1fr);justify-items:start}
   .featured h2{font-family:var(--display);font-weight:450;font-size:clamp(2.1rem,5.5vw,3.6rem);line-height:1.08;margin:.6rem 0 1rem;max-width:20ch}
   .featured h2 a{color:var(--ink);text-decoration:none}
   .featured h2 a::after{content:"";position:absolute;inset:0}
   .featured .excerpt{font-size:1.25rem;line-height:1.55;color:var(--ink-soft);max-width:38rem;margin:0 0 1.25rem}
-  .read-on{font-family:var(--sans);font-size:.85rem;letter-spacing:.04em;color:var(--green);margin-top:1rem}
+  .read-on{display:inline-flex;align-items:center;min-height:44px;margin-top:1.25rem;padding:0 1.3rem;border:1px solid var(--green);border-radius:999px;font-family:var(--sans);font-size:.85rem;font-weight:500;letter-spacing:.03em;color:var(--green);transition:background-color .3s ease, color .3s ease}
+  .featured:hover .read-on, .featured:focus-within .read-on{background:var(--green);color:var(--paper)}
 
   .kicker{margin:0;font-family:var(--sans);font-size:.9rem;font-weight:600;font-stretch:110%;font-variant-caps:all-small-caps;letter-spacing:.14em;color:var(--green)}
   .meta{margin:0;font-family:var(--sans);font-size:.8rem;color:var(--muted)}
@@ -170,6 +179,14 @@
   .share-url{width:100%;max-width:28rem;min-height:44px;padding:0 .8rem;font-family:var(--sans);font-size:.85rem;color:var(--ink);background:#FFFDF8;border:1px solid #B9AF9E;border-radius:2px}
   .noscript{max-width:40rem;margin:2rem auto;padding:1rem 1.25rem;border:1px solid var(--gold);font-family:var(--sans);font-size:.9rem}
 
+  /* Reading progress: a soft tint that fills down the page, plus a hairline under the top bar */
+  :root{--p:0}
+  main, .site-footer{position:relative;z-index:1}
+  .read-wash{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease;
+    background:linear-gradient(180deg, rgba(176,141,62,.11) 0%, rgba(47,82,51,.07) calc(var(--p) * 100%), rgba(47,82,51,0) calc(var(--p) * 100% + 28%))}
+  .read-progress{position:absolute;left:0;bottom:-1px;height:2px;width:calc(var(--p) * 100%);background:linear-gradient(90deg, var(--green), var(--gold));opacity:0;transition:opacity .6s ease}
+  html.reading .read-wash, html.reading .read-progress{opacity:1}
+
   .fade{animation:fade .55s ease both}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
@@ -178,11 +195,13 @@
     html{font-size:17px}
     .wrap{padding-left:max(1.15rem, env(safe-area-inset-left, 0px));padding-right:max(1.15rem, env(safe-area-inset-right, 0px))}
     .menu-btn{display:inline-flex}
+    .nav-clock{border-right:0;padding-right:0;font-size:.7rem}
+    .nav-wd{display:none}
     .site-nav ul{display:none;position:absolute;left:0;right:0;top:100%;flex-direction:column;background:var(--paper);border-bottom:1px solid var(--rule);padding-block:.4rem 1rem;padding-left:max(1.15rem, env(safe-area-inset-left, 0px));padding-right:max(1.15rem, env(safe-area-inset-right, 0px))}
     .site-nav.open ul{display:flex}
     .site-nav a{width:100%;font-size:1rem;padding:0;border-bottom:1px solid var(--rule)}
     .site-nav li:last-child a{border-bottom:0}
-    .masthead{padding-top:2.75rem}
+    .masthead{padding-top:2.25rem}
     .entry{grid-template-columns:minmax(0,1fr);grid-template-areas:"kick" "title" "meta" "excerpt"}
     .entry .kicker{padding-top:0}
     .about{grid-template-columns:minmax(0,1fr);gap:2rem}
@@ -215,17 +234,20 @@
   </defs>
 </svg>
 
+<div class="read-wash" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="topbar">
+  <div class="read-progress" aria-hidden="true"></div>
   <div class="wrap">
     <a class="brand" href="#top" aria-label="Mark, home">
       <svg aria-hidden="true"><use href="#seal"/></svg>
       <span class="brand-name">Mark</span>
     </a>
     <nav class="site-nav" id="site-nav" aria-label="Primary">
-      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-list">
-        <span class="bars" aria-hidden="true"></span>Menu
+      <p class="nav-clock"><time id="nav-date"><span class="nav-wd"></span><span class="nav-md"></span></time><span class="nav-sep" aria-hidden="true">·</span><time id="nav-time"></time></p>
+      <button class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-list">
+        <span class="bars" aria-hidden="true"></span>
       </button>
       <ul id="nav-list">
         <li><a href="#latest"><span class="draw">Latest</span></a></li>
@@ -245,12 +267,15 @@
     <div class="wrap">
       <header class="masthead" id="top" tabindex="-1">
         <h1>MARK</h1>
-        <div class="rule-seal"><svg aria-hidden="true"><use href="#seal"/></svg></div>
         <p class="tagline">[Tagline to come — a line about a life of paying attention.]</p>
+        <p class="verse"><span id="qotd-text"></span><span class="verse-ref" id="qotd-by"></span></p>
       </header>
 
       <!-- Placeholder welcome: replace with Mark's own two sentences -->
-      <p class="welcome">Welcome, and thank you for stopping by. This is where I set down what I’ve been thinking about, slowly and in my own words.</p>
+      <figure class="welcome">
+        <blockquote><p>“Welcome, and thank you for stopping by. This is where I set down what I’ve been thinking about, slowly and in my own words.”</p></blockquote>
+        <figcaption>Mark</figcaption>
+      </figure>
 
       <section aria-label="Featured essay">
         <div id="featured"></div>
@@ -483,7 +508,7 @@ function renderHome(){
       <h2><a href="${href(feat)}"><span class="draw">${esc(feat.title)}</span></a></h2>
       <p class="excerpt">${esc(feat.excerpt)}</p>
       <p class="meta"><time datetime="${feat.date}">${fmtDate(feat.date)}</time> · ${readTime(feat)}</p>
-      <p class="read-on" aria-hidden="true">Read the essay →</p>
+      <span class="read-on" aria-hidden="true">Read the essay →</span>
     </article>` : "";
 
   document.getElementById("count-label").textContent = `${list.length} essays`;
@@ -558,20 +583,39 @@ function openEssay(p){
   window.scrollTo({top: 0, behavior: "instant"});
   readerView.querySelector("h1").focus({preventScroll: true});
   document.title = p.title + " · Mark's Essays";
+  document.documentElement.classList.add("reading");
+  updateProgress();
   closeMenu();
 }
-function showHome(target){
+function showHome(target, fromClick){
   const wasReading = !readerView.hidden;
   readerView.hidden = true;
   readerView.innerHTML = "";
   homeView.hidden = false;
   document.title = "Mark's Essays";
+  document.documentElement.classList.remove("reading");
+  document.documentElement.style.setProperty("--p", 0);
   closeMenu();
-  if (!wasReading) return; // normal in-page anchors scroll natively
+  if (!wasReading && !fromClick) return;
   const el = target && document.getElementById(target);
-  if (el) { el.scrollIntoView({behavior: "instant"}); el.focus({preventScroll: true}); }
+  if (el) { el.scrollIntoView({behavior: wasReading ? "instant" : "auto"}); el.focus({preventScroll: true}); }
   else window.scrollTo({top: savedScroll, behavior: "instant"});
 }
+
+/* ---------- reading progress ---------- */
+function updateProgress(){
+  if (readerView.hidden) return;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 1;
+  document.documentElement.style.setProperty("--p", p.toFixed(4));
+}
+let progressQueued = false;
+window.addEventListener("scroll", () => {
+  if (progressQueued) return;
+  progressQueued = true;
+  requestAnimationFrame(() => { progressQueued = false; updateProgress(); });
+}, {passive: true});
+window.addEventListener("resize", updateProgress);
 
 /* ---------- mobile menu ---------- */
 const nav = document.getElementById("site-nav");
@@ -608,8 +652,73 @@ document.getElementById("sub-form").addEventListener("submit", e => {
   t.focus();
 });
 
+/* ---------- today: live date, minimal clock, quote of the day ---------- */
+const QUOTES = [
+  ["Let all your things be done with charity.", "1 Corinthians 16:14"],
+  ["In every thing give thanks.", "1 Thessalonians 5:18"],
+  ["Rejoice in the Lord alway: and again I say, Rejoice.", "Philippians 4:4"],
+  ["Blessed are the peacemakers: for they shall be called the children of God.", "Matthew 5:9"],
+  ["Take therefore no thought for the morrow: for the morrow shall take thought for the things of itself.", "Matthew 6:34"],
+  ["And now abideth faith, hope, charity, these three; but the greatest of these is charity.", "1 Corinthians 13:13"],
+  ["Be not overcome of evil, but overcome evil with good.", "Romans 12:21"],
+  ["Let us not be weary in well doing: for in due season we shall reap, if we faint not.", "Galatians 6:9"],
+  ["Pray without ceasing.", "1 Thessalonians 5:17"],
+  ["Be ye kind one to another, tenderhearted, forgiving one another.", "Ephesians 4:32"],
+  ["Whatsoever ye do, do it heartily, as to the Lord, and not unto men.", "Colossians 3:23"],
+  ["Let every man be swift to hear, slow to speak, slow to wrath.", "James 1:19"],
+  ["Ask, and it shall be given you; seek, and ye shall find; knock, and it shall be opened unto you.", "Matthew 7:7"],
+  ["Peace I leave with you, my peace I give unto you.", "John 14:27"],
+  ["I can do all things through Christ which strengtheneth me.", "Philippians 4:13"],
+  ["Thou shalt love thy neighbour as thyself.", "Matthew 22:39"],
+  ["Let your light so shine before men, that they may see your good works, and glorify your Father which is in heaven.", "Matthew 5:16"]
+];
+function dayOfYear(d){ return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 0)) / 864e5); }
+function pad(n){ return String(n).padStart(2, "0"); }
+let lastDay = -1;
+function tick(){
+  const now = new Date();
+  const dateEl = document.getElementById("nav-date");
+  const timeEl = document.getElementById("nav-time");
+  dateEl.querySelector(".nav-wd").textContent = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][now.getDay()] + ", ";
+  dateEl.querySelector(".nav-md").textContent = `${MONTHS[now.getMonth()].slice(0,3)} ${now.getDate()}`;
+  dateEl.dateTime = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
+  const h = now.getHours();
+  timeEl.textContent = `${(h % 12) || 12}:${pad(now.getMinutes())} ${h < 12 ? "am" : "pm"}`;
+  timeEl.dateTime = `${pad(h)}:${pad(now.getMinutes())}`;
+  const day = dayOfYear(now);
+  if (day !== lastDay) {
+    lastDay = day;
+    const [text, by] = QUOTES[(day + now.getFullYear()) % QUOTES.length];
+    document.getElementById("qotd-text").textContent = `“${text}”`;
+    document.getElementById("qotd-by").textContent = by;
+  }
+}
+function safeTick(){ try { tick(); } catch (err) { /* clock is optional */ } }
+safeTick();
+setInterval(safeTick, 10000);
+
+/* In-page links are handled here directly, so essays open even where the
+   host page blocks or ignores hash navigation (embedded previews, some apps). */
+function go(name){
+  try { if (location.hash !== "#" + name) history.pushState(null, "", "#" + name); } catch (err) { /* address bar is optional */ }
+  if (name.startsWith("essay-")) {
+    const p = POSTS.find(x => x.id === name.slice(6));
+    if (p) return openEssay(p);
+  }
+  showHome(name, true);
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest('a[href^="#"]');
+  if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  const name = a.getAttribute("href").slice(1);
+  if (!name) return;
+  e.preventDefault();
+  go(name);
+});
+
 renderHome();
 window.addEventListener("hashchange", route);
+window.addEventListener("popstate", route);
 route();
 </script>
 </body>
