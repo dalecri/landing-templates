@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Marisol Ayala, Weaver</title>
+<!--
+  TEMPLATE: marisol-ayala-ascii-loom
+  Swap points are marked with "SWAP". Structure is a weaving draft:
+  opening (threading) / about (tie-up) / cloth (drawdown) / projects (treadles) / contact (fell line).
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* SWAP: if Alpha Lyrae files are provided, add @font-face here and set --display to it */
+:root{
+  --ground:#0e0d0c;
+  --ink:#e9e3d7;        /* undyed cotton */
+  --weft:#9d9486;
+  --muted:#8c857a;
+  --faint:#2f2c28;
+  --accent:#c4314b;     /* SWAP: cochineal red, from the persona's dye */
+  --ui:"Space Mono", ui-monospace, Menlo, Consolas, monospace;
+  --display:var(--ui);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--ground)}
+body{background:var(--ground);color:var(--ink);font:14px/1.65 var(--ui);min-height:100vh;-webkit-font-smoothing:antialiased}
+::selection{background:var(--accent);color:var(--ground)}
+a{color:inherit}
+:focus-visible{outline:1px solid var(--accent);outline-offset:3px}
+
+.draft{
+  max-width:1200px;margin:0 auto;
+  padding:clamp(24px,5vw,64px) clamp(16px,4vw,56px) clamp(24px,4vw,48px);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,320px);
+  grid-template-areas:
+    "open  tieup"
+    "cloth treadles"
+    "fell  fell";
+  column-gap:clamp(24px,4vw,56px);
+  row-gap:clamp(28px,4vw,48px);
+}
+
+/* threading: the opening statement */
+.open{grid-area:open}
+h1{font:700 clamp(40px,7.4vw,92px)/.95 var(--display);letter-spacing:-.035em}
+.statement{margin-top:20px;font-size:clamp(16px,1.7vw,20px);line-height:1.5;max-width:36ch}
+.wx{margin-top:14px;color:var(--muted);font-size:12px;min-height:1.6em}
+
+/* tie-up corner: about */
+.tieup{grid-area:tieup;align-self:end;color:var(--muted);font-size:13px;line-height:1.7}
+
+/* drawdown */
+.cloth{grid-area:cloth;position:relative;height:460px;border-top:1px solid var(--faint);border-bottom:1px solid var(--faint)}
+#loom{display:block;width:100%;height:100%}
+.noscript-cloth{position:absolute;inset:0;background:repeating-linear-gradient(90deg,var(--faint) 0 1px,transparent 1px 8px)}
+
+/* treadles: projects */
+.treadles{grid-area:treadles;list-style:none;display:flex;flex-direction:column;border-top:1px solid var(--faint)}
+.treadles li{border-bottom:1px solid var(--faint)}
+.treadles button{
+  all:unset;cursor:pointer;display:grid;grid-template-columns:18px 1fr;column-gap:10px;
+  width:100%;padding:14px 0;box-sizing:border-box;
+}
+.treadles .mark{font-size:12px;line-height:1.9;color:var(--faint);transition:color .2s}
+.treadles .name{font-weight:700;font-size:14px;transition:color .2s}
+.treadles .line{grid-column:2;color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:2px}
+.treadles button:hover .mark{color:var(--muted)}
+.treadles button[aria-pressed="true"] .mark{color:var(--accent)}
+.treadles button[aria-pressed="false"] .name{color:var(--weft)}
+.treadles button[aria-pressed="false"]:hover .name{color:var(--ink)}
+
+/* fell line: contact */
+.fell{grid-area:fell;padding-top:20px;border-top:1px dashed var(--faint);font-size:13px;color:var(--muted)}
+.fell a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--accent)}
+.fell a:hover{color:var(--accent)}
+
+@media (max-width:760px){
+  .draft{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:"open" "cloth" "treadles" "tieup" "fell";
+    row-gap:28px;
+  }
+  .cloth{height:300px}
+  .tieup{align-self:start}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="draft">
+
+  <header class="open">
+    <!-- SWAP: name + positioning -->
+    <h1>Marisol<br>Ayala</h1>
+    <p class="statement">I weave on a four-shaft floor loom in Oaxaca: twills, diamonds and long runners in cotton and wool.</p>
+    <p class="wx" id="wx">Oaxaca</p>
+  </header>
+
+  <p class="tieup">
+    <!-- SWAP: about -->
+    I learned on a backstrap loom and moved to a floor loom for the width. I work in small runs, mostly undyed cotton and local wool dyed with cochineal, and I keep the draft for every piece I weave.
+  </p>
+
+  <div class="cloth">
+    <canvas id="loom" role="img" aria-label="Woven drawdown"></canvas>
+    <noscript><div class="noscript-cloth"></div></noscript>
+  </div>
+
+  <!-- SWAP: projects. data-threading = shaft per warp end, data-tieup = shafts lifted per treadle, data-treadling = treadle per pick -->
+  <ol class="treadles" id="treadles">
+    <li><button type="button" aria-pressed="false"
+      data-threading="12341432" data-tieup="12 23 34 41" data-treadling="12341432">
+      <span class="mark">[#]</span><span class="name">Rosepath Runner</span>
+      <span class="line">Fourteen feet of table runner from a single warp, diamonds woven as drawn in.</span>
+    </button></li>
+    <li><button type="button" aria-pressed="false"
+      data-threading="123432" data-tieup="12 23 34 41" data-treadling="123432">
+      <span class="mark">[#]</span><span class="name">Huipil Panel</span>
+      <span class="line">A wide point-twill panel, cut and hand-sewn into a huipil.</span>
+    </button></li>
+    <li><button type="button" aria-pressed="false"
+      data-threading="1234123421432143" data-tieup="12 23 34 41" data-treadling="1234">
+      <span class="mark">[#]</span><span class="name">Market Blankets</span>
+      <span class="line">Herringbone wool blankets, woven in batches of six.</span>
+    </button></li>
+    <li><button type="button" aria-pressed="false"
+      data-threading="1122" data-tieup="1 2" data-treadling="1122">
+      <span class="mark">[#]</span><span class="name">Basket Napkins</span>
+      <span class="line">Sets of eight in a soft basket weave, washed before they leave the studio.</span>
+    </button></li>
+    <li><button type="button" aria-pressed="false"
+      data-threading="1243" data-tieup="12 23 34 41" data-treadling="1234">
+      <span class="mark">[#]</span><span class="name">Broken Twill Scarves</span>
+      <span class="line">Fine wool scarves in broken twill, so the cloth drapes without a diagonal.</span>
+    </button></li>
+  </ol>
+
+  <footer class="fell">
+    <!-- SWAP: contact -->
+    Commissions and wholesale: <a href="mailto:hola@marisolayala.example">hola@marisolayala.example</a>
+  </footer>
+
+</main>
+
+<script>
+(() => {
+  /* SWAP: city + coordinates for Open-Meteo (keyless) */
+  const CITY = "Oaxaca", LAT = 17.06, LON = -96.73;
+
+  const cv = document.getElementById("loom");
+  const ctx = cv.getContext("2d");
+  const buttons = [...document.querySelectorAll("#treadles button")];
+  const css = getComputedStyle(document.documentElement);
+  const C = k => css.getPropertyValue(k).trim();
+  const COL = { ground:C("--ground"), ink:C("--ink"), weft:C("--weft"), faint:C("--faint"), muted:C("--muted"), accent:C("--accent") };
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const BAND = 5;          // 4 shaft rows of threading + 1 gap
+  const FRESH = 26;        // frames a new pick stays cochineal
+  const BARE = -2147483648; // unwoven cell
+  let font, cw, ch, cols = 0, rows = 0, cloth = 0;
+  let draft = null, wovenAt = null, seed = null;
+  let frame = 0, pick = 0, col = 0, dir = 1, running = false, lastWoven = -999;
+  let slub = 0.02, speed = 1;
+
+  const parse = b => ({
+    name: b.querySelector(".name").textContent,
+    T: [...b.dataset.threading].map(Number),
+    U: b.dataset.tieup.split(" ").map(s => [...s].map(Number)),
+    R: [...b.dataset.treadling].map(Number)
+  });
+  const up = (i, j) => draft.U[draft.R[j % draft.R.length] - 1].includes(draft.T[i % draft.T.length]);
+
+  function measure(){
+    const r = cv.getBoundingClientRect();
+    const small = r.width < 520;
+    const size = small ? 11 : 13;
+    ch = small ? 13 : 16;
+    font = `${size}px "Space Mono", ui-monospace, monospace`;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(r.width * dpr);
+    cv.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.font = font;
+    cw = ctx.measureText("M").width || size * 0.6;
+    cols = Math.max(1, Math.floor(r.width / cw));
+    rows = Math.max(BAND + 1, Math.floor(r.height / ch));
+    cloth = rows - BAND;
+    seed = new Float32Array(cols * cloth).map(Math.random);
+  }
+
+  function cellChar(i, j){
+    const s = seed[j * cols + i];
+    if (up(i, j)) return s < slub ? (s < slub / 2 ? "!" : ":") : "|";
+    return s < slub ? "~" : "=";
+  }
+
+  function draw(){
+    const r = cv.getBoundingClientRect();
+    ctx.fillStyle = COL.ground;
+    ctx.fillRect(0, 0, r.width, r.height);
+    ctx.font = font;
+    ctx.textBaseline = "top";
+    const ox = (r.width - cols * cw) / 2;
+
+    // threading band: shaft 4 on top, as drafts are written
+    for (let k = 0; k < 4; k++){
+      const shaft = 4 - k;
+      for (let i = 0; i < cols; i++){
+        const on = draft.T[i % draft.T.length] === shaft;
+        ctx.fillStyle = on ? COL.muted : COL.faint;
+        ctx.fillText(on ? "#" : ".", ox + i * cw, k * ch + 2);
+      }
+    }
+
+    // drawdown
+    for (let j = 0; j < cloth; j++){
+      const y = (BAND + j) * ch + 2;
+      for (let i = 0; i < cols; i++){
+        const x = ox + i * cw;
+        const t = wovenAt[j * cols + i];
+        if (t === BARE){ ctx.fillStyle = COL.faint; ctx.fillText("|", x, y); continue; }
+        const isUp = up(i, j);
+        const fresh = frame - t < FRESH;
+        ctx.fillStyle = isUp ? COL.ink : (fresh ? COL.accent : COL.weft);
+        ctx.fillText(cellChar(i, j), x, y);
+      }
+    }
+
+    // shuttle
+    if (running && pick < cloth){
+      const sx = ox + Math.min(cols - 1, Math.max(0, col)) * cw;
+      ctx.fillStyle = COL.accent;
+      ctx.fillText(dir > 0 ? ">" : "<", sx, (BAND + pick) * ch + 2);
+    }
+  }
+
+  function tick(){
+    frame++;
+    if (running){
+      const step = Math.max(2, Math.ceil(cols / (7 / speed)));
+      for (let n = 0; n < step && pick < cloth; n++){
+        wovenAt[pick * cols + col] = frame;
+        lastWoven = frame;
+        col += dir;
+        if (col < 0 || col >= cols){ pick++; dir = -dir; col = dir > 0 ? 0 : cols - 1; }
+      }
+      if (pick >= cloth) running = false;
+    }
+    draw();
+    if (running || frame - lastWoven < FRESH) requestAnimationFrame(tick);
+  }
+
+  function weave(instant){
+    wovenAt = new Int32Array(cols * cloth).fill(BARE);
+    pick = 0; col = 0; dir = 1;
+    if (instant){
+      wovenAt.fill(frame - FRESH * 2);
+      running = false; draw(); return;
+    }
+    const idle = !running && frame - lastWoven >= FRESH;
+    running = true;
+    if (idle) requestAnimationFrame(tick);
+  }
+
+  function select(b){
+    buttons.forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    draft = parse(b);
+    cv.setAttribute("aria-label", `Woven drawdown of ${draft.name}`);
+    weave(reduce);
+  }
+
+  buttons.forEach(b => b.addEventListener("click", () => select(b)));
+
+  let rz, lastW = 0, lastH = 0;
+  new ResizeObserver(() => {
+    clearTimeout(rz);
+    rz = setTimeout(() => {
+      const r = cv.getBoundingClientRect();
+      if (!draft || (Math.round(r.width) === lastW && Math.round(r.height) === lastH)) return;
+      measure(); lastW = Math.round(r.width); lastH = Math.round(r.height);
+      weave(true);
+    }, 120);
+  }).observe(cv);
+
+  // start once the font is in (or after a short wait if it never arrives)
+  const ready = document.fonts ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1500))]) : Promise.resolve();
+  ready.then(() => {
+    measure();
+    const r = cv.getBoundingClientRect(); lastW = Math.round(r.width); lastH = Math.round(r.height);
+    select(buttons[0]);
+  });
+
+  // live flavor: humidity thickens slubs, wind speeds the shuttle
+  (async () => {
+    const wx = document.getElementById("wx");
+    const ac = new AbortController();
+    const to = setTimeout(() => ac.abort(), 5000);
+    try {
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`;
+      const res = await fetch(url, { signal: ac.signal });
+      if (!res.ok) throw new Error(res.status);
+      const c = (await res.json()).current;
+      const h = Math.round(c.relative_humidity_2m);
+      wx.textContent = `${CITY} · ${Math.round(c.temperature_2m)}°C · ${h}% humidity`;
+      slub = 0.008 + (h / 100) * 0.06;
+      speed = 1 + Math.min(c.wind_speed_10m || 0, 30) / 60;
+      if (draft && !running) draw();
+    } catch (e) { /* stays "Oaxaca", defaults hold */ }
+    finally { clearTimeout(to); }
+  })();
+})();
+</script>
+</body>
+</html>
