@@ -62,6 +62,11 @@
 
   footer{margin-top:48px; border-top:1px solid var(--line); padding-top:20px; color:var(--faint); font-size:13px; text-align:center}
   footer a{color:var(--muted)} footer a:hover{color:var(--amber)}
+  #wave{
+    display:block; margin:26px auto 4px; max-width:760px; width:100%;
+    white-space:pre; overflow:hidden; text-align:center;
+    color:#3E6B8C; font-size:12px; line-height:1.2; user-select:none;
+  }
 </style>
 </head>
 <body>
@@ -73,6 +78,7 @@
     <h1>Landing Templates<span class="dot">.</span></h1>
     <p class="lede">Reusable landing pages, each in its own self-contained folder. Copy one, swap the copy, ship it. Both grew out of the ASCII visual experiments, so each is alive in ways a static mockup is not.</p>
     <p class="meta"><b>11</b> templates &nbsp;·&nbsp; self-contained &nbsp;·&nbsp; Quiet Pixel styling</p>
+    <pre id="wave" aria-hidden="true"></pre>
   </header>
 
   <div class="grid">
@@ -190,5 +196,28 @@ Dd Ee Ff</pre>
   </footer>
 
 </div>
+<script>
+  // A one-line pond ripple under the header. Decorative only.
+  (function () {
+    var el = document.getElementById('wave');
+    var W = 72, chars = ' .~\u2248~. ', t = 0;
+    function frame() {
+      var s = '';
+      for (var x = 0; x < W; x++) {
+        var v = Math.sin(x * 0.32 + t) + Math.sin(x * 0.11 - t * 0.7) + Math.sin(x * 0.53 + t * 1.7) * 0.5;
+        var i = Math.max(0, Math.min(chars.length - 1, Math.floor((v + 2.5) / 5 * chars.length)));
+        s += chars[i];
+      }
+      el.textContent = s;
+      t += 0.045;
+    }
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      frame();
+    } else {
+      frame();
+      setInterval(function () { if (!document.hidden) frame(); }, 90);
+    }
+  })();
+</script>
 </body>
 </html>
