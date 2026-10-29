@@ -9,7 +9,7 @@ The ASCII portfolio template (botanical koi pond hero, vibe studio, full portfol
 ## What makes it the persona edition
 
 - All copy: hero intro, the three experience case studies, six project cards, four writing rows, about text, the experience/education timeline, toolbox chips, and the contact block were rewritten for Marisol. Layout, classes, and structure are untouched.
-- The hero photo is replaced with an inline SVG initials placeholder (MV). Drop a real portrait data URI or image path into that `img` src when adapting.
+- The hero photo is replaced with a pixel person placeholder: `assets/marisol-pixel.svg`, a 16x16 grid portrait (dark hair, gold earrings, rust sweater, plum ground) drawn as crisp SVG rects. It is a stand-in for now; drop a real portrait data URI or image path into that `img` src when adapting.
 - Links that pointed at real places (live demos, LinkedIn, the writing section) now point at `#` or at in-page anchors. The copy-email helper in `js/app.js` uses Marisol's placeholder address.
 - A grep for the original person's name, employers, projects, and accounts across `index.html`, `css/`, and `js/` comes back empty. Keep it that way when editing.
 
