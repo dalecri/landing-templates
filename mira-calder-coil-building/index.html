@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mira Calder · Ceramicist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* CUSTOMIZE: accent drawn from Santa Fe clay + high-desert light */
+  --accent: #C4623A;
+  --bg: #FAF7F2;
+  --text: #2E2620;
+  --muted: #6F635B;
+  --line: #E8E0D6;
+  --surface: #F3EDE6;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-weight: 300;
+}
+h1, h2, h3, .serif { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 400; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 0 1.5rem; }
+header {
+  padding: 3.5rem 0 2rem;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+header h1 {
+  font-size: clamp(2.8rem, 8vw, 4.2rem);
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+header .sub {
+  font-size: 1.05rem;
+  color: var(--muted);
+  margin: 0;
+}
+#weather {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+.hero {
+  padding: 4.5rem 0 3rem;
+  text-align: center;
+}
+.hero h2 {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  margin: 0 0 1rem;
+  line-height: 1.15;
+}
+.hero p { font-size: 1.15rem; color: var(--muted); max-width: 34rem; margin: 0 auto; }
+.accent { color: var(--accent); }
+section { padding: 3.5rem 0; }
+section h2 {
+  font-size: 1.8rem;
+  margin: 0 0 1.25rem;
+  text-align: center;
+}
+.technique-intro {
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto 2.5rem;
+  color: var(--muted);
+}
+.vessel-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.vessel {
+  width: 180px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  min-height: 60px;
+  position: relative;
+}
+.coil {
+  width: 100%;
+  height: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 40% 40% 35% 35%;
+  margin-top: -8px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: all 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  overflow: hidden;
+}
+.coil.added {
+  height: 48px;
+  opacity: 1;
+  transform: translateY(0);
+}
+.coil:nth-child(1) { width: 140px; }
+.coil:nth-child(2) { width: 160px; }
+.coil:nth-child(3) { width: 170px; }
+.coil:nth-child(4) { width: 155px; }
+.coil:nth-child(5) { width: 130px; }
+.vessel.fired .coil {
+  background: var(--accent);
+  border-color: #A84E2E;
+  color: #fff;
+  transition: background 0.8s ease, border-color 0.8s ease, color 0.8s ease;
+}
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+button {
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid var(--text);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+button:hover { background: var(--text); color: var(--bg); }
+button:disabled { opacity: 0.4; cursor: not-allowed; }
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+button.primary:hover { background: #A84E2E; }
+.note {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: center;
+  min-height: 1.2em;
+  margin-top: 0.5rem;
+}
+.works {
+  display: grid;
+  gap: 2.5rem;
+}
+.work {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+.pot {
+  width: 90px;
+  height: 110px;
+}
+.work h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.35rem;
+}
+.work p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.about {
+  max-width: 38rem;
+  margin: 0 auto;
+  text-align: center;
+}
+.about p { color: var(--muted); }
+footer {
+  padding: 3rem 0 4rem;
+  text-align: center;
+  border-top: 1px solid var(--line);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+footer a { color: var(--text); }
+@media (max-width: 520px) {
+  .work { grid-template-columns: 1fr; }
+  .pot { margin: 0 auto; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <!-- CUSTOMIZE: name, craft, city -->
+    <h1>Mira Calder</h1>
+    <p class="sub">Ceramicist · Santa Fe</p>
+    <div id="weather">Local conditions…</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <h2>Vessels built coil by <span class="accent">coil</span></h2>
+    <p>Functional stoneware and quiet sculptural forms from local New Mexico clay, wood-fired in the high desert.</p>
+  </div>
+</section>
+
+<section id="technique">
+  <div class="wrap">
+    <h2>Coil Building</h2>
+    <p class="technique-intro">Each piece begins as stacked coils of clay, built upward, joined, and refined before the kiln. The page is structured the same way: layer by layer.</p>
+    <div class="vessel-stage">
+      <div class="vessel" id="vessel" aria-live="polite">
+        <!-- coils added by script -->
+      </div>
+      <div class="controls">
+        <button id="addCoil" class="primary">Add Coil</button>
+        <button id="fire" disabled>Fire</button>
+        <button id="reset">Reset</button>
+      </div>
+      <div class="note" id="note">Begin with the base.</div>
+    </div>
+  </div>
+</section>
+
+<section id="works">
+  <div class="wrap">
+    <h2>Recent Work</h2>
+    <div class="works">
+      <article class="work">
+        <svg class="pot" viewBox="0 0 90 110" aria-hidden="true">
+          <path d="M25 20 Q45 8 65 20 L70 85 Q45 100 20 85 Z" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+          <path d="M28 32 Q45 26 62 32" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <ellipse cx="45" cy="20" rx="20" ry="6" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+        </svg>
+        <div>
+          <h3>Desert Pitcher</h3>
+          <p>Ash glaze, local stoneware. Wood-fired. Holds a quiet pour.</p>
+        </div>
+      </article>
+      <article class="work">
+        <svg class="pot" viewBox="0 0 90 110" aria-hidden="true">
+          <path d="M30 25 Q45 12 60 25 L62 78 Q45 95 28 78 Z" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+          <path d="M32 40 Q45 36 58 40" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <ellipse cx="45" cy="25" rx="15" ry="5" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+        </svg>
+        <div>
+          <h3>Coil Bowl</h3>
+          <p>Visible coil joins left as texture. Matte terracotta slip.</p>
+        </div>
+      </article>
+      <article class="work">
+        <svg class="pot" viewBox="0 0 90 110" aria-hidden="true">
+          <path d="M22 18 Q45 6 68 18 L72 90 Q45 105 18 90 Z" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+          <path d="M26 35 Q45 30 64 35" fill="none" stroke="var(--accent)" stroke-width="1"/>
+          <ellipse cx="45" cy="18" rx="23" ry="6" fill="none" stroke="#2E2620" stroke-width="1.2"/>
+        </svg>
+        <div>
+          <h3>Tall Vase</h3>
+          <p>Five coils, reduced in the wood kiln. Holds branches or nothing.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="wrap">
+    <h2>About</h2>
+    <p>Mira Calder works from a studio in Santa Fe, building functional and sculptural stoneware by hand. Clay is sourced locally; firing is done in a wood kiln that marks each piece with the atmosphere of the high desert.</p>
+    <p>Commissions and studio visits by arrangement.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Mira Calder · Santa Fe<br>
+    <a href="mailto:studio@example.com">studio@example.com</a></p>
+    <p style="margin-top:1.5rem;font-size:0.75rem;opacity:0.6;">Template · local-first · Open-Meteo weather when available</p>
+  </div>
+</footer>
+
+<script>
+const vessel = document.getElementById('vessel');
+const addBtn = document.getElementById('addCoil');
+const fireBtn = document.getElementById('fire');
+const resetBtn = document.getElementById('reset');
+const note = document.getElementById('note');
+const weatherEl = document.getElementById('weather');
+
+const maxCoils = 5;
+const labels = ['Base', 'Body', 'Shoulder', 'Neck', 'Rim'];
+let count = 0;
+
+function updateNote() {
+  if (count === 0) note.textContent = 'Begin with the base.';
+  else if (count < maxCoils) note.textContent = `${count} of ${maxCoils} coils. Keep building.`;
+  else note.textContent = 'Vessel complete. Ready to fire.';
+  fireBtn.disabled = count < maxCoils;
+}
+
+function addCoil() {
+  if (count >= maxCoils) return;
+  const layer = document.createElement('div');
+  layer.className = 'coil';
+  layer.textContent = labels[count];
+  vessel.appendChild(layer);
+  requestAnimationFrame(() => layer.classList.add('added'));
+  count++;
+  updateNote();
+}
+
+function fire() {
+  if (count < maxCoils) return;
+  vessel.classList.add('fired');
+  note.textContent = 'Fired. The accent color is the final atmosphere.';
+  fireBtn.disabled = true;
+  addBtn.disabled = true;
+}
+
+function reset() {
+  vessel.innerHTML = '';
+  vessel.classList.remove('fired');
+  count = 0;
+  addBtn.disabled = false;
+  fireBtn.disabled = true;
+  updateNote();
+}
+
+addBtn.addEventListener('click', addCoil);
+fireBtn.addEventListener('click', fire);
+resetBtn.addEventListener('click', reset);
+updateNote();
+
+// Open-Meteo: Santa Fe, NM (35.687, -105.938) — no key, degrades gracefully
+async function loadWeather() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=35.6870&longitude=-105.9378&current=temperature_2m,weather_code&temperature_unit=fahrenheit';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const temp = Math.round(data.current.temperature_2m);
+    const code = data.current.weather_code;
+    let condition = 'clear';
+    if (code >= 1 && code <= 3) condition = 'partly cloudy';
+    else if (code >= 45 && code <= 48) condition = 'fog';
+    else if (code >= 51) condition = 'precipitation';
+    weatherEl.textContent = `Santa Fe · ${temp}°F, ${condition}`;
+  } catch {
+    weatherEl.textContent = 'Santa Fe studio';
+  }
+}
+loadWeather();
+</script>
+</body>
+</html>
