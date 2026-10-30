@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isla Moreau · Botanical Illustrator & Herbalist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #6A8A6E; /* sage from Appalachian foliage */
+  --paper: #F7F4EF;
+  --ink: #1F1F1F;
+  --muted: #5C5C5C;
+  --line: #E8E2D8;
+  --shadow: rgba(31, 31, 31, 0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.65;
+  font-weight: 300;
+  min-height: 100vh;
+}
+h1, h2, h3, .serif { font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; }
+h1 { font-size: clamp(2.8rem, 6vw, 4.2rem); letter-spacing: -0.02em; line-height: 0.95; }
+h2 { font-size: clamp(1.8rem, 3vw, 2.4rem); margin-bottom: 0.75rem; }
+h3 { font-size: 1.35rem; margin-bottom: 0.4rem; }
+.accent { color: var(--accent); }
+.small { font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+
+header {
+  padding: 3.5rem 1.5rem 2rem;
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.tagline { font-size: 1.15rem; margin: 0.6rem 0 1.2rem; color: var(--muted); }
+#weather {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background: rgba(255,255,255,0.6);
+}
+#weather.loaded { opacity: 1; }
+
+main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+.intro {
+  max-width: 640px;
+  margin: 2rem auto 3.5rem;
+  text-align: center;
+  font-size: 1.05rem;
+}
+.intro p + p { margin-top: 1rem; }
+
+/* Herbarium structure driven by the pressed-specimen technique */
+.herbarium {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.75rem;
+  margin: 2rem 0 2.5rem;
+  transition: gap 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.specimen {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid var(--line);
+  padding: 1.6rem 1.4rem 1.4rem;
+  position: relative;
+  box-shadow: 3px 4px 0 var(--shadow);
+  transform: rotate(var(--rot, 0.6deg));
+  transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.7s ease,
+              background 0.7s ease;
+}
+.specimen:nth-child(1) { --rot: -1.2deg; }
+.specimen:nth-child(2) { --rot: 0.8deg; }
+.specimen:nth-child(3) { --rot: -0.4deg; }
+.specimen:nth-child(4) { --rot: 1.1deg; }
+.specimen svg {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.specimen path, .specimen circle, .specimen ellipse {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  transition: stroke-dashoffset 1.4s ease;
+}
+.herbarium.pressed .specimen path,
+.herbarium.pressed .specimen circle,
+.herbarium.pressed .specimen ellipse {
+  stroke-dashoffset: 0;
+  stroke: var(--accent);
+}
+.herbarium.pressed {
+  gap: 1rem;
+}
+.herbarium.pressed .specimen {
+  transform: rotate(0deg);
+  box-shadow: 1px 2px 0 var(--shadow);
+  background: rgba(255,255,255,0.9);
+}
+
+.controls {
+  text-align: center;
+  margin: 1.5rem 0 3rem;
+}
+.press-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.85rem 1.8rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.press-btn:hover { transform: translateY(-1px); background: #5A7A5E; }
+.press-btn:active { transform: translateY(1px); }
+.press-btn.pressed { background: #4A6A4E; }
+
+.process {
+  max-width: 680px;
+  margin: 3rem auto;
+  padding: 2rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.process h2 { text-align: center; }
+.process p { margin-bottom: 1rem; }
+
+.contact {
+  text-align: center;
+  margin-top: 3rem;
+}
+.contact a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.contact a:hover { border-bottom-color: var(--accent); }
+
+footer {
+  text-align: center;
+  padding: 2rem 1rem 3rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+  .herbarium { gap: 1.25rem; }
+  header { padding-top: 2.5rem; }
+}
+</style>
+</head>
+<body>
+<header>
+  <p class="small">Asheville, North Carolina</p>
+  <h1>Isla Moreau</h1>
+  <p class="tagline">Botanical Illustrator & Small-Batch Herbalist</p>
+  <div id="weather" aria-live="polite">Studio light loading…</div>
+</header>
+
+<main>
+  <section class="intro">
+    <p>I record the flora of the Southern Appalachians in ink and pigment, then bottle the same plants into seasonal remedies. Each study begins as a field sketch pressed between sheets of handmade paper.</p>
+    <p>The page is arranged as an open herbarium sheet. Specimens rest slightly askew until they are pressed into place.</p>
+  </section>
+
+  <section class="herbarium" id="herbarium" aria-label="Selected works">
+    <article class="specimen">
+      <svg viewBox="0 0 200 140" aria-hidden="true">
+        <path d="M100 120 C100 80 70 60 60 40 C55 25 70 15 85 25 C95 15 110 20 100 40 C130 25 145 40 135 60 C120 80 100 90 100 120"/>
+        <circle cx="100" cy="35" r="8"/>
+        <path d="M100 50 C90 70 75 75 65 65"/>
+        <path d="M100 55 C115 75 130 70 140 55"/>
+      </svg>
+      <h3>Mountain Laurel</h3>
+      <p>Ink and watercolor on cotton rag. Field notes from the Craggy Gardens trail, late May.</p>
+    </article>
+    <article class="specimen">
+      <svg viewBox="0 0 200 140" aria-hidden="true">
+        <path d="M40 100 C60 90 80 40 100 30 C120 40 140 90 160 100"/>
+        <path d="M100 30 L100 110"/>
+        <ellipse cx="75" cy="65" rx="18" ry="28" transform="rotate(-25 75 65)"/>
+        <ellipse cx="125" cy="70" rx="16" ry="26" transform="rotate(20 125 70)"/>
+        <ellipse cx="95" cy="50" rx="12" ry="20" transform="rotate(-10 95 50)"/>
+      </svg>
+      <h3>Goldenrod</h3>
+      <p>Pressed specimen and tincture label. Collected along the French Broad after first frost.</p>
+    </article>
+    <article class="specimen">
+      <svg viewBox="0 0 200 140" aria-hidden="true">
+        <path d="M100 115 C100 90 60 80 50 55 C40 30 70 20 100 45 C130 20 160 35 150 60 C140 85 100 95 100 115"/>
+        <path d="M100 45 L100 115"/>
+        <circle cx="100" cy="40" r="6"/>
+      </svg>
+      <h3>Black Cohosh</h3>
+      <p>Scientific study for the apothecary. Root and flower recorded at different scales on one sheet.</p>
+    </article>
+    <article class="specimen">
+      <svg viewBox="0 0 200 140" aria-hidden="true">
+        <path d="M30 90 Q60 40 100 50 Q140 40 170 95"/>
+        <path d="M50 70 Q80 30 100 55"/>
+        <path d="M150 75 Q120 25 100 55"/>
+        <ellipse cx="100" cy="48" rx="22" ry="14"/>
+        <path d="M100 55 L100 110"/>
+      </svg>
+      <h3>Rhododendron</h3>
+      <p>Layered transparency study. Petals rendered in successive washes to capture the mountain light.</p>
+    </article>
+  </section>
+
+  <div class="controls">
+    <button id="pressBtn" class="press-btn" type="button">Press the Collection</button>
+  </div>
+
+  <section class="process">
+    <h2>Pressed Specimen Layering</h2>
+    <p>The technique that organizes this page is the same one used in the studio: multiple translucent studies of a single plant are arranged with slight rotation, then pressed flat so the overlapping lines remain visible. Scientific accuracy and the living gesture of the plant coexist on one sheet.</p>
+    <p>On the page the four works begin slightly askew. The single control settles them into final alignment and draws the botanical lines in sage—the color of the mountain understory after rain.</p>
+  </section>
+
+  <section class="contact">
+    <h2>Studio</h2>
+    <p>Commissions and seasonal remedies by appointment.</p>
+    <p style="margin-top:1rem"><a href="mailto:isla@moreau.studio">isla@moreau.studio</a></p>
+    <p class="small" style="margin-top:1.5rem">Asheville · Blue Ridge</p>
+  </section>
+</main>
+
+<footer>
+  © 2026 Isla Moreau · Template slug: isla-moreau-pressed
+</footer>
+
+<script>
+const weatherEl = document.getElementById('weather');
+const herbarium = document.getElementById('herbarium');
+const pressBtn = document.getElementById('pressBtn');
+
+const weatherMap = {
+  0: 'Clear', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+  45: 'Fog', 48: 'Rime fog',
+  51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle',
+  61: 'Slight rain', 63: 'Rain', 65: 'Heavy rain',
+  71: 'Slight snow', 73: 'Snow', 75: 'Heavy snow',
+  80: 'Showers', 81: 'Rain showers', 82: 'Violent showers',
+  95: 'Thunderstorm'
+};
+
+async function loadWeather() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=35.5956&longitude=-82.5519&current=temperature_2m,weather_code&temperature_unit=fahrenheit&timezone=auto';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('network');
+    const data = await res.json();
+    const temp = Math.round(data.current.temperature_2m);
+    const code = data.current.weather_code;
+    const desc = weatherMap[code] || 'Variable';
+    weatherEl.textContent = `Asheville now · ${temp}°F, ${desc}`;
+    weatherEl.classList.add('loaded');
+  } catch {
+    weatherEl.style.display = 'none';
+  }
+}
+
+pressBtn.addEventListener('click', () => {
+  const isPressed = herbarium.classList.toggle('pressed');
+  pressBtn.classList.toggle('pressed', isPressed);
+  pressBtn.textContent = isPressed ? 'Release the Collection' : 'Press the Collection';
+});
+
+loadWeather();
+</script>
+</body>
+</html>
