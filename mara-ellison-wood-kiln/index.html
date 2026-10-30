@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mara Ellison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0c;
+  --text: #e6e6e6;
+  --accent: #8fb8a8;
+  --muted: #6a6a6a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Mono', monospace;
+  font-size: 16px;
+  line-height: 1.4;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+.flow {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 8vh 5vw 12vh;
+}
+.statement {
+  font-size: clamp(2.4rem, 8vw, 5.2rem);
+  line-height: 0.92;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 18vh;
+  color: var(--text);
+}
+.projects {
+  display: flex;
+  flex-direction: column;
+  gap: 14vh;
+  margin-bottom: 16vh;
+}
+.project-title {
+  font-size: clamp(1.8rem, 5.5vw, 3.4rem);
+  line-height: 1.05;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  color: var(--text);
+}
+.project-desc {
+  font-size: clamp(0.95rem, 2.2vw, 1.15rem);
+  color: var(--muted);
+  max-width: 42ch;
+}
+.about {
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+  line-height: 1.55;
+  max-width: 48ch;
+  margin-bottom: 10vh;
+  color: var(--text);
+}
+.contact {
+  font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+  color: var(--accent);
+  font-weight: 700;
+}
+.contact a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+.contact a:hover { border-bottom-color: var(--accent); }
+.weather {
+  font-size: 0.85rem;
+  color: var(--accent);
+  opacity: 0.7;
+  margin-bottom: 6vh;
+  letter-spacing: 0.02em;
+  min-height: 0;
+  display: none;
+}
+/* Kinetic letters */
+.letter {
+  display: inline-block;
+  transition: transform 0.18s cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: transform;
+}
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .flow { padding: 6vh 6vw 10vh; }
+  .statement { margin-bottom: 12vh; }
+  .projects { gap: 10vh; margin-bottom: 12vh; }
+  .about { margin-bottom: 8vh; }
+}
+</style>
+</head>
+<body>
+<div class="flow">
+  <div class="weather" id="weather" aria-hidden="true"></div>
+  <h1 class="statement" id="statement">Vessels shaped by ash and the long cool of Portland rain.</h1>
+  <div class="projects">
+    <div>
+      <h2 class="project-title">Douglas Fir Bowls</h2>
+      <p class="project-desc">Glaze from the ash of trees felled for the kiln.</p>
+    </div>
+    <div>
+      <h2 class="project-title">Willamette Plates</h2>
+      <p class="project-desc">Edges that follow the river’s curve.</p>
+    </div>
+    <div>
+      <h2 class="project-title">Night Firing Lamps</h2>
+      <p class="project-desc">Light held in crackled celadon.</p>
+    </div>
+    <div>
+      <h2 class="project-title">Ember Handles</h2>
+      <p class="project-desc">Pitchers whose grips remember the heat.</p>
+    </div>
+    <div>
+      <h2 class="project-title">Quiet Set</h2>
+      <p class="project-desc">Everyday vessels with quiet surfaces.</p>
+    </div>
+    <div>
+      <h2 class="project-title">Winter Kiln</h2>
+      <p class="project-desc">Forms cooled under the season’s first frost.</p>
+    </div>
+  </div>
+  <p class="about">Mara Ellison fires her work in a wood kiln on the edge of Portland. She works with local clays and the ash that falls from the fire, letting each piece record the particular heat and the weather that cools it.</p>
+  <p class="contact"><a href="mailto:studio@maraellison.com">studio@maraellison.com</a></p>
+</div>
+<script>
+(function() {
+  const accent = '#8fb8a8';
+  // Kinetic type: split headings into letters
+  function splitToLetters(el) {
+    const text = el.textContent;
+    el.textContent = '';
+    for (let i = 0; i < text.length; i++) {
+      const span = document.createElement('span');
+      span.className = 'letter';
+      span.textContent = text[i] === ' ' ? '\u00A0' : text[i];
+      el.appendChild(span);
+    }
+  }
+  const headings = document.querySelectorAll('.statement, .project-title');
+  headings.forEach(splitToLetters);
+  // Mouse / pointer kinetic response
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let rafId = null;
+  function onMove(e) {
+    mouseX = e.clientX ?? (e.touches && e.touches[0].clientX) ?? mouseX;
+    mouseY = e.clientY ?? (e.touches && e.touches[0].clientY) ?? mouseY;
+    if (!rafId) rafId = requestAnimationFrame(updateLetters);
+  }
+  function updateLetters() {
+    rafId = null;
+    document.querySelectorAll('.letter').forEach(letter => {
+      const rect = letter.getBoundingClientRect();
+      const lx = rect.left + rect.width / 2;
+      const ly = rect.top + rect.height / 2;
+      const dx = mouseX - lx;
+      const dy = mouseY - ly;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = 140;
+      if (dist < maxDist && dist > 0) {
+        const force = (1 - dist / maxDist) * 18;
+        const angle = Math.atan2(dy, dx);
+        const tx = Math.cos(angle) * -force * 0.6;
+        const ty = Math.sin(angle) * -force * 0.4;
+        letter.style.transform = `translate(${tx}px, ${ty}px)`;
+      } else {
+        letter.style.transform = 'translate(0, 0)';
+      }
+    });
+  }
+  window.addEventListener('pointermove', onMove, { passive: true });
+  window.addEventListener('touchmove', onMove, { passive: true });
+  // Initial settle
+  setTimeout(() => updateLetters(), 100);
+  // Weather: Open-Meteo for Portland
+  const weatherEl = document.getElementById('weather');
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=45.52&longitude=-122.68&current_weather=true&temperature_unit=celsius')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(data => {
+      if (data.current_weather) {
+        const t = Math.round(data.current_weather.temperature);
+        const code = data.current_weather.weathercode;
+        let cond = 'clear';
+        if (code >= 51 && code <= 67) cond = 'rain';
+        else if (code >= 71 && code <= 77) cond = 'snow';
+        else if (code >= 80) cond = 'showers';
+        else if (code > 2) cond = 'cloud';
+        weatherEl.textContent = `Portland ${t}° ${cond}`;
+        weatherEl.style.display = 'block';
+        weatherEl.style.opacity = '0.85';
+      }
+    })
+    .catch(() => {
+      weatherEl.style.display = 'none';
+    });
+})();
+</script>
+</body>
+</html>

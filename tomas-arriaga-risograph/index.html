@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tomás Arriaga — Risograph Printer, Valparaíso</title>
+<meta name="description" content="Tomás Arriaga runs a two-drum risograph studio on Cerro Alegre, Valparaíso. Posters, zines and small editions printed in fluorescent pink and black.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   TEMPLATE TOKENS: change these to re-skin the page.
+   --accent is the one accent color: riso Fluorescent Pink ink.
+   ============================================================ */
+:root{
+  --paper:#f3efe6;        /* uncoated newsprint */
+  --ink:#1b1a18;          /* riso black */
+  --ink-soft:#5d5a53;
+  --rule:#d8d2c4;
+  --accent:#ff48b0;       /* fluorescent pink drum */
+  --shift-x:0px;          /* misregistration, set live by JS */
+  --shift-y:0px;
+  --font:"Space Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.55}
+body{min-height:100vh;
+  background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:4px 4px}
+a{color:inherit}
+::selection{background:var(--accent);color:var(--ink)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+/* ---------- top bar ---------- */
+header{border-bottom:1px solid var(--ink);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+header .wrap{display:flex;justify-content:space-between;gap:16px;padding-block:14px;flex-wrap:wrap}
+header nav a{text-decoration:none;margin-left:20px}
+header nav a:hover{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:3px}
+
+/* ---------- misregistration: the featured technique ----------
+   Every .plate renders two "drums": black (base) and pink (::before
+   via data-text, or a duplicate layer) offset by --shift-x/y.        */
+.plate{position:relative;display:inline-block;color:var(--ink);isolation:isolate}
+.plate::before{content:attr(data-text);position:absolute;inset:0;color:var(--accent);
+  transform:translate(var(--shift-x),var(--shift-y));mix-blend-mode:multiply;z-index:-1;pointer-events:none;white-space:inherit}
+
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--ink);cursor:crosshair;user-select:none;touch-action:pan-y}
+.hero h1{font-size:clamp(56px,12vw,168px);line-height:.88;font-weight:700;letter-spacing:-.04em;white-space:pre-line}
+.hero .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:40px;font-size:13px}
+.hero .meta p{max-width:34ch}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--ink-soft);display:block;margin-bottom:6px}
+
+/* registration readout */
+.reg{display:flex;align-items:center;gap:14px;margin-top:28px;font-size:12px}
+.crosshair{width:34px;height:34px;position:relative;flex:none}
+.crosshair i{position:absolute;inset:0;border-radius:50%;border:1.5px solid var(--ink)}
+.crosshair i::before,.crosshair i::after{content:"";position:absolute;background:currentColor}
+.crosshair i::before{left:50%;top:-6px;bottom:-6px;width:1.5px;transform:translateX(-50%)}
+.crosshair i::after{top:50%;left:-6px;right:-6px;height:1.5px;transform:translateY(-50%)}
+.crosshair i.pink{border-color:var(--accent);color:var(--accent);transform:translate(var(--shift-x),var(--shift-y));mix-blend-mode:multiply}
+.crosshair i.black{color:var(--ink)}
+.reg button{font:inherit;font-size:11px;text-transform:uppercase;letter-spacing:.1em;background:none;border:1px solid var(--ink);padding:6px 10px;cursor:pointer}
+.reg button:hover{background:var(--ink);color:var(--paper)}
+.reg.locked .status{background:var(--accent);padding:0 4px}
+
+/* ---------- sections ---------- */
+section{border-bottom:1px solid var(--ink);padding:48px 0}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+.sec-head h2{font-size:28px;letter-spacing:-.02em}
+
+/* work: each card is a two-layer print, layers separate on hover */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:28px}
+.card{text-decoration:none}
+.print{aspect-ratio:3/4;border:1px solid var(--rule);background:var(--paper);position:relative;overflow:hidden}
+.print svg{position:absolute;inset:8%;width:84%;height:84%;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.print .l-pink{mix-blend-mode:multiply}
+.card:hover .print .l-pink,.card:focus-visible .print .l-pink{transform:translate(9px,-6px) rotate(.6deg)}
+.card:hover .print .l-black,.card:focus-visible .print .l-black{transform:translate(-4px,3px)}
+.card .cap{display:flex;justify-content:space-between;font-size:12px;margin-top:10px;gap:8px}
+.card .cap b{font-weight:700}
+
+/* services as an order slip */
+.slip{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));border-top:1px dashed var(--ink)}
+.slip div{padding:18px 18px 18px 0;border-bottom:1px dashed var(--ink)}
+.slip h3{font-size:15px;margin-bottom:6px}
+.slip p{font-size:13px;color:var(--ink-soft)}
+.slip .price{font-size:12px;margin-top:10px}
+
+/* press conditions (weather) */
+.press{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;border:1px solid var(--ink)}
+.press div{padding:18px;border-right:1px solid var(--ink)}
+.press div:last-child{border-right:none}
+.press strong{display:block;font-size:30px;letter-spacing:-.02em}
+.press .note{grid-column:1/-1;border-top:1px solid var(--ink);border-right:none;font-size:13px}
+@media (max-width:620px){.press div{border-right:none;border-bottom:1px solid var(--ink)}}
+
+.contact{font-size:clamp(28px,5vw,56px);letter-spacing:-.03em;font-weight:700}
+.contact a{text-decoration:none}
+footer{padding:24px 0 48px;font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.1em}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ======================== PERSONA DATA (edit here) ======================== -->
+<header>
+  <div class="wrap">
+    <span>Imprenta Arriaga · Cerro Alegre, Valparaíso</span>
+    <nav><a href="#work">Work</a><a href="#services">Services</a><a href="#press">Press room</a><a href="#contact">Contact</a></nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero" aria-label="Introduction">
+    <div class="wrap">
+      <span class="label">Two-drum risograph studio · est. 2017</span>
+      <h1 class="plate" data-text="Tomás&#10;Arriaga">Tomás
+Arriaga</h1>
+
+      <div class="reg" id="reg" aria-live="polite">
+        <span class="crosshair" aria-hidden="true"><i class="black"></i><i class="pink"></i></span>
+        <span>Registration: <span class="status" id="regStatus">off by 0.0 mm</span></span>
+        <button type="button" id="lockBtn">Lock registration</button>
+      </div>
+
+      <div class="meta">
+        <p><span class="label">Craft</span>Posters, zines and small art editions printed one colour at a time on a 1998 Riso MZ. Black drum, fluorescent pink drum, nothing else.</p>
+        <p><span class="label">Technique</span>Misregistration. Each colour goes through on its own pass, so the layers never land exactly together. Move your cursor over this block to slide the pink plate.</p>
+        <p><span class="label">Location</span>Calle Templeman 4xx, up the stairs past the Ascensor Concepción. Walk-ins Thursday to Saturday.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head"><h2>Selected prints</h2><span class="label">Hover to separate the plates</span></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head"><h2>Order slip</h2><span class="label">Prices in CLP, paper included</span></div>
+      <div class="slip">
+        <div><h3>Poster run</h3><p>A3, 2 colours, 100–500 copies on 90 g Munken.</p><p class="price">from $85.000</p></div>
+        <div><h3>Zine printing</h3><p>A5, saddle-stitched, folded and trimmed here by hand.</p><p class="price">from $1.200 / copy</p></div>
+        <div><h3>Open press hours</h3><p>Bring your files and print them yourself, with me next to you.</p><p class="price">$25.000 / 2 h</p></div>
+        <div><h3>Workshops</h3><p>Saturday mornings, six people max. Separations, ink and paper.</p><p class="price">$40.000 / person</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="press">
+    <div class="wrap">
+      <div class="sec-head"><h2>Press room today</h2><span class="label" id="pressStamp">Valparaíso · checking…</span></div>
+      <div class="press" id="pressGrid">
+        <div><span class="label">Air</span><strong id="wTemp">—</strong></div>
+        <div><span class="label">Humidity</span><strong id="wHum">—</strong></div>
+        <div><span class="label">Wind off the bay</span><strong id="wWind">—</strong></div>
+        <div class="note" id="wNote">Sea air matters here: damp paper swells and the registration drifts. Live conditions load below when they're available.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <span class="label">Commissions, runs, questions</span>
+      <p class="contact"><a class="plate" data-text="hola@imprenta-arriaga.cl" href="mailto:hola@imprenta-arriaga.cl">hola@imprenta-arriaga.cl</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© Imprenta Arriaga. Printed in pink and black.</span>
+    <span>No cookies · no tracking · weather by Open-Meteo</span>
+  </div>
+</footer>
+
+<script>
+/* =========================== TEMPLATE CONFIG =========================== */
+const CONFIG = {
+  city: "Valparaíso",
+  lat: -33.0472, lon: -71.6127,
+  timezone: "America/Santiago",
+  maxShift: 14,              // px of maximum misregistration
+  works: [
+    { title: "Ascensores", meta: "A2 poster · 2024", shape: "stairs" },
+    { title: "Niebla #3",  meta: "Zine · 48 pp",     shape: "fog" },
+    { title: "Puerto",     meta: "A3 edition of 60", shape: "cranes" },
+    { title: "Cerro Alegre", meta: "Map · 2023",     shape: "hills" },
+    { title: "Lluvia de Mayo", meta: "Postcards",    shape: "rain" },
+    { title: "Sol de las 7", meta: "A3 poster",      shape: "sun" }
+  ]
+};
+
+/* ---------- prints: generated two-plate SVGs, no image assets ---------- */
+const shapes = {
+  stairs:[`<path d="M10 180 h30 v-25 h30 v-25 h30 v-25 h30 v-25 h30 v-25" fill="none" stroke="currentColor" stroke-width="10"/>`,
+          `<rect x="95" y="20" width="50" height="160" fill="currentColor"/>`],
+  fog:   [`<g fill="none" stroke="currentColor" stroke-width="6">${[40,70,100,130,160].map(y=>`<path d="M0 ${y} q50 -18 100 0 t100 0"/>`).join("")}</g>`,
+          `<circle cx="100" cy="90" r="60" fill="currentColor"/>`],
+  cranes:[`<path d="M30 190 V40 h120 M30 40 L80 90 M150 40 v60" fill="none" stroke="currentColor" stroke-width="8"/>`,
+          `<rect x="0" y="140" width="200" height="60" fill="currentColor"/>`],
+  hills: [`<path d="M0 200 Q40 60 90 140 T200 90 V200Z" fill="currentColor"/>`,
+          `${Array.from({length:18},(_,i)=>`<rect x="${10+(i%6)*30}" y="${40+Math.floor(i/6)*30}" width="16" height="16" fill="currentColor"/>`).join("")}`],
+  rain:  [`<g stroke="currentColor" stroke-width="5">${Array.from({length:14},(_,i)=>`<line x1="${10+i*14}" y1="${20+(i%3)*20}" x2="${0+i*14}" y2="${120+(i%3)*30}"/>`).join("")}</g>`,
+          `<rect x="20" y="130" width="160" height="50" rx="25" fill="currentColor"/>`],
+  sun:   [`<rect x="0" y="120" width="200" height="8" fill="currentColor"/><rect x="0" y="140" width="200" height="4" fill="currentColor"/><rect x="0" y="152" width="200" height="2" fill="currentColor"/>`,
+          `<circle cx="100" cy="110" r="70" fill="currentColor"/>`]
+};
+const grid = document.getElementById("grid");
+CONFIG.works.forEach(w=>{
+  const [black,pink] = shapes[w.shape];
+  grid.insertAdjacentHTML("beforeend",
+  `<a class="card" href="#contact" aria-label="${w.title}, ${w.meta}">
+     <div class="print">
+       <svg class="l-black" viewBox="0 0 200 200" style="color:var(--ink)" aria-hidden="true">${black}</svg>
+       <svg class="l-pink"  viewBox="0 0 200 200" style="color:var(--accent)" aria-hidden="true">${pink}</svg>
+     </div>
+     <div class="cap"><b>${w.title}</b><span>${w.meta}</span></div>
+   </a>`);
+});
+
+/* ---------- the interaction: drift the pink drum ---------- */
+const root = document.documentElement, hero = document.getElementById("hero");
+const reg = document.getElementById("reg"), status = document.getElementById("regStatus");
+const lockBtn = document.getElementById("lockBtn");
+let locked = false, tx = 6, ty = -4, cx = 6, cy = -4;
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function setTarget(e){
+  if(locked) return;
+  const r = hero.getBoundingClientRect();
+  const p = e.touches ? e.touches[0] : e;
+  const nx = ((p.clientX - r.left)/r.width - .5)*2;
+  const ny = ((p.clientY - r.top)/r.height - .5)*2;
+  tx = nx*CONFIG.maxShift; ty = ny*CONFIG.maxShift*.6;
+}
+hero.addEventListener("pointermove", setTarget);
+hero.addEventListener("touchmove", setTarget, {passive:true});
+
+function frame(){
+  cx += (tx-cx)*(reduce?1:.12); cy += (ty-cy)*(reduce?1:.12);
+  root.style.setProperty("--shift-x", cx.toFixed(2)+"px");
+  root.style.setProperty("--shift-y", cy.toFixed(2)+"px");
+  const mm = Math.hypot(cx,cy)*0.2646; // px → mm at 96dpi
+  if(!locked) status.textContent = mm < .3 ? "in register ✓" : `off by ${mm.toFixed(1)} mm`;
+  requestAnimationFrame(frame);
+}
+frame();
+
+lockBtn.addEventListener("click", ()=>{
+  locked = !locked;
+  if(locked){ tx = 0; ty = 0; status.textContent = "in register ✓"; lockBtn.textContent = "Release drum"; }
+  else { lockBtn.textContent = "Lock registration"; }
+  reg.classList.toggle("locked", locked);
+});
+
+/* ---------- live flavour: Open-Meteo, keyless, degrades quietly ---------- */
+(async function weather(){
+  const stamp = document.getElementById("pressStamp");
+  const note = document.getElementById("wNote");
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${CONFIG.lat}&longitude=${CONFIG.lon}`+
+              `&current=temperature_2m,relative_humidity_2m,wind_speed_10m&timezone=${encodeURIComponent(CONFIG.timezone)}`;
+  try{
+    const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(), 6000);
+    const res = await fetch(url, {signal:ctrl.signal});
+    if(!res.ok) throw 0;
+    const c = (await res.json()).current;
+    document.getElementById("wTemp").textContent = Math.round(c.temperature_2m)+"°C";
+    document.getElementById("wHum").textContent  = Math.round(c.relative_humidity_2m)+"%";
+    document.getElementById("wWind").textContent = Math.round(c.wind_speed_10m)+" km/h";
+    stamp.textContent = `${CONFIG.city} · ${c.time.replace("T"," ")}`;
+    const h = c.relative_humidity_2m;
+    // humidity nudges the resting misregistration: the page feels the sea air
+    CONFIG.maxShift = 8 + Math.round(h/10);
+    note.textContent = h >= 80 ? "Camanchaca day. The paper is damp, so expect loose registration. Good for the fog prints."
+                     : h >= 60 ? "Normal coastal air. Paper rests an hour before the second pass."
+                     : "Dry air off the hills. Tight registration today, a good day for fine type.";
+  }catch(_){
+    stamp.textContent = `${CONFIG.city} · offline`;
+    note.textContent = "Live conditions aren't available right now. The press still runs: Thursday to Saturday, 11:00–19:00.";
+    document.querySelectorAll("#pressGrid strong").forEach(s=>s.textContent="n/a");
+  }
+})();
+</script>
+</body>
+</html>
