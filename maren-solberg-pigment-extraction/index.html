@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maren Solberg — Botanical & Mineral Pigment Extraction</title>
+    <!-- Syne & Azeret Mono from Google Fonts (Only external asset allowed) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:ital,wght@0,400;0,600;1,400&family=Syne:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #eef3f2; /* Pale glacier-silt & sea-salt sizing paper */
+            --surface: #e2ebe9; /* Dampened coastal slate pressing felt */
+            --surface-active: #d5e2df;
+            --border: #bfd0cd; /* Oxidized silverpoint registration rule */
+            --text: #132426; /* Deep North-Sea kelp char ink */
+            --muted: #4e6769; /* Weathered fjord lichen gray-teal */
+            --accent: #7c3aed; /* Luminous Umbilicaria rock-tripe orchil violet */
+            --font-ui: 'Azeret Mono', monospace;
+            --font-display: 'Syne', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-ui);
+            font-size: 15px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Non-formulaic Structure: Horizontal Chromatography Assay Sheet */
+        .assay-sheet {
+            min-height: 100vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            max-width: 1440px;
+            margin: 0 auto;
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+        }
+
+        /* Top Registration Bar + Opening Statement */
+        .sheet-header {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .identity-cell {
+            padding: 2rem 1.75rem;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.5rem;
+            background-color: var(--surface);
+        }
+
+        .persona-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+            color: var(--text);
+        }
+
+        .telemetry-block {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: var(--text);
+            font-weight: 700;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: inline-block;
+        }
+
+        .opening-cell {
+            padding: 2.25rem 2.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .opening-cell h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 2.4vw, 2.2rem);
+            font-weight: 500;
+            line-height: 1.26;
+            letter-spacing: -0.025em;
+            color: var(--text);
+            max-width: 44ch;
+        }
+
+        /* Center Core: Interactive Liquid Chromatography Capillary Field + Swatch Strips */
+        .chromatography-core {
+            display: grid;
+            grid-template-columns: 1fr 1.15fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Left/Top interactive paper-fiber capillary canvas */
+        .capillary-vessel {
+            position: relative;
+            border-right: 1px solid var(--border);
+            background: radial-gradient(circle at 50% 42%, #f7fbfa 0%, var(--surface) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 480px;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        #capillary-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .vessel-overlay-top,
+        .vessel-overlay-bottom {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 1.4rem;
+            font-size: 0.75rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+            pointer-events: none;
+            background: rgba(238, 243, 242, 0.84);
+            backdrop-filter: blur(3px);
+        }
+
+        .vessel-overlay-top {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .vessel-overlay-bottom {
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+
+        .accent-spec {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Right Column: Pigment Extraction Swatch Ledger */
+        .swatch-ledger {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .swatch-strip {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 64px 1fr auto;
+            gap: 0.3rem 1.15rem;
+            align-items: baseline;
+            padding: 1.45rem 2rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-left-color 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .swatch-strip:last-child {
+            border-bottom: none;
+        }
+
+        .swatch-strip:hover,
+        .swatch-strip.active,
+        .swatch-strip:focus-visible {
+            background-color: var(--surface);
+            border-left-color: var(--accent);
+            outline: none;
+        }
+
+        .swatch-index {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .swatch-strip.active .swatch-index,
+        .swatch-strip:hover .swatch-index {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .swatch-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            transition: color 0.15s ease;
+        }
+
+        .swatch-strip.active .swatch-title,
+        .swatch-strip:hover .swatch-title {
+            color: var(--accent);
+        }
+
+        .swatch-rf {
+            font-size: 0.76rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .swatch-desc {
+            grid-column: 2 / -1;
+            font-size: 0.88rem;
+            color: var(--muted);
+            padding-top: 0.15rem;
+            transition: color 0.2s ease;
+        }
+
+        .swatch-strip.active .swatch-desc,
+        .swatch-strip:hover .swatch-desc {
+            color: var(--text);
+        }
+
+        /* Bottom Row: Short Bio & Single Contact Line */
+        .sheet-footer {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            align-items: center;
+        }
+
+        .bio-cell {
+            padding: 2rem 2.25rem;
+            border-right: 1px solid var(--border);
+            font-size: 0.89rem;
+            color: var(--muted);
+        }
+
+        .bio-cell p {
+            max-width: 62ch;
+        }
+
+        .contact-cell {
+            padding: 2rem 2.25rem;
+            font-size: 0.88rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .contact-cell a {
+            color: var(--accent);
+            font-weight: 700;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            width: fit-content;
+            transition: border-color 0.2s ease;
+        }
+
+        .contact-cell a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        /* Mobile / Narrow Viewport Verification (Holds cleanly down to 390px) */
+        @media (max-width: 920px) {
+            .sheet-header {
+                grid-template-columns: 1fr;
+            }
+
+            .identity-cell {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1.25rem 1.25rem;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .opening-cell {
+                padding: 1.85rem 1.25rem;
+            }
+
+            .chromatography-core {
+                grid-template-columns: 1fr;
+            }
+
+            .capillary-vessel {
+                min-height: 310px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .swatch-strip {
+                grid-template-columns: 48px 1fr auto;
+                padding: 1.2rem 1.25rem;
+                gap: 0.25rem 0.65rem;
+            }
+
+            .sheet-footer {
+                grid-template-columns: 1fr;
+            }
+
+            .bio-cell {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1.65rem 1.25rem;
+            }
+
+            .contact-cell {
+                padding: 1.5rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="assay-sheet">
+        <!-- Top Ledger Header: Persona Identity, Live Bergen Humidity, and Actual Opening Statement -->
+        <header class="sheet-header">
+            <div class="identity-cell">
+                <div class="persona-name">MAREN SOLBERG</div>
+                <div class="telemetry-block" id="bergen-telemetry">
+                    <span class="live-indicator"><span class="live-dot"></span>60.3913° N, 5.3221° E</span>
+                    <span id="weather-detail">BERGEN, NO // RH 82% WICKING</span>
+                </div>
+            </div>
+            <div class="opening-cell">
+                <h1>Foraged West Norwegian lichen dyes, bog-iron earths, and archipelago kelp char mulled into lightfast archival inks for printmakers and paper conservators.</h1>
+            </div>
+        </header>
+
+        <!-- Center Core: Interactive Capillary Chromatography Field + 5 Pigment Projects -->
+        <section class="chromatography-core" aria-label="Pigment Chromatography Assay and Project Archive">
+            <div class="capillary-vessel" id="vessel-container">
+                <div class="vessel-overlay-top">
+                    <span id="active-pigment-code">BATCH 01 // UMBILICARIA LICHEN ORCHIL</span>
+                    <span id="capillary-rate">WICKING INDEX: 1.18x</span>
+                </div>
+
+                <canvas id="capillary-canvas" aria-label="Interactive capillary pigment diffusion simulation"></canvas>
+
+                <div class="vessel-overlay-bottom">
+                    <span>CAPILLARY ASSAY (GLACIER-SILT COTTON RAG)</span>
+                    <span class="accent-spec" id="active-pigment-rf">Rf 0.74 // pH 8.1</span>
+                </div>
+            </div>
+
+            <ul class="swatch-ledger" id="swatch-ledger">
+                <li class="swatch-strip active" tabindex="0"
+                    data-code="BATCH 01 // UMBILICARIA LICHEN ORCHIL"
+                    data-rf="Rf 0.74 // pH 8.1"
+                    data-r="124" data-g="58" data-b="237"
+                    data-sec-r="45" data-sec-g="138" data-sec-b="130"
+                    data-spread="0.92" data-rings="6">
+                    <span class="swatch-index">SW-01</span>
+                    <span class="swatch-title">Øygarden Coastal Rock-Tripe Orchil</span>
+                    <span class="swatch-rf">Rf 0.74</span>
+                    <p class="swatch-desc">Wind-felled Umbilicaria pustulata lichen steeped in ammoniacal rainwater to yield an electric violet-teal chromatography halo.</p>
+                </li>
+
+                <li class="swatch-strip" tabindex="0"
+                    data-code="BATCH 02 // SOGNEFJORD COPPER VERDIGRIS"
+                    data-rf="Rf 0.83 // pH 5.9"
+                    data-r="18" data-g="130" data-b="116"
+                    data-sec-r="124" data-sec-g="58" data-sec-b="237"
+                    data-spread="1.04" data-rings="7">
+                    <span class="swatch-index">SW-02</span>
+                    <span class="swatch-title">Sognefjord Copper-bath & Sea Lettuce Glaze</span>
+                    <span class="swatch-rf">Rf 0.83</span>
+                    <p class="swatch-desc">Scrap boatyard copper sheets corroded over fermented Ulva lactuca fronds to produce a high-migration glacial verdigris.</p>
+                </li>
+
+                <li class="swatch-strip" tabindex="0"
+                    data-code="BATCH 03 // VIVIANITE FJORD BLUE CLAY"
+                    data-rf="Rf 0.61 // pH 7.4"
+                    data-r="37" data-g="99" data-b="178"
+                    data-sec-r="78" data-sec-g="145" data-sec-b="140"
+                    data-spread="0.84" data-rings="5">
+                    <span class="swatch-index">SW-03</span>
+                    <span class="swatch-title">Hardanger Sub-Glacial Vivianite Silt</span>
+                    <span class="swatch-rf">Rf 0.61</span>
+                    <p class="swatch-desc">Anaerobic hydrated iron-phosphate clay dredged from fjord moraine beds that oxidizes upon contact with light into deep prussian-slate.</p>
+                </li>
+
+                <li class="swatch-strip" tabindex="0"
+                    data-code="BATCH 04 // ROASTED LAMINARIA VINE CHAR"
+                    data-rf="Rf 0.38 // pH 7.2"
+                    data-r="19" data-g="36" data-b="38"
+                    data-sec-r="94" data-sec-g="118" data-sec-b="132"
+                    data-spread="0.58" data-rings="4">
+                    <span class="swatch-index">SW-04</span>
+                    <span class="swatch-title">Fedje North-Sea Kelp Holdfast Char</span>
+                    <span class="swatch-rf">Rf 0.38</span>
+                    <p class="swatch-desc">Anaerobically kilned Laminaria hyperborea stems bound in cold-pressed gum arabic for high-density copperplate intaglio.</p>
+                </li>
+
+                <li class="swatch-strip" tabindex="0"
+                    data-code="BATCH 05 // PARMELIA SAXATILIS CRIMSON"
+                    data-rf="Rf 0.69 // pH 4.8"
+                    data-r="176" data-g="38" data-b="112"
+                    data-sec-r="88" data-sec-g="62" data-sec-b="168"
+                    data-spread="0.79" data-rings="5">
+                    <span class="swatch-index">SW-05</span>
+                    <span class="swatch-title">Fløyen Granite-Crottle Magenta Lake</span>
+                    <span class="swatch-rf">Rf 0.69</span>
+                    <p class="swatch-desc">High-altitude Parmelia saxatilis scraped from storm-felled gneiss boulders and precipitated on alum for translucent map glazes.</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Bottom Footer: Short About Bio + Single Contact Line -->
+        <footer class="sheet-footer">
+            <div class="bio-cell">
+                <p>
+                    From a stone boathouse in Sandviken, Maren Solberg wild-harvests storm-cast kelp, fallen lichens, and iron-rich seepage clays around Bergen. Every pigment batch is washed in rainwater, hand-mulled on local granite slabs, and tested by paper chromatography before bottling.
+                </p>
+            </div>
+            <div class="contact-cell">
+                <span>Sandviksboder 14B, 5035 Bergen</span>
+                <a href="mailto:maren@solberg-farge.no">maren@solberg-farge.no</a>
+            </div>
+        </footer>
+    </main>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById('capillary-canvas');
+            const ctx = canvas.getContext('2d');
+            const vessel = document.getElementById('vessel-container');
+            const swatchStrips = document.querySelectorAll('.swatch-strip');
+            const codeEl = document.getElementById('active-pigment-code');
+            const rfEl = document.getElementById('active-pigment-rf');
+            const rateEl = document.getElementById('capillary-rate');
+            const weatherDetailEl = document.getElementById('weather-detail');
+
+            // Active capillary chromatography state
+            const state = {
+                width: 400,
+                height: 400,
+                dpr: Math.min(window.devicePixelRatio || 1, 2),
+                humidityFactor: 1.18, // Driven by Bergen live relative humidity & precipitation
+                r: 124, g: 58, b: 237,
+                secR: 45, secG: 138, secB: 130,
+                spread: 0.92,
+                rings: 6,
+                drops: [],
+                paperGrain: []
+            };
+
+            // Generate subtle procedural cotton rag fibers once per resize
+            function buildPaperFibers(w, h) {
+                state.paperGrain = [];
+                const count = Math.floor((w * h) / 1100);
+                for (let i = 0; i < count; i++) {
+                    state.paperGrain.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        len: 4 + Math.random() * 11,
+                        angle: Math.random() * Math.PI,
+                        alpha: 0.03 + Math.random() * 0.05
+                    });
+                }
+            }
+
+            // Spawn a capillary chromatography bloom at (x, y)
+            function spawnChromatographyDrop(x, y, isInitial) {
+                const maxRadius = Math.min(state.width, state.height) * (isInitial ? 0.36 : 0.24) * state.spread * (0.85 + state.humidityFactor * 0.15);
+                // Generate organic fiber irregularity lobes around 360 degrees
+                const lobes = [];
+                const steps = 64;
+                const phase1 = Math.random() * Math.PI * 2;
+                const phase2 = Math.random() * Math.PI * 2;
+                for (let i = 0; i < steps; i++) {
+                    const theta = (i / steps) * Math.PI * 2;
+                    const noise = 1
+                        + 0.07 * Math.sin(theta * 5 + phase1)
+                        + 0.045 * Math.cos(theta * 11 + phase2)
+                        + 0.025 * Math.sin(theta * 19 - phase1);
+                    lobes.push(noise);
+                }
+
+                state.drops.push({
+                    x: x,
+                    y: y,
+                    radius: 2,
+                    maxRadius: maxRadius,
+                    r: state.r,
+                    g: state.g,
+                    b: state.b,
+                    secR: state.secR,
+                    secG: state.secG,
+                    secB: state.secB,
+                    rings: state.rings,
+                    lobes: lobes,
+                    age: 0
+                });
+
+                // Keep drop buffer bounded for smooth 60fps rendering
+                if (state.drops.length > 9) {
+                    state.drops.shift();
+                }
+            }
+
+            function resizeCanvas() {
+                const rect = vessel.getBoundingClientRect();
+                state.width = rect.width;
+                state.height = rect.height;
+                canvas.width = state.width * state.dpr;
+                canvas.height = state.height * state.dpr;
+                ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+
+                buildPaperFibers(state.width, state.height);
+
+                // Seed central assay bloom on initial load or resize
+                state.drops = [];
+                spawnChromatographyDrop(state.width * 0.5, state.height * 0.5, true);
+            }
+
+            window.addEventListener('resize', resizeCanvas);
+
+            // Trace feathered organic ring polygon
+            function traceOrganicRing(cx, cy, baseRadius, lobes, rotationOffset) {
+                ctx.beginPath();
+                const len = lobes.length;
+                for (let i = 0; i <= len; i++) {
+                    const idx = i % len;
+                    const theta = (idx / len) * Math.PI * 2 + rotationOffset;
+                    const r = baseRadius * lobes[idx];
+                    const px = cx + Math.cos(theta) * r;
+                    const py = cy + Math.sin(theta) * r;
+                    if (i === 0) {
+                        ctx.moveTo(px, py);
+                    } else {
+                        ctx.lineTo(px, py);
+                    }
+                }
+                ctx.closePath();
+            }
+
+            function renderLoop() {
+                ctx.clearRect(0, 0, state.width, state.height);
+
+                // Draw faint registration crosshairs on the assay paper
+                ctx.strokeStyle = 'rgba(78, 103, 105, 0.16)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(state.width * 0.5, 0);
+                ctx.lineTo(state.width * 0.5, state.height);
+                ctx.moveTo(0, state.height * 0.5);
+                ctx.lineTo(state.width, state.height * 0.5);
+                ctx.stroke();
+
+                // Draw cotton rag fibers
+                ctx.strokeStyle = '#4e6769';
+                ctx.lineWidth = 0.75;
+                for (let i = 0; i < state.paperGrain.length; i++) {
+                    const f = state.paperGrain[i];
+                    ctx.globalAlpha = f.alpha;
+                    ctx.beginPath();
+                    ctx.moveTo(f.x, f.y);
+                    ctx.lineTo(f.x + Math.cos(f.angle) * f.len, f.y + Math.sin(f.angle) * f.len);
+                    ctx.stroke();
+                }
+                ctx.globalAlpha = 1;
+
+                // Update and draw each capillary chromatography bloom
+                for (let i = 0; i < state.drops.length; i++) {
+                    const d = state.drops[i];
+                    d.age += 1;
+                    // Capillary wicking speed decelerates logarithmically as solvent front expands
+                    const wickingSpeed = 0.032 * state.humidityFactor;
+                    d.radius += (d.maxRadius - d.radius) * wickingSpeed;
+
+                    // Outer solvent front halo (secondary mineral separation band)
+                    const outerGrad = ctx.createRadialGradient(d.x, d.y, d.radius * 0.15, d.x, d.y, d.radius * 1.08);
+                    outerGrad.addColorStop(0, `rgba(${d.r}, ${d.g}, ${d.b}, 0.28)`);
+                    outerGrad.addColorStop(0.62, `rgba(${d.secR}, ${d.secG}, ${d.secB}, 0.16)`);
+                    outerGrad.addColorStop(0.92, `rgba(${d.secR}, ${d.secG}, ${d.secB}, 0.24)`);
+                    outerGrad.addColorStop(1, `rgba(${d.secR}, ${d.secG}, ${d.secB}, 0)`);
+
+                    traceOrganicRing(d.x, d.y, d.radius, d.lobes, d.age * 0.0008);
+                    ctx.fillStyle = outerGrad;
+                    ctx.fill();
+
+                    // Concentric chromatography retention rings (Rf bands)
+                    for (let rIdx = 1; rIdx <= d.rings; rIdx++) {
+                        const ratio = rIdx / d.rings;
+                        const bandRadius = d.radius * Math.pow(ratio, 0.85);
+                        traceOrganicRing(d.x, d.y, bandRadius, d.lobes, rIdx * 0.4);
+
+                        const isOuterBand = rIdx === d.rings;
+                        ctx.strokeStyle = isOuterBand
+                            ? `rgba(${d.secR}, ${d.secG}, ${d.secB}, 0.42)`
+                            : `rgba(${d.r}, ${d.g}, ${d.b}, ${0.32 - ratio * 0.16})`;
+                        ctx.lineWidth = isOuterBand ? 1.5 : 1.0;
+                        ctx.stroke();
+                    }
+
+                    // Central pipette origin point
+                    ctx.beginPath();
+                    ctx.arc(d.x, d.y, 3.2, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(${d.r}, ${d.g}, ${d.b}, 0.85)`;
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(renderLoop);
+            }
+
+            // Activate a pigment batch and trigger a fresh chromatography bloom
+            function selectSwatch(strip) {
+                swatchStrips.forEach(s => s.classList.remove('active'));
+                strip.classList.add('active');
+
+                state.r = parseInt(strip.dataset.r, 10);
+                state.g = parseInt(strip.dataset.g, 10);
+                state.b = parseInt(strip.dataset.b, 10);
+                state.secR = parseInt(strip.dataset.secR, 10);
+                state.secG = parseInt(strip.dataset.secG, 10);
+                state.secB = parseInt(strip.dataset.secB, 10);
+                state.spread = parseFloat(strip.dataset.spread);
+                state.rings = parseInt(strip.dataset.rings, 10);
+
+                codeEl.textContent = strip.dataset.code;
+                rfEl.textContent = strip.dataset.rf;
+
+                // Drop a fresh pipette sample near center with slight organic offset
+                const jitterX = (Math.random() - 0.5) * state.width * 0.18;
+                const jitterY = (Math.random() - 0.5) * state.height * 0.18;
+                spawnChromatographyDrop(state.width * 0.5 + jitterX, state.height * 0.5 + jitterY, true);
+            }
+
+            swatchStrips.forEach(strip => {
+                strip.addEventListener('mouseenter', () => selectSwatch(strip));
+                strip.addEventListener('click', () => selectSwatch(strip));
+                strip.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectSwatch(strip);
+                    }
+                });
+            });
+
+            // Direct pipette interaction on the cotton rag assay canvas
+            function dropPipetteAtClient(clientX, clientY) {
+                const rect = canvas.getBoundingClientRect();
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+                spawnChromatographyDrop(x, y, false);
+            }
+
+            let isPointerDown = false;
+            let lastDropTime = 0;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isPointerDown = true;
+                dropPipetteAtClient(e.clientX, e.clientY);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isPointerDown) return;
+                const now = performance.now();
+                if (now - lastDropTime > 140) {
+                    dropPipetteAtClient(e.clientX, e.clientY);
+                    lastDropTime = now;
+                }
+            });
+
+            window.addEventListener('mouseup', () => { isPointerDown = false; });
+
+            canvas.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    dropPipetteAtClient(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+
+            canvas.addEventListener('touchmove', (e) => {
+                const now = performance.now();
+                if (e.touches.length > 0 && now - lastDropTime > 160) {
+                    dropPipetteAtClient(e.touches[0].clientX, e.touches[0].clientY);
+                    lastDropTime = now;
+                }
+            }, { passive: true });
+
+            // Keyless Open-Meteo live weather for Bergen, Norway (60.3913° N, 5.3221° E)
+            // Uses ambient relative humidity and temperature to modulate paper capillary wicking speed
+            async function fetchBergenAtmosphere() {
+                try {
+                    const url = 'https://api.open-meteo.com/v1/forecast?latitude=60.3913&longitude=5.3221&current=temperature_2m,relative_humidity_2m,precipitation';
+                    const res = await fetch(url);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data && data.current) {
+                        const temp = data.current.temperature_2m;
+                        const rh = data.current.relative_humidity_2m || 82;
+                        const precip = data.current.precipitation || 0;
+
+                        // Higher coastal humidity increases cotton rag capillary diffusion rate
+                        const wickingIndex = (0.75 + (rh / 100) * 0.55 + (precip > 0 ? 0.12 : 0)).toFixed(2);
+                        state.humidityFactor = parseFloat(wickingIndex);
+
+                        weatherDetailEl.textContent = `BERGEN ${temp.toFixed(1)}°C // RH ${rh}%`;
+                        rateEl.textContent = `WICKING INDEX: ${wickingIndex}x`;
+                    }
+                } catch (_) {
+                    // Degrades gracefully to Bergen coordinates & default 82% RH when offline or opened via file://
+                }
+            }
+
+            resizeCanvas();
+            requestAnimationFrame(renderLoop);
+            fetchBergenAtmosphere();
+        })();
+    </script>
+</body>
+</html>
