@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odile Ferreira — Ceramics, Lisbon</title>
+<meta name="description" content="Hand-painted azulejo tiles and tableware by Odile Ferreira, a ceramicist working in Alfama, Lisbon.">
+<!--
+  TEMPLATE: odile-ferreira-azulejo
+  Swap the CONFIG object below to re-skin for a new persona.
+  Headings: to use Alpha Lyrae, drop the font files next to this file and
+  uncomment the @font-face block; otherwise Space Mono is used throughout.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  /*
+  @font-face { font-family: "Alpha Lyrae"; src: url("AlphaLyrae-Medium.woff2") format("woff2"); font-display: swap; }
+  */
+  :root{
+    --ground:#0d0f12; --ground-2:#14171c; --line:#262a31;
+    --ink:#e9e6df; --ink-dim:#8b8a86;
+    --accent:#2f5bd3;          /* azulejo cobalt — used sparingly */
+    --tile:clamp(64px, 11vw, 132px);
+    --ui:"Space Mono", ui-monospace, monospace;
+    --head:"Alpha Lyrae","Space Mono", ui-monospace, monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--ground);color:var(--ink);font:400 15px/1.65 var(--ui);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  ::selection{background:var(--accent);color:var(--ink)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  h1,h2,h3{font-family:var(--head);font-weight:700;letter-spacing:-.02em;line-height:1.05}
+  .label{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim)}
+
+  /* top bar */
+  header{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid var(--line)}
+  header nav{display:flex;gap:22px}
+  header nav a{text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-dim)}
+  header nav a:hover{color:var(--ink)}
+  .mark{font-weight:700;letter-spacing:.06em}
+
+  /* hero: the panel IS the technique */
+  .hero{display:grid;grid-template-columns:1fr auto;gap:56px;align-items:center;padding:72px 0 56px}
+  .hero h1{font-size:clamp(40px,6.4vw,84px)}
+  .hero p.lede{max-width:44ch;margin-top:22px;color:var(--ink-dim)}
+  .hero .meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:34px}
+  .hero .meta div b{display:block;font-weight:400;color:var(--ink)}
+  #weather[hidden]{display:none}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+
+  .panel{display:grid;grid-template-columns:repeat(4,var(--tile));grid-template-rows:repeat(4,var(--tile));
+    border:1px solid var(--line);background:var(--ground-2)}
+  .tile{border:0;background:none;cursor:pointer;position:relative;outline-offset:-3px;
+    transition:transform .55s cubic-bezier(.6,-0.2,.25,1.3)}
+  .tile svg{display:block;width:100%;height:100%}
+  .tile:focus-visible{outline:2px solid var(--accent)}
+  .tile:hover{filter:brightness(1.25)}
+  .panel-ctrl{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--ink-dim)}
+  .panel-ctrl button{background:none;border:1px solid var(--line);color:var(--ink);font:inherit;padding:6px 12px;cursor:pointer}
+  .panel-ctrl button:hover{border-color:var(--accent)}
+
+  /* sections are laid out on the same tile module */
+  section{padding:84px 0;border-top:1px solid var(--line)}
+  .sec-head{display:grid;grid-template-columns:200px 1fr;gap:24px;margin-bottom:44px}
+  .sec-head h2{font-size:clamp(28px,3.6vw,44px)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .card{background:var(--ground);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px;display:flex;flex-direction:column;gap:14px}
+  .card .sw{aspect-ratio:1;background:var(--ground-2)}
+  .card .sw svg{width:100%;height:100%;display:block}
+  .card h3{font-size:18px}
+  .card p{font-size:13px;color:var(--ink-dim)}
+  .card .row{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-dim)}
+
+  .steps{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .steps li{background:var(--ground);padding:24px;counter-increment:s}
+  .steps li::before{content:"0" counter(s);display:block;font-size:12px;color:var(--accent);margin-bottom:28px}
+  .steps h3{font-size:16px;margin-bottom:8px}
+  .steps p{font-size:13px;color:var(--ink-dim)}
+
+  .contact{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:end}
+  .contact h2{font-size:clamp(32px,5vw,64px)}
+  .contact a.big{display:inline-block;margin-top:20px;font-size:clamp(16px,2vw,22px);text-decoration:none;border-bottom:1px solid var(--accent);padding-bottom:4px}
+  dl{display:grid;grid-template-columns:120px 1fr;gap:10px 16px;font-size:13px}
+  dt{color:var(--ink-dim)}
+  footer{padding:28px 0 40px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  @media (max-width:900px){
+    .hero{grid-template-columns:1fr}
+    .sec-head,.contact{grid-template-columns:1fr}
+    .steps{grid-template-columns:1fr 1fr}
+    header nav{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){.tile{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="mark">ODILE FERREIRA</span>
+    <nav><a href="#work">Work</a><a href="#process">Process</a><a href="#studio">Studio</a></nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <p class="label">Ceramicist · Alfama, Lisbon</p>
+      <h1>Tiles that<br>turn a wall<br>into weather.</h1>
+      <p class="lede">I paint azulejos by hand: cobalt on tin-white glaze, fired in a small electric kiln three streets above the Tejo. Every pattern starts as one tile, rotated four ways.</p>
+      <div class="meta">
+        <div><span class="label">Since</span><b>2014</b></div>
+        <div><span class="label">Commissions</span><b>Open · spring</b></div>
+        <div id="weather" hidden><span class="label">Lisbon now</span><b><span class="dot"></span><span id="wx"></span></b></div>
+      </div>
+    </div>
+    <div>
+      <div class="panel" id="panel" role="group" aria-label="Interactive tile panel: click a tile to rotate it"></div>
+      <div class="panel-ctrl">
+        <span id="count">Click a tile to rotate it</span>
+        <span><button id="shuffle" type="button">Shuffle</button> <button id="reset" type="button">Mirror</button></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="work"><div class="wrap">
+  <div class="sec-head"><p class="label">01 / Work</p><h2>Selected patterns</h2></div>
+  <div class="grid" id="works"></div>
+</div></section>
+
+<section id="process"><div class="wrap">
+  <div class="sec-head"><p class="label">02 / Process</p><h2>One tile, four turns</h2></div>
+  <ol class="steps">
+    <li><h3>Bisque</h3><p>Red clay from Alentejo, pressed and fired once to 1000°C.</p></li>
+    <li><h3>Glaze</h3><p>Dipped in tin-white. It stays chalky until the kiln.</p></li>
+    <li><h3>Pounce</h3><p>Charcoal dusted through a pricked paper stencil.</p></li>
+    <li><h3>Paint</h3><p>Cobalt oxide, one brush, one pass. Then fired again.</p></li>
+  </ol>
+</div></section>
+
+<section id="studio"><div class="wrap contact">
+  <div>
+    <p class="label">03 / Studio</p>
+    <h2>Commission a wall.</h2>
+    <a class="big" href="mailto:studio@odileferreira.example">studio@odileferreira.example</a>
+  </div>
+  <dl>
+    <dt>Studio</dt><dd>Rua dos Remédios, Alfama, Lisboa</dd>
+    <dt>Visits</dt><dd>Saturdays, by appointment</dd>
+    <dt>Lead time</dt><dd>6–10 weeks per panel</dd>
+    <dt>Ships</dt><dd>EU, crated</dd>
+  </dl>
+</div></section>
+
+<div class="wrap"><footer>
+  <span>© <span id="yr"></span> Odile Ferreira. No cookies, no tracking.</span>
+  <span>38.7139° N, 9.1334° W</span>
+</footer></div>
+
+<script>
+/* ---------- CONFIG: edit to re-skin the template ---------- */
+const CONFIG = {
+  city: { name: "Lisbon", lat: 38.7139, lon: -9.1334 },
+  works: [
+    { name: "Remédios", note: "Kitchen splashback, 120 tiles", year: 2025, motif: 0 },
+    { name: "Tejo Fold", note: "Café counter, Graça", year: 2025, motif: 1 },
+    { name: "Estrela", note: "Bathroom panel, private", year: 2024, motif: 2 },
+    { name: "Corda", note: "Stair risers, 14 steps", year: 2024, motif: 3 },
+    { name: "Miradouro", note: "Single-tile edition of 40", year: 2023, motif: 1 },
+    { name: "Sal", note: "Tableware, 6-piece set", year: 2023, motif: 0 },
+  ],
+};
+/* ---------------------------------------------------------- */
+
+const A = "var(--accent)", I = "var(--ink)";
+// Four quarter motifs. Each is drawn in one corner so rotations compose patterns.
+const MOTIFS = [
+  `<path d="M0 0 A100 100 0 0 1 100 100 L0 100Z" fill="${A}"/><circle cx="0" cy="100" r="34" fill="var(--ground-2)"/><circle cx="0" cy="100" r="16" fill="${I}" opacity=".85"/>`,
+  `<path d="M0 0 L100 0 L0 100Z" fill="${A}"/><path d="M0 0 L50 0 L0 50Z" fill="${I}" opacity=".85"/>`,
+  `<circle cx="0" cy="0" r="70" fill="none" stroke="${A}" stroke-width="14"/><circle cx="0" cy="0" r="30" fill="${A}"/><circle cx="100" cy="100" r="12" fill="${I}" opacity=".85"/>`,
+  `<path d="M0 0 Q100 0 100 100" fill="none" stroke="${A}" stroke-width="16"/><path d="M0 40 Q60 40 60 100" fill="none" stroke="${I}" stroke-width="6" opacity=".85"/>`,
+];
+const svg = (m) => `<svg viewBox="0 0 100 100" aria-hidden="true">${MOTIFS[m]}</svg>`;
+
+// Hero panel
+const panel = document.getElementById("panel"), count = document.getElementById("count");
+const N = 16, motif = 0;
+const mirror = (i) => { const r = Math.floor(i/4), c = i%4; return ((r%2)*3 + (c%2)) % 4 === 0 ? 0 : [0,1,3,2][(r%2)*2 + (c%2)]; };
+let rot = Array.from({length:N}, (_, i) => mirror(i) * 90), turns = 0;
+const tiles = rot.map((r, i) => {
+  const b = document.createElement("button");
+  b.className = "tile"; b.type = "button";
+  b.setAttribute("aria-label", `Tile ${i+1}`);
+  b.innerHTML = svg(motif);
+  b.style.transform = `rotate(${r}deg)`;
+  b.addEventListener("click", () => { rot[i] += 90; turns++; apply(i); });
+  panel.appendChild(b); return b;
+});
+function apply(i){
+  const set = (k) => tiles[k].style.transform = `rotate(${rot[k]}deg)`;
+  i == null ? tiles.forEach((_, k) => set(k)) : set(i);
+  count.textContent = turns ? `${turns} turn${turns>1?"s":""} · ${new Set(rot.map(r=>((r%360)+360)%360)).size} orientations` : "Click a tile to rotate it";
+}
+document.getElementById("shuffle").onclick = () => { rot = rot.map(r => r + 90 * (1 + Math.floor(Math.random()*3))); turns++; apply(); };
+document.getElementById("reset").onclick = () => { rot = rot.map((r, i) => { const t = mirror(i)*90; return r + ((t - r) % 360 + 360) % 360; }); apply(); };
+
+// Work cards: each swatch is a 2x2 of its motif, mirrored
+document.getElementById("works").innerHTML = CONFIG.works.map(w => `
+  <article class="card">
+    <div class="sw"><svg viewBox="0 0 200 200" aria-hidden="true">
+      ${[0,90,270,180].map((r,k)=>`<g transform="translate(${(k%2)*100+50} ${Math.floor(k/2)*100+50}) rotate(${r}) translate(-50 -50)">${MOTIFS[w.motif]}</g>`).join("")}
+    </svg></div>
+    <h3>${w.name}</h3><p>${w.note}</p>
+    <div class="row"><span>${w.year}</span><span>Cobalt / tin glaze</span></div>
+  </article>`).join("");
+
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+// Live Lisbon weather via Open-Meteo (keyless). Hidden entirely on failure.
+(async () => {
+  try {
+    const { lat, lon } = CONFIG.city;
+    const ctrl = new AbortController(); setTimeout(() => ctrl.abort(), 5000);
+    const r = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,cloud_cover,is_day`, { signal: ctrl.signal });
+    if (!r.ok) throw 0;
+    const c = (await r.json()).current;
+    const sky = !c.is_day ? "night, kiln cooling" : c.cloud_cover < 30 ? "clear, hard light" : c.cloud_cover < 70 ? "broken cloud" : "overcast, soft light";
+    document.getElementById("wx").textContent = `${Math.round(c.temperature_2m)}°C · ${sky}`;
+    document.getElementById("weather").hidden = false;
+  } catch (_) { /* degrade silently */ }
+})();
+</script>
+</body>
+</html>
