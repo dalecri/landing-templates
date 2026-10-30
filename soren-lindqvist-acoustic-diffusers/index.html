@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soren Lindqvist — Carved Timber & Basalt Sound Diffusers</title>
+    <!-- Space Mono from Google Fonts (Only external asset allowed) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* Optional Alpha Lyrae local font hook if provided in directory */
+        @font-face {
+            font-family: 'Alpha Lyrae';
+            src: local('Alpha Lyrae'), local('AlphaLyrae-Regular'), url('./AlphaLyrae-Regular.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --bg: #f7f3eb; /* warm sunlit unbleached birch & lime plaster */
+            --surface: #efe9dd; /* soft milled timber surface */
+            --border: #dcd3c2; /* subtle architectural pencil rule */
+            --text: #221f1b; /* deep warm walnut ink */
+            --muted: #6e665c; /* weathered driftwood gray-brown */
+            --accent: #c85532; /* welcoming Nordic terracotta / kiln-baked clay */
+            --font-ui: 'Space Mono', monospace;
+            --font-display: 'Alpha Lyrae', 'Space Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: var(--font-ui);
+            font-size: 15px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            selection-background-color: var(--accent);
+            selection-color: var(--bg);
+        }
+
+        ::selection {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Structural Blueprint Frame — No hero-then-cards ladder */
+        .chamber-frame {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Left Column: Interactive ASCII Acoustic Wave Chamber */
+        .acoustic-chamber {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: radial-gradient(circle at 50% 50%, #fffdf8 0%, var(--surface) 92%);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .chamber-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            letter-spacing: 0.04em;
+            z-index: 2;
+            background: rgba(247, 243, 235, 0.88);
+            backdrop-filter: blur(4px);
+        }
+
+        .identity-mark {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .telemetry {
+            color: var(--muted);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .telemetry .live-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        /* The ASCII Canvas Wrapper */
+        .ascii-stage {
+            position: relative;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+
+        #ascii-field {
+            font-family: var(--font-ui);
+            font-size: 12px;
+            line-height: 1.05;
+            letter-spacing: 0.14em;
+            white-space: pre;
+            color: #8c7f70;
+            text-align: center;
+            transition: color 0.2s ease;
+        }
+
+        .chamber-foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+            z-index: 2;
+            background: rgba(247, 243, 235, 0.88);
+        }
+
+        .accent-val {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* Right Column: Architectural Specification & Acoustic Ledger */
+        .spec-column {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        /* Actual Opening Statement */
+        .opening-statement {
+            padding: 3.5rem 2.25rem 3rem 2.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .opening-statement h1 {
+            font-family: var(--font-display);
+            font-size: clamp(1.35rem, 2.3vw, 2.05rem);
+            font-weight: 400;
+            line-height: 1.32;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+
+        /* Acoustic Project Ledger */
+        .project-ledger {
+            list-style: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .project-row {
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease, border-left-color 0.2s ease;
+            border-left: 3px solid transparent;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.35rem 1rem;
+            align-items: baseline;
+        }
+
+        .project-row:last-child {
+            border-bottom: none;
+        }
+
+        .project-row:hover,
+        .project-row.active,
+        .project-row:focus-visible {
+            background-color: var(--surface);
+            border-left-color: var(--accent);
+            outline: none;
+        }
+
+        .project-name {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            transition: color 0.15s ease;
+        }
+
+        .project-row:hover .project-name,
+        .project-row.active .project-name {
+            color: var(--accent);
+        }
+
+        .project-freq {
+            font-size: 0.78rem;
+            color: var(--muted);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .project-desc {
+            grid-column: 1 / -1;
+            font-size: 0.88rem;
+            color: var(--muted);
+            padding-top: 0.2rem;
+            transition: color 0.2s ease;
+        }
+
+        .project-row:hover .project-desc,
+        .project-row.active .project-desc {
+            color: var(--text);
+        }
+
+        /* Short Bio & Direct Contact Line */
+        .dossier-foot {
+            padding: 2.5rem 2.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: auto;
+        }
+
+        .bio-paragraph {
+            font-size: 0.9rem;
+            color: var(--muted);
+            max-width: 54ch;
+        }
+
+        .contact-line {
+            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .contact-line a {
+            color: var(--accent);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .contact-line a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        /* Mobile / Narrow Viewport Adaptation (390px verified) */
+        @media (max-width: 900px) {
+            .chamber-frame {
+                grid-template-columns: 1fr;
+            }
+
+            .acoustic-chamber {
+                position: relative;
+                height: 330px;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .chamber-bar,
+            .chamber-foot {
+                padding: 0.85rem 1.15rem;
+                font-size: 0.74rem;
+            }
+
+            .opening-statement {
+                padding: 2.25rem 1.25rem;
+            }
+
+            .project-row {
+                padding: 1.25rem;
+            }
+
+            .dossier-foot {
+                padding: 2rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="chamber-frame">
+        <!-- Left / Top: Interactive ASCII Standing-Wave Field -->
+        <section class="acoustic-chamber" aria-label="Interactive Acoustic Standing-Wave Diffuser Map">
+            <header class="chamber-bar">
+                <span class="identity-mark">SOREN LINDQVIST</span>
+                <span class="telemetry" id="weather-readout">
+                    <span class="live-dot"></span>64.1466° N, 21.9426° W
+                </span>
+            </header>
+
+            <div class="ascii-stage" id="ascii-stage">
+                <pre id="ascii-field" aria-hidden="true"></pre>
+            </div>
+
+            <footer class="chamber-foot">
+                <span id="active-node-name">HARPA REHEARSAL ANNEX</span>
+                <span class="accent-val" id="active-node-spec">QRD-23 // 420 Hz</span>
+            </footer>
+        </section>
+
+        <!-- Right / Bottom: Architectural Statement, Project Ledger, Bio, Contact -->
+        <section class="spec-column">
+            <div class="opening-statement">
+                <h1>Carved timber and porous basalt sound diffusers that quiet raw concrete rooms across the North Atlantic.</h1>
+            </div>
+
+            <ul class="project-ledger" id="project-ledger">
+                <li class="project-row active" tabindex="0"
+                    data-title="HARPA REHEARSAL ANNEX"
+                    data-spec="QRD-23 // 420 Hz"
+                    data-kx="0.28" data-ky="0.16" data-mod="2.3" data-sym="1">
+                    <span class="project-name">Harpa Rehearsal Annex</span>
+                    <span class="project-freq">420 Hz</span>
+                    <p class="project-desc">380 linear meters of charred Sitka spruce quadratic residue wells tuned for solo cello.</p>
+                </li>
+
+                <li class="project-row" tabindex="0"
+                    data-title="SEYDISFJORDUR LISTENING PAVILION"
+                    data-spec="BASALT-11 // 185 Hz"
+                    data-kx="0.14" data-ky="0.34" data-mod="3.4" data-sym="2">
+                    <span class="project-name">Seyðisfjörður Listening Pavilion</span>
+                    <span class="project-freq">185 Hz</span>
+                    <p class="project-desc">Hexagonal porous basalt columns milled to scatter fjord wind rumble and low-frequency standing waves.</p>
+                </li>
+
+                <li class="project-row" tabindex="0"
+                    data-title="KEX MASTERING SUITE B"
+                    data-spec=" HEMISPHERE-19 // 860 Hz"
+                    data-kx="0.39" data-ky="0.39" data-mod="1.6" data-sym="3">
+                    <span class="project-name">Kex Mastering Suite B</span>
+                    <span class="project-freq">860 Hz</span>
+                    <p class="project-desc">Asymmetric drift-birch ceiling array eliminating flutter echo within a former biscuit factory.</p>
+                </li>
+
+                <li class="project-row" tabindex="0"
+                    data-title="VATNAJÖKULL ARCHIVE VAULT"
+                    data-spec="SLAT-07 // 310 Hz"
+                    data-kx="0.46" data-ky="0.08" data-mod="4.1" data-sym="1">
+                    <span class="project-name">Vatnajökull Archive Vault</span>
+                    <span class="project-freq">310 Hz</span>
+                    <p class="project-desc">Stepped birch-plywood baffles stabilizing speech intelligibility inside a subterranean cast-concrete library.</p>
+                </li>
+
+                <li class="project-row" tabindex="0"
+                    data-title="AKUREYRI CHAPEL ORGAN LOFT"
+                    data-spec="PRIMITIVE-17 // 640 Hz"
+                    data-kx="0.22" data-ky="0.29" data-mod="2.8" data-sym="2">
+                    <span class="project-name">Akureyri Chapel Organ Loft</span>
+                    <span class="project-freq">640 Hz</span>
+                    <p class="project-desc">Steam-bent larch canopies suspended above the choir to fold pipe-organ transients back into the nave.</p>
+                </li>
+            </ul>
+
+            <div class="dossier-foot">
+                <p class="bio-paragraph">
+                    Working alone from a geothermal timber kiln on Grandagarður in Reykjavik, Soren Lindqvist calculates, mills, and hand-finishes architectural acoustic surfaces. Every panel is mathematically profiled to scatter harsh reflections without deadening the natural life of a room.
+                </p>
+
+                <div class="contact-line">
+                    <span>Grandagarður 19, 101 Reykjavik</span>
+                    <a href="mailto:soren@lindqvist-akustik.is">soren@lindqvist-akustik.is</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function () {
+            const stage = document.getElementById('ascii-stage');
+            const field = document.getElementById('ascii-field');
+            const nodeNameEl = document.getElementById('active-node-name');
+            const nodeSpecEl = document.getElementById('active-node-spec');
+            const projectRows = document.querySelectorAll('.project-row');
+            const weatherEl = document.getElementById('weather-readout');
+
+            // Acoustic glyph ramp ordered by visual density
+            const glyphs = ' .·:-=+*#%@';
+
+            // Current and target acoustic parameters driven by selected project + live Reykjavik atmosphere
+            const state = {
+                cols: 56,
+                rows: 28,
+                kx: 0.28,
+                ky: 0.16,
+                mod: 2.3,
+                sym: 1,
+                targetKx: 0.28,
+                targetKy: 0.16,
+                targetMod: 2.3,
+                pointerX: 0.5,
+                pointerY: 0.5,
+                pointerActive: false,
+                pulseStrength: 0,
+                windSpeedFactor: 1.0,
+                speedOfSound: 334.2,
+                time: 0
+            };
+
+            function measureGrid() {
+                const rect = stage.getBoundingClientRect();
+                // Approximate monospace cell dimensions at 12px font size + 0.14em letter-spacing
+                const cellW = 9.2;
+                const cellH = 12.6;
+                state.cols = Math.max(28, Math.min(86, Math.floor((rect.width - 24) / cellW)));
+                state.rows = Math.max(16, Math.min(48, Math.floor((rect.height - 20) / cellH)));
+            }
+
+            window.addEventListener('resize', measureGrid);
+            measureGrid();
+
+            // Bind project rows to acoustic wave geometry
+            function activateProject(row) {
+                projectRows.forEach(r => r.classList.remove('active'));
+                row.classList.add('active');
+
+                state.targetKx = parseFloat(row.dataset.kx);
+                state.targetKy = parseFloat(row.dataset.ky);
+                state.targetMod = parseFloat(row.dataset.mod);
+                state.sym = parseInt(row.dataset.sym, 10);
+                state.pulseStrength = 1.0;
+
+                nodeNameEl.textContent = row.dataset.title;
+                nodeSpecEl.textContent = row.dataset.spec;
+            }
+
+            projectRows.forEach(row => {
+                row.addEventListener('mouseenter', () => activateProject(row));
+                row.addEventListener('click', () => activateProject(row));
+                row.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        activateProject(row);
+                    }
+                });
+            });
+
+            // Pointer / Touch acoustic impulse inside the chamber
+            function updatePointer(clientX, clientY) {
+                const rect = stage.getBoundingClientRect();
+                state.pointerX = (clientX - rect.left) / rect.width;
+                state.pointerY = (clientY - rect.top) / rect.height;
+                state.pointerActive = true;
+            }
+
+            stage.addEventListener('mousemove', (e) => updatePointer(e.clientX, e.clientY));
+            stage.addEventListener('mouseleave', () => { state.pointerActive = false; });
+            stage.addEventListener('mousedown', () => { state.pulseStrength = 1.35; });
+            stage.addEventListener('touchstart', (e) => {
+                if (e.touches.length > 0) {
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                    state.pulseStrength = 1.35;
+                }
+            }, { passive: true });
+            stage.addEventListener('touchmove', (e) => {
+                if (e.touches.length > 0) {
+                    updatePointer(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+            stage.addEventListener('touchend', () => { state.pointerActive = false; });
+
+            // Render Loop for ASCII Standing-Wave Diffuser Simulation
+            function render() {
+                state.time += 0.028 * state.windSpeedFactor;
+
+                // Smoothly interpolate wave numbers toward active project
+                state.kx += (state.targetKx - state.kx) * 0.08;
+                state.ky += (state.targetKy - state.ky) * 0.08;
+                state.mod += (state.targetMod - state.mod) * 0.08;
+                state.pulseStrength *= 0.94;
+
+                const cols = state.cols;
+                const rows = state.rows;
+                const cx = cols * 0.5;
+                const cy = rows * 0.5;
+                const px = state.pointerX * cols;
+                const py = state.pointerY * rows;
+
+                let out = '';
+
+                for (let y = 0; y < rows; y++) {
+                    const dy = y - cy;
+                    for (let x = 0; x < cols; x++) {
+                        const dx = x - cx;
+
+                        // Quadratic residue well phase approximation
+                        let wellPhase;
+                        if (state.sym === 1) {
+                            wellPhase = Math.sin(dx * state.kx + state.time) * Math.cos(dy * state.ky * state.mod);
+                        } else if (state.sym === 2) {
+                            const r = Math.sqrt(dx * dx + dy * dy * 1.6);
+                            wellPhase = Math.sin(r * state.kx - state.time * 0.8) * Math.cos((dx - dy) * 0.15);
+                        } else {
+                            wellPhase = Math.cos((dx * dx * 0.025) * state.kx + (dy * state.ky) - state.time);
+                        }
+
+                        // Secondary harmonic reflection
+                        const harmonic = Math.cos(dx * state.ky - dy * state.kx + state.time * 0.6) * 0.45;
+
+                        // Interactive point-source acoustic ripple
+                        let ripple = 0;
+                        if (state.pointerActive || state.pulseStrength > 0.05) {
+                            const pdx = x - px;
+                            const pdy = (y - py) * 1.45;
+                            const dist = Math.sqrt(pdx * pdx + pdy * pdy);
+                            const amp = state.pointerActive ? 0.65 : state.pulseStrength;
+                            ripple = Math.sin(dist * 0.65 - state.time * 2.4) * Math.exp(-dist * 0.065) * amp;
+                        }
+
+                        // Normalize combined wave pressure [-1.5, 1.5] -> [0, 1]
+                        const combined = (wellPhase + harmonic + ripple + 1.45) / 2.9;
+                        const clamped = Math.max(0, Math.min(0.999, combined));
+                        const idx = Math.floor(clamped * glyphs.length);
+
+                        out += glyphs[idx];
+                    }
+                    if (y < rows - 1) out += '\n';
+                }
+
+                field.textContent = out;
+                requestAnimationFrame(render);
+            }
+
+            requestAnimationFrame(render);
+
+            // Keyless Open-Meteo live weather for Reykjavik (64.1466° N, 21.9426° W)
+            // Calculates the real-time speed of sound in Reykjavik's ambient air: c = 331.3 + 0.606 * T
+            async function fetchReykjavikAcoustics() {
+                try {
+                    const url = 'https://api.open-meteo.com/v1/forecast?latitude=64.1466&longitude=-21.9426&current=temperature_2m,wind_speed_10m';
+                    const res = await fetch(url);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    if (data && data.current) {
+                        const temp = data.current.temperature_2m;
+                        const wind = data.current.wind_speed_10m || 8;
+                        const speedOfSound = (331.3 + 0.606 * temp).toFixed(1);
+                        state.speedOfSound = speedOfSound;
+                        state.windSpeedFactor = Math.max(0.65, Math.min(1.85, 0.75 + wind / 35));
+
+                        weatherEl.innerHTML = `<span class="live-dot"></span>REYKJAVIK ${temp.toFixed(1)}°C // c=${speedOfSound} m/s`;
+                    }
+                } catch (_) {
+                    // Graceful degradation if offline or blocked from file://
+                }
+            }
+
+            fetchReykjavikAcoustics();
+        })();
+    </script>
+</body>
+</html>
