@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soren Lindqvist — Ferric Photogram & Cyanotype Studio | Bergen</title>
+    <meta name="description" content="Architectural cyanotype and botanical contact prints exposed by coastal Norwegian UV light. Studio of Soren Lindqvist, Bergen.">
+    
+    <!-- Google Fonts: Space Mono (Only allowed external asset) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. FONT DECLARATIONS & OPTIONAL ALPHA LYRAE HOOK
+           Drop AlphaLyrae-Medium.woff2 in the same folder to activate automatically,
+           otherwise falls back cleanly to Space Mono throughout.
+           ========================================================================== */
+        @font-face {
+            font-family: 'Alpha Lyrae';
+            src: local('Alpha Lyrae'), local('AlphaLyrae-Regular'), url('./AlphaLyrae.woff2') format('woff2');
+            font-weight: 400 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        /* ==========================================================================
+           2. COLOR TOKENS & PHOTOCHEMICAL STATE VARIABLES
+           --exposure drives the entire page's contact-print state (0.00 to 1.00)
+           ========================================================================== */
+        :root {
+            /* Raw Cotton Rag & Iron Salt Palette (Unexposed State = 0) */
+            --rag-paper: #F3EFE6;
+            --rag-surface: #EAE4D7;
+            --prussian-deep: #07192B;
+            --prussian-mid: #103152;
+            --cyan-wash: #89ACC8;
+            
+            /* One Accent Color: Ferric Ammonium Citrate (Raw UV sensitizer chartreuse-amber) */
+            --accent-citrate: #C8B428;
+            --accent-citrate-dim: rgba(200, 180, 40, 0.22);
+
+            /* Dynamic Exposure Value (0 = Unexposed Rag Paper, 1 = Developed Prussian Blue) */
+            --exposure: 0;
+
+            /* Computed Surfaces (Fallback for older browsers, overridden by color-mix) */
+            --bg-primary: #F3EFE6;
+            --bg-elevated: #EAE4D7;
+            --text-primary: #07192B;
+            --text-muted: #3A5068;
+            --rule-color: rgba(7, 25, 43, 0.18);
+            --blueprint-invert: 0;
+
+            /* Typography */
+            --font-heading: 'Alpha Lyrae', 'Space Mono', monospace;
+            --font-mono: 'Space Mono', monospace;
+
+            /* Layout & Grid */
+            --max-w: 1320px;
+            --pad-x: clamp(1.25rem, 4vw, 3.5rem);
+        }
+
+        @supports (background-color: color-mix(in srgb, #000 50%, #fff)) {
+            :root {
+                --bg-primary: color-mix(in srgb, var(--prussian-deep) calc(var(--exposure) * 100%), var(--rag-paper));
+                --bg-elevated: color-mix(in srgb, var(--prussian-mid) calc(var(--exposure) * 100%), var(--rag-surface));
+                --text-primary: color-mix(in srgb, var(--rag-paper) calc(var(--exposure) * 100%), var(--prussian-deep));
+                --text-muted: color-mix(in srgb, var(--cyan-wash) calc(var(--exposure) * 100%), #3B5268);
+                --rule-color: color-mix(in srgb, rgba(243, 239, 230, 0.22) calc(var(--exposure) * 100%), rgba(7, 25, 43, 0.18));
+            }
+        }
+
+        /* Manual fallback class when color-mix isn't supported */
+        body.exposed-fallback {
+            --bg-primary: #07192B;
+            --bg-elevated: #103152;
+            --text-primary: #F3EFE6;
+            --text-muted: #89ACC8;
+            --rule-color: rgba(243, 239, 230, 0.22);
+        }
+
+        /* ==========================================================================
+           3. RESET & ARCHITECTURAL DRAFTING BOARD BASE
+           ========================================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 16px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-mono);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.08s linear, color 0.08s linear;
+            /* Subtle millimeter drafting grid */
+            background-image: 
+                linear-gradient(to right, var(--rule-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--rule-color) 1px, transparent 1px);
+            background-size: 48px 48px;
+            background-position: center top;
+        }
+
+        /* Paper grain / emulsion brush texture overlay using inline SVG noise */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0.28;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E");
+        }
+
+        ::selection {
+            background-color: var(--accent-citrate);
+            color: var(--prussian-deep);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button, input, select, textarea {
+            font: inherit;
+            color: inherit;
+            background: transparent;
+            border: none;
+        }
+
+        /* ==========================================================================
+           4. REGISTRATION MARKS & TECHNICAL SHEET CHROME
+           ========================================================================== */
+        .sheet-wrapper {
+            max-width: var(--max-w);
+            margin: 0 auto;
+            padding: 0 var(--pad-x);
+            position: relative;
+        }
+
+        .sheet-frame {
+            border-left: 1px solid var(--rule-color);
+            border-right: 1px solid var(--rule-color);
+            min-height: 100vh;
+            background-color: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+            position: relative;
+        }
+
+        .reg-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .reg-mark::before,
+        .reg-mark::after {
+            content: "";
+            position: absolute;
+            background-color: var(--text-primary);
+        }
+
+        .reg-mark::before {
+            width: 100%;
+            height: 1px;
+        }
+
+        .reg-mark::after {
+            width: 1px;
+            height: 100%;
+        }
+
+        .reg-mark span {
+            width: 8px;
+            height: 8px;
+            border: 1px solid var(--text-primary);
+            border-radius: 50%;
+            display: block;
+        }
+
+        /* ==========================================================================
+           5. TOP TELEMETRY & LIVE BERGEN UV BAR
+           ========================================================================== */
+        .telemetry-bar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: var(--bg-primary);
+            border-bottom: 1px solid var(--rule-color);
+            font-size: 0.75rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .telemetry-inner {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem 1.5rem;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .telemetry-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status-pip {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-citrate);
+            box-shadow: 0 0 0 3px var(--accent-citrate-dim);
+            animation: pulse-uv 2.6s infinite ease-in-out;
+        }
+
+        @keyframes pulse-uv {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.25); opacity: 0.65; }
+        }
+
+        .citrate-tag {
+            background-color: var(--accent-citrate);
+            color: var(--prussian-deep);
+            padding: 0.1rem 0.45rem;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        /* Navigation Header */
+        .site-header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--rule-color);
+            gap: 1rem;
+        }
+
+        .brand-block {
+            display: flex;
+            align-items: baseline;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .brand-name {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: clamp(1.15rem, 2vw, 1.5rem);
+            letter-spacing: -0.02em;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .site-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .site-nav a {
+            position: relative;
+            padding: 0.2rem 0;
+        }
+
+        .site-nav a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-citrate);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s ease;
+        }
+
+        .site-nav a:hover::after,
+        .site-nav a:focus-visible::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* ==========================================================================
+           6. HERO & INTERACTIVE UV CONTACT-PRINTING BED
+           ========================================================================== */
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            border-bottom: 1px solid var(--rule-color);
+        }
+
+        @media (max-width: 960px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hero-manifesto {
+            padding: clamp(2rem, 5vw, 4rem) 1.5rem;
+            border-right: 1px solid var(--rule-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 960px) {
+            .hero-manifesto {
+                border-right: none;
+                border-bottom: 1px solid var(--rule-color);
+            }
+        }
+
+        .sheet-index {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hero-title {
+            font-family: var(--font-heading);
+            font-size: clamp(2.1rem, 4.6vw, 4rem);
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            font-weight: 700;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .hero-title .sensitized-word {
+            border-bottom: 3px solid var(--accent-citrate);
+            padding-bottom: 0.05em;
+        }
+
+        .hero-lead {
+            font-size: clamp(0.92rem, 1.2vw, 1.05rem);
+            color: var(--text-muted);
+            max-width: 56ch;
+        }
+
+        /* The Memorable Interaction: UV Contact Frame & Exposure Controller */
+        .exposure-console {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--rule-color);
+            padding: 1.25rem;
+            position: relative;
+        }
+
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.85rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .exposure-readout {
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--accent-citrate);
+        }
+
+        .slider-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Custom Archival Range Input */
+        .uv-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, #F3EFE6 0%, #89ACC8 45%, #07192B 100%);
+            border: 1px solid var(--text-primary);
+            outline: none;
+            cursor: ew-resize;
+        }
+
+        .uv-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 26px;
+            background-color: var(--accent-citrate);
+            border: 2px solid var(--prussian-deep);
+            cursor: ew-resize;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: transform 0.15s ease;
+        }
+
+        .uv-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        .uv-slider::-moz-range-thumb {
+            width: 22px;
+            height: 26px;
+            background-color: var(--accent-citrate);
+            border: 2px solid var(--prussian-deep);
+            border-radius: 0;
+            cursor: ew-resize;
+        }
+
+        .console-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .btn-uv {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--text-primary);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+            user-select: none;
+        }
+
+        .btn-uv.primary-uv {
+            background-color: var(--accent-citrate);
+            color: var(--prussian-deep);
+            border-color: var(--prussian-deep);
+        }
+
+        .btn-uv:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-uv:active {
+            transform: translateY(1px);
+        }
+
+        /* Stouffer 10-Step Wedge Indicator */
+        .step-wedge {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            border: 1px solid var(--rule-color);
+            margin-top: 1rem;
+            height: 18px;
+            overflow: hidden;
+        }
+
+        .step-cell {
+            height: 100%;
+            font-size: 0.55rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid rgba(7, 25, 43, 0.15);
+            transition: opacity 0.2s ease;
+        }
+
+        /* Right Hero Column: Live Botanical Specimen Contact Frame */
+        .specimen-stage {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background-color: var(--bg-elevated);
+            position: relative;
+        }
+
+        .contact-plate-frame {
+            border: 1px solid var(--text-primary);
+            padding: 1rem;
+            position: relative;
+            aspect-ratio: 4 / 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            /* Simulated emulsion surface that shifts independently based on --exposure */
+            background-color: color-mix(in srgb, #061A2E calc(var(--exposure) * 100%), #EAE3C9);
+            transition: background-color 0.08s linear;
+        }
+
+        /* Unexposed yellow-green ferric coating brushes before exposure */
+        .emulsion-wash {
+            position: absolute;
+            inset: 10px;
+            border: 1px dashed var(--rule-color);
+            background: radial-gradient(
+                circle at 50% 50%,
+                rgba(200, 180, 40, calc(0.28 * (1 - var(--exposure)))),
+                transparent 75%
+            );
+            pointer-events: none;
+        }
+
+        /* Botanical & Architectural SVG strokes invert from ferric charcoal to bleached paper white */
+        .plate-svg {
+            width: 90%;
+            height: 90%;
+            position: relative;
+            z-index: 2;
+        }
+
+        .plate-svg .specimen-stroke {
+            stroke: color-mix(in srgb, #F3EFE6 calc(var(--exposure) * 100%), #1D2B1F);
+            fill: none;
+            transition: stroke 0.08s linear, fill 0.08s linear;
+        }
+
+        .plate-svg .specimen-fill {
+            fill: color-mix(in srgb, #F3EFE6 calc(var(--exposure) * 95%), rgba(200, 180, 40, 0.22));
+            stroke: color-mix(in srgb, #F3EFE6 calc(var(--exposure) * 100%), #1D2B1F);
+            transition: stroke 0.08s linear, fill 0.08s linear;
+        }
+
+        /* Hidden Blueprint Dimension Annotations that ONLY emerge above 40% UV exposure */
+        .plate-svg .latent-annotation {
+            opacity: calc(clamp(0, (var(--exposure) - 0.3) * 1.45, 1));
+            stroke: var(--accent-citrate);
+            fill: var(--accent-citrate);
+            transition: opacity 0.1s linear;
+        }
+
+        .plate-caption {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--rule-color);
+            padding-top: 0.75rem;
+        }
+
+        /* ==========================================================================
+           7. SECTION HEADERS & ARCHIVAL SPECIMEN PLATES
+           ========================================================================== */
+        .section-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--rule-color);
+            background-color: var(--bg-elevated);
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        /* Catalog Filter Controls */
+        .filter-strip {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--rule-color);
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .filter-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.35rem 0.75rem;
+            border: 1px solid var(--rule-color);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .filter-btn.active {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        /* 3-Column Archival Plate Grid */
+        .plates-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--rule-color);
+        }
+
+        @media (max-width: 1024px) {
+            .plates-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .plates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .plate-card {
+            border-right: 1px solid var(--rule-color);
+            border-bottom: 1px solid var(--rule-color);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1.25rem;
+            transition: background-color 0.2s ease;
+            position: relative;
+        }
+
+        .plate-card:nth-child(3n) {
+            border-right: none;
+        }
+
+        @media (max-width: 1024px) {
+            .plate-card:nth-child(3n) {
+                border-right: 1px solid var(--rule-color);
+            }
+            .plate-card:nth-child(2n) {
+                border-right: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .plate-card {
+                border-right: none !important;
+            }
+        }
+
+        .plate-card.hidden {
+            display: none;
+        }
+
+        .plate-top-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Individual Cyanotype Artwork Window inside each Card */
+        .plate-art-window {
+            aspect-ratio: 1 / 1.15;
+            border: 1px solid var(--rule-color);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: color-mix(in srgb, #08223B calc(var(--exposure) * 100%), #EDE7D5);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* Hovering any individual plate also temporarily exposes it if the page is unexposed */
+        .plate-art-window:hover {
+            background-color: #08223B;
+        }
+
+        .plate-art-window:hover .card-svg-stroke {
+            stroke: #F3EFE6 !important;
+        }
+
+        .plate-art-window:hover .card-svg-latent {
+            opacity: 1 !important;
+        }
+
+        .card-svg {
+            width: 88%;
+            height: 88%;
+        }
+
+        .card-svg-stroke {
+            stroke: color-mix(in srgb, #F3EFE6 calc(var(--exposure) * 100%), #1C2D3D);
+            fill: none;
+            transition: stroke 0.25s ease;
+        }
+
+        .card-svg-latent {
+            stroke: var(--accent-citrate);
+            fill: var(--accent-citrate);
+            opacity: calc(clamp(0.15, var(--exposure), 1));
+            transition: opacity 0.25s ease;
+        }
+
+        .plate-info h3 {
+            font-family: var(--font-heading);
+            font-size: 1.15rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .plate-specs {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 0.85rem;
+        }
+
+        /* Hidden Chemical Formula Note revealed during UV exposure */
+        .latent-formula-note {
+            font-size: 0.72rem;
+            padding: 0.5rem 0.65rem;
+            border-left: 2px solid var(--accent-citrate);
+            background-color: var(--bg-elevated);
+            margin-bottom: 0.85rem;
+            opacity: calc(0.35 + (var(--exposure) * 0.65));
+        }
+
+        .plate-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--rule-color);
+            font-size: 0.82rem;
+        }
+
+        .plate-price {
+            font-weight: 700;
+        }
+
+        .select-plate-btn {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0.3rem 0.65rem;
+            border: 1px solid var(--text-primary);
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .select-plate-btn:hover {
+            background-color: var(--accent-citrate);
+            color: var(--prussian-deep);
+            border-color: var(--prussian-deep);
+        }
+
+        /* ==========================================================================
+           8. CHEMICAL PROCESS & STUDIO CHEMISTRY SECTION
+           ========================================================================== */
+        .chemistry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-bottom: 1px solid var(--rule-color);
+        }
+
+        @media (max-width: 860px) {
+            .chemistry-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chemistry-step {
+            padding: 2rem 1.5rem;
+            border-right: 1px solid var(--rule-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chemistry-step:last-child {
+            border-right: none;
+        }
+
+        @media (max-width: 860px) {
+            .chemistry-step {
+                border-right: none;
+                border-bottom: 1px solid var(--rule-color);
+            }
+            .chemistry-step:last-child {
+                border-bottom: none;
+            }
+        }
+
+        .step-num {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chemistry-step h3 {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+        }
+
+        .chemistry-step p {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+        }
+
+        .formula-pill {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--rule-color);
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ==========================================================================
+           9. INTERACTIVE EXPOSURE CALCULATOR & COMMISSION BENCH
+           ========================================================================== */
+        .commission-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--rule-color);
+        }
+
+        @media (max-width: 900px) {
+            .commission-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .calculator-panel {
+            padding: 2rem 1.5rem;
+            border-right: 1px solid var(--rule-color);
+        }
+
+        @media (max-width: 900px) {
+            .calculator-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--rule-color);
+            }
+        }
+
+        .field-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.45rem;
+            color: var(--text-muted);
+        }
+
+        .field-input,
+        .field-select,
+        .field-textarea {
+            width: 100%;
+            padding: 0.7rem 0.85rem;
+            border: 1px solid var(--text-primary);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .field-input:focus,
+        .field-select:focus,
+        .field-textarea:focus {
+            outline: 2px solid var(--accent-citrate);
+            outline-offset: 0;
+        }
+
+        .calc-output-box {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--text-primary);
+            border-left: 4px solid var(--accent-citrate);
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            padding: 0.35rem 0;
+            border-bottom: 1px dashed var(--rule-color);
+        }
+
+        .calc-row:last-child {
+            border-bottom: none;
+            padding-top: 0.65rem;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .dossier-panel {
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dossier-preview {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--rule-color);
+            padding: 1.25rem;
+            font-size: 0.78rem;
+            white-space: pre-wrap;
+            line-height: 1.55;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .copy-feedback {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.75rem;
+            background-color: var(--accent-citrate);
+            color: var(--prussian-deep);
+            font-weight: 700;
+            display: none;
+        }
+
+        .copy-feedback.visible {
+            display: inline-block;
+        }
+
+        /* ==========================================================================
+           10. COLOPHON & TEMPLATE REUSABILITY FOOTER
+           ========================================================================== */
+        .site-footer {
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .slug-badge {
+            display: inline-block;
+            border: 1px solid var(--rule-color);
+            padding: 0.25rem 0.6rem;
+            color: var(--text-primary);
+            margin-top: 0.35rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sheet-wrapper">
+    <div class="sheet-frame">
+
+        <!-- ======================================================================
+             LIVE BERGEN TELEMETRY & UV EXPOSURE BAR (Open-Meteo Keyless + Fallback)
+             ====================================================================== -->
+        <div class="telemetry-bar" role="region" aria-label="Live Studio Telemetry">
+            <div class="telemetry-inner">
+                <div class="telemetry-group">
+                    <span class="status-pip" aria-hidden="true"></span>
+                    <span>STUDIO: SANDVIKEN BASTION 14, BERGEN (60.3913° N, 5.3221° E)</span>
+                </div>
+                <div class="telemetry-group">
+                    <span id="weather-condition">SKY: FETCHING NORTH SEA TELEMETRY...</span>
+                    <span>|</span>
+                    <span id="weather-uv" class="citrate-tag">UV INDEX: 1.8 (CALIBRATING)</span>
+                    <span>|</span>
+                    <span id="recommended-exposure">NATURAL PRINT TIME: 22 MIN</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================================================================
+             SITE HEADER & NAVIGATION
+             ====================================================================== -->
+        <header class="site-header">
+            <div class="brand-block">
+                <div class="reg-mark" aria-hidden="true"><span></span></div>
+                <div>
+                    <div class="brand-name">SOREN LINDQVIST</div>
+                    <div class="brand-sub">FERRIC PHOTOGRAM &amp; ARCHITECTURAL CYANOTYPE ATELIER</div>
+                </div>
+            </div>
+            <nav class="site-nav" aria-label="Primary Navigation">
+                <a href="#plates">[01. SPECIMEN PLATES]</a>
+                <a href="#chemistry">[02. SENSITIZER]</a>
+                <a href="#commission">[03. EXPOSURE BENCH]</a>
+            </nav>
+        </header>
+
+        <!-- ======================================================================
+             HERO & MEMORABLE INTERACTION: SOLAR UV CONTACT PRINTING BED
+             ====================================================================== -->
+        <section class="hero-grid" aria-labelledby="hero-heading">
+            <div class="hero-manifesto">
+                <div>
+                    <div class="sheet-index">
+                        <span>DRAWING NO. BG-2026-09</span>
+                        <span>•</span>
+                        <span>310GSM HAHNEMÜHLE PLATINUM RAG</span>
+                    </div>
+                    <h1 id="hero-heading" class="hero-title">
+                        Coastal flora &amp; timber elevations fixed in <span class="sensitized-word">iron salt</span> and North Sea light.
+                    </h1>
+                    <p class="hero-lead">
+                        Working from a converted 19th-century boathouse in Sandviken, Bergen, Soren Lindqvist coats cotton rag paper with raw Ferric Ammonium Citrate and Potassium Ferricyanide. Pressed beneath maritime glass with pressed kelp, Nordic ferns, and architectural mylar drafts, each sheet develops only when struck by ultraviolet light.
+                    </p>
+                </div>
+
+                <!-- THE MEMORABLE INTERACTION: UV Exposure Controller -->
+                <div class="exposure-console" aria-label="Interactive Cyanotype UV Exposure Bench">
+                    <div class="console-header">
+                        <span>INTERACTIVE CONTACT FRAME // UV EXPOSURE BENCH</span>
+                        <span id="exposure-status-label" class="exposure-readout">0% — RAW UNEXPOSED RAG</span>
+                    </div>
+
+                    <div class="slider-row">
+                        <label for="uv-exposure-slider" class="Field-label" style="display:none;">UV Exposure Level</label>
+                        <input 
+                            type="range" 
+                            id="uv-exposure-slider" 
+                            class="uv-slider" 
+                            min="0" 
+                            max="100" 
+                            value="0"
+                            aria-label="Drag to expose the page to ultraviolet light and develop the Prussian blue cyanotype"
+                        >
+                    </div>
+
+                    <div class="console-actions">
+                        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                            <button type="button" id="btn-hold-uv" class="btn-uv primary-uv">
+                                <span>☀ HOLD OR CLICK: SOLAR WASH</span>
+                            </button>
+                            <button type="button" id="btn-sync-bergen" class="btn-uv" title="Set exposure to match Bergen's current sun and UV conditions">
+                                <span>SYNC TO BERGEN SKY</span>
+                            </button>
+                            <button type="button" id="btn-reset-rag" class="btn-uv">
+                                <span>COAT FRESH PAPER (0%)</span>
+                            </button>
+                        </div>
+                        <span style="font-size:0.7rem; color:var(--text-muted);">
+                            SHORTCUT: PRESS [U] TO TOGGLE DEVELOP
+                        </span>
+                    </div>
+
+                    <!-- Stouffer 10-Step Exposure Wedge -->
+                    <div class="step-wedge" aria-hidden="true" title="Stouffer 10-Step Photochemical Grayscale Wedge">
+                        <div class="step-cell" style="background:#F3EFE6; color:#07192B;">01</div>
+                        <div class="step-cell" style="background:#DCE4DF; color:#07192B;">02</div>
+                        <div class="step-cell" style="background:#BDD0DB; color:#07192B;">03</div>
+                        <div class="step-cell" style="background:#9AB8CD; color:#07192B;">04</div>
+                        <div class="step-cell" style="background:#749EBD; color:#07192B;">05</div>
+                        <div class="step-cell" style="background:#5082AA; color:#F3EFE6;">06</div>
+                        <div class="step-cell" style="background:#326693; color:#F3EFE6;">07</div>
+                        <div class="step-cell" style="background:#1C4B78; color:#F3EFE6;">08</div>
+                        <div class="step-cell" style="background:#0E3156; color:#F3EFE6;">09</div>
+                        <div class="step-cell" style="background:#07192B; color:#C8B428;">10</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Hero Column: Live Reacting Botanical & Architectural Contact Plate -->
+            <div class="specimen-stage">
+                <div class="contact-plate-frame" id="hero-contact-plate">
+                    <div class="emulsion-wash"></div>
+                    <!-- Detailed Botanical + Architectural Elevation SVG -->
+                    <svg class="plate-svg" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Contact print of Laminaria hyperborea kelp overlaid with Bergen boathouse timber trusses">
+                        <!-- Outer Mylar Registration Border -->
+                        <rect x="14" y="14" width="372" height="472" class="specimen-stroke" stroke-width="1.2" />
+                        <line x1="14" y1="70" x2="386" y2="70" class="specimen-stroke" stroke-width="0.6" stroke-dasharray="4 4" />
+                        <line x1="14" y1="430" x2="386" y2="430" class="specimen-stroke" stroke-width="0.6" stroke-dasharray="4 4" />
+                        <line x1="200" y1="14" x2="200" y2="486" class="specimen-stroke" stroke-width="0.5" stroke-dasharray="2 6" />
+
+                        <!-- Architectural Boathouse Roof Truss Geometry (Top Layer) -->
+                        <polygon points="60,170 200,52 340,170" class="specimen-stroke" stroke-width="1.5" />
+                        <line x1="105" y1="170" x2="200" y2="90" class="specimen-stroke" stroke-width="1" />
+                        <line x1="295" y1="170" x2="200" y2="90" class="specimen-stroke" stroke-width="1" />
+                        <rect x="85" y="170" width="230" height="210" class="specimen-stroke" stroke-width="1" stroke-dasharray="6 3" />
+
+                        <!-- Compass Rose / Solar Altitude Arc -->
+                        <path d="M 90 140 A 110 110 0 0 1 310 140" class="specimen-stroke" stroke-width="0.8" />
+                        <circle cx="200" cy="52" r="6" class="specimen-stroke" stroke-width="1.2" />
+
+                        <!-- Pressed Botanical Specimen: North Sea Kelp & Polystichum Fern Fronds -->
+                        <!-- Main Stem -->
+                        <path d="M200,455 C196,375 208,295 200,150" class="specimen-stroke" stroke-width="3.2" stroke-linecap="round" />
+                        <!-- Holdfast Roots -->
+                        <path d="M200,450 C175,462 155,475 142,478 M200,450 C222,462 248,472 260,478 M200,454 C190,468 182,478 178,482 M200,454 C210,468 216,478 222,482" class="specimen-stroke" stroke-width="1.8" stroke-linecap="round" />
+
+                        <!-- Left & Right Botanical Fronds (Translucent Tissue Effect) -->
+                        <path d="M200,380 C150,365 110,330 95,295 C135,305 175,335 200,360 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M200,355 C250,340 290,305 308,265 C265,280 225,310 200,335 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M202,310 C145,290 105,245 88,200 C138,215 178,255 202,290 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M199,285 C255,265 298,220 315,175 C262,195 222,235 199,265 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M200,235 C158,210 130,175 122,135 C158,155 182,190 200,218 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M200,220 C242,195 270,160 278,120 C242,140 218,175 200,203 Z" class="specimen-fill" stroke-width="1.2" />
+                        <path d="M200,175 C185,135 190,98 200,72 C210,98 215,135 200,175 Z" class="specimen-fill" stroke-width="1.2" />
+
+                        <!-- Internal Leaf Veins -->
+                        <line x1="198" y1="368" x2="115" y2="308" class="specimen-stroke" stroke-width="0.7" />
+                        <line x1="202" y1="344" x2="288" y2="282" class="specimen-stroke" stroke-width="0.7" />
+                        <line x1="198" y1="298" x2="108" y2="215" class="specimen-stroke" stroke-width="0.7" />
+                        <line x1="202" y1="274" x2="295" y2="190" class="specimen-stroke" stroke-width="0.7" />
+
+                        <!-- LATENT ARCHITECTURAL NOTES (Emerge only when exposed to UV!) -->
+                        <g class="latent-annotation" font-family="Space Mono, monospace" font-size="8.5" stroke="none">
+                            <text x="26" y="34">LATENT EMULSION LAYER // K3[Fe(CN)6] + Fe(C6H5O7)</text>
+                            <text x="26" y="62">SOLAR AZIMUTH: 194.2° SSW — BERGENFJORD</text>
+                            <text x="255" y="164">PITCH: 42.5° NORDIC GABLE</text>
+                            <text x="26" y="422">SPECIMEN: LAMINARIA HYPERBOREA (COLLECTED LOW TIDE)</text>
+                            <text x="26" y="476">ARCHIVAL WASH: CITRIC ACID BATH + 24HR AIR CURE</text>
+                            <circle cx="200" cy="52" r="14" fill="none" stroke="#C8B428" stroke-width="1" stroke-dasharray="2 2" />
+                            <line x1="60" y1="395" x2="340" y2="395" stroke="#C8B428" stroke-width="0.9" />
+                            <text x="155" y="408">SCALE 1:20 TIMBER BAY</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <div class="plate-caption">
+                    <span>PLATE 00 // CONTACT SPECIMEN: KELP &amp; GABLE TRUSS</span>
+                    <span id="plate-chemical-state">STATE: UNEXPOSED FERRIC SALT</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             SECTION 01: ARCHIVAL SPECIMEN PLATES (PORTFOLIO CATALOG)
+             ====================================================================== -->
+        <section id="plates" aria-labelledby="plates-heading">
+            <div class="section-bar">
+                <h2 id="plates-heading" class="section-title">
+                    <span class="reg-mark" aria-hidden="true"><span></span></span>
+                    <span>01 // ARCHIVAL CONTACT PLATES</span>
+                </h2>
+                <span class="section-meta">DRAG UV SLIDER ABOVE OR HOVER PLATES TO REVEAL LATENT BLUEPRINTS</span>
+            </div>
+
+            <div class="filter-strip">
+                <div class="filter-buttons" role="tablist" aria-label="Filter Plates by Discipline">
+                    <button type="button" class="filter-btn active" data-filter="all">[ALL PLATES (06)]</button>
+                    <button type="button" class="filter-btn" data-filter="botanical">[INTERTIDAL FLORA]</button>
+                    <button type="button" class="filter-btn" data-filter="architectural">[TIMBER ELEVATIONS]</button>
+                    <button type="button" class="filter-btn" data-filter="hydrographic">[FJORD BATHYMETRY]</button>
+                </div>
+                <span style="font-size:0.75rem; color:var(--text-muted);">
+                    SIGNED EDITIONS OF 12 • SHIPPED FLAT IN ARCHIVAL PORTFOLIOS
+                </span>
+            </div>
+
+            <div class="plates-grid" id="plates-catalog">
+
+                <!-- PLATE 01 -->
+                <article class="plate-card" data-category="botanical">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-104</span>
+                        <span>420 × 594 MM (A2)</span>
+                    </div>
+                    <div class="plate-art-window" title="Click or hover to inspect Prussian blue development">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <circle cx="120" cy="140" r="85" class="card-svg-stroke" stroke-width="0.7" stroke-dasharray="3 3" />
+                            <!-- Fucus Vesiculosus Bladderwrack Specimen -->
+                            <path d="M120,250 C118,200 105,165 80,120 M120,210 C140,175 162,145 170,95 M102,160 C82,140 65,110 62,80 M142,165 C145,130 132,95 122,60" class="card-svg-stroke" stroke-width="2.2" stroke-linecap="round" />
+                            <circle cx="88" cy="135" r="7" class="card-svg-stroke" stroke-width="1.2" />
+                            <circle cx="152" cy="128" r="7" class="card-svg-stroke" stroke-width="1.2" />
+                            <circle cx="72" cy="102" r="6" class="card-svg-stroke" stroke-width="1.2" />
+                            <circle cx="132" cy="92" r="6" class="card-svg-stroke" stroke-width="1.2" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">FUCUS VESICULOSUS // HERDLA FLAT</text>
+                                <text x="18" y="262">UV EXP: 19M 40S • PH 5.4 WASH</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>Herdla Intertidal Bladderwrack</h3>
+                        <p class="plate-specs">Wet-mounted Fucus vesiculosus specimen with hand-drafted tidal datum rings.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> Double-coated 12% Ferric Citrate + 8% Potassium Ferricyanide; 18-minute coastal overcast exposure.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 3,400</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-104: Herdla Intertidal Bladderwrack (A2)" data-size="a2">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PLATE 02 -->
+                <article class="plate-card" data-category="architectural">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-108</span>
+                        <span>594 × 841 MM (A1)</span>
+                    </div>
+                    <div class="plate-art-window">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Bryggen Timber Frame Elevation -->
+                            <polygon points="35,110 120,35 205,110" class="card-svg-stroke" stroke-width="1.5" />
+                            <rect x="45" y="110" width="150" height="135" class="card-svg-stroke" stroke-width="1.5" />
+                            <line x1="45" y1="155" x2="195" y2="155" class="card-svg-stroke" stroke-width="1" />
+                            <line x1="45" y1="200" x2="195" y2="200" class="card-svg-stroke" stroke-width="1" />
+                            <line x1="95" y1="110" x2="95" y2="245" class="card-svg-stroke" stroke-width="1" />
+                            <line x1="145" y1="110" x2="145" y2="245" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Diagonal Wind Braces -->
+                            <line x1="45" y1="155" x2="95" y2="110" class="card-svg-stroke" stroke-width="0.9" />
+                            <line x1="195" y1="155" x2="145" y2="110" class="card-svg-stroke" stroke-width="0.9" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">SANDVIKEN SJØBOD // 1884 SECTION</text>
+                                <text x="18" y="262">INK ON ACETATE + SOLAR CONTACT</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>Sandviken Sjøbod Timber Section</h3>
+                        <p class="plate-specs">1:25 archival survey of load-bearing pine piling and cantilever hoist beam.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> High-contrast oxalic acid toning bath for deep marine Prussian shadow density.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 4,900</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-108: Sandviken Sjøbod Timber Section (A1)" data-size="a1">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PLATE 03 -->
+                <article class="plate-card" data-category="hydrographic">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-112</span>
+                        <span>420 × 594 MM (A2)</span>
+                    </div>
+                    <div class="plate-art-window">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Bathymetric Contour Lines -->
+                            <path d="M30,70 C80,50 160,65 210,45" class="card-svg-stroke" stroke-width="0.9" />
+                            <path d="M25,105 C85,85 150,115 215,90" class="card-svg-stroke" stroke-width="1.1" />
+                            <path d="M25,140 C95,120 140,160 215,135" class="card-svg-stroke" stroke-width="1.3" />
+                            <path d="M25,175 C105,155 135,195 215,175" class="card-svg-stroke" stroke-width="1.5" />
+                            <path d="M30,210 C95,195 155,225 210,215" class="card-svg-stroke" stroke-width="1.1" />
+                            <line x1="120" y1="25" x2="120" y2="255" class="card-svg-stroke" stroke-width="0.6" stroke-dasharray="3 3" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">BYFJORDEN SOUNDINGS // -310M TROUGH</text>
+                                <text x="18" y="262">SONAR MYLAR + SEA WATER RINSE</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>Byfjorden Isobar &amp; Soundings</h3>
+                        <p class="plate-specs">Layered bathymetric contour plates developed and washed directly in fjord seawater.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> Rinsed in cold 8°C Byfjorden salt water before final hydrogen peroxide oxidation.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 3,600</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-112: Byfjorden Isobar & Soundings (A2)" data-size="a2">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PLATE 04 -->
+                <article class="plate-card" data-category="botanical">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-115</span>
+                        <span>297 × 420 MM (A3)</span>
+                    </div>
+                    <div class="plate-art-window">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Nordic Wood Fern Geometry -->
+                            <line x1="120" y1="245" x2="120" y2="45" class="card-svg-stroke" stroke-width="2" />
+                            <path d="M120,210 L70,185 M120,190 L170,165 M120,170 L65,140 M120,150 L175,120 M120,130 L75,100 M120,110 L165,80 M120,90 L90,65 M120,75 L150,55" class="card-svg-stroke" stroke-width="1.6" stroke-linecap="round" />
+                            <rect x="45" y="40" width="150" height="205" class="card-svg-stroke" stroke-width="0.6" stroke-dasharray="2 4" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">DRYOPTERIS FILIX-MAS // FLØYEN</text>
+                                <text x="18" y="262">ALTITUDE: 320M • SOLAR CONTACT</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>Mount Fløyen Shield Fern</h3>
+                        <p class="plate-specs">Pressed Dryopteris specimen harvested on the north ridge of Fløyen after autumn rain.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> Single-stroke Japanese hake brush coating on 310gsm Arches Platine cotton rag.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 2,400</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-115: Mount Fløyen Shield Fern (A3)" data-size="a3">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PLATE 05 -->
+                <article class="plate-card" data-category="architectural">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-119</span>
+                        <span>594 × 841 MM (A1)</span>
+                    </div>
+                    <div class="plate-art-window">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Stave Joinery & Lantern Cupola -->
+                            <circle cx="120" cy="140" r="70" class="card-svg-stroke" stroke-width="1.4" />
+                            <circle cx="120" cy="140" r="45" class="card-svg-stroke" stroke-width="1" />
+                            <line x1="50" y1="140" x2="190" y2="140" class="card-svg-stroke" stroke-width="0.9" />
+                            <line x1="120" y1="70" x2="120" y2="210" class="card-svg-stroke" stroke-width="0.9" />
+                            <line x1="70" y1="90" x2="170" y2="190" class="card-svg-stroke" stroke-width="0.9" />
+                            <line x1="170" y1="90" x2="70" y2="190" class="card-svg-stroke" stroke-width="0.9" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">HELLESØY LIGHTHOUSE LANTERN PLAN</text>
+                                <text x="18" y="262">FRESNEL OPTIC AXIS // 1:10 DRAFT</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>Hellesøy Fresnel Lantern Plan</h3>
+                        <p class="plate-specs">Radial optical section and brass glazing bar joinery of the 2nd-order coastal lens.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> Exposed during June solstice zenith for razor-sharp cross-hatching fidelity.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 5,200</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-119: Hellesøy Fresnel Lantern Plan (A1)" data-size="a1">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- PLATE 06 -->
+                <article class="plate-card" data-category="hydrographic">
+                    <div class="plate-top-meta">
+                        <span>PLATE NO. SL-124</span>
+                        <span>420 × 594 MM (A2)</span>
+                    </div>
+                    <div class="plate-art-window">
+                        <svg class="card-svg" viewBox="0 0 240 280" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="10" width="220" height="260" class="card-svg-stroke" stroke-width="1" />
+                            <!-- Heliograph Solar Arcs -->
+                            <path d="M35,215 A95,95 0 0,1 205,215" class="card-svg-stroke" stroke-width="1.5" />
+                            <path d="M55,215 A75,75 0 0,1 185,215" class="card-svg-stroke" stroke-width="1.2" stroke-dasharray="6 3" />
+                            <path d="M75,215 A55,55 0 0,1 165,215" class="card-svg-stroke" stroke-width="1" />
+                            <line x1="25" y1="215" x2="215" y2="215" class="card-svg-stroke" stroke-width="1.4" />
+                            <line x1="120" y1="215" x2="120" y2="55" class="card-svg-stroke" stroke-width="0.8" stroke-dasharray="2 3" />
+                            <g class="card-svg-latent" font-size="7" stroke="none">
+                                <text x="18" y="25">60°23'N SOLAR ALTITUDE EPHEMERIS</text>
+                                <text x="18" y="262">DEC 21 (6.2°) TO JUN 21 (53.1°)</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="plate-info">
+                        <h3>60°23'N Solar Ephemeris Chart</h3>
+                        <p class="plate-specs">Annual solar inclination chart plotting Bergen's winter twilight against summer solstice.</p>
+                        <div class="latent-formula-note">
+                            <strong>EMULSION NOTE:</strong> Step-masked in three separate exposures across spring equinox and summer solstice.
+                        </div>
+                        <div class="plate-footer">
+                            <span class="plate-price">NOK 3,800</span>
+                            <button type="button" class="select-plate-btn" data-plate="SL-124: 60°23'N Solar Ephemeris Chart (A2)" data-size="a2">
+                                + LOAD IN BENCH
+                            </button>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             SECTION 02: PHOTOCHEMICAL PROCESS (1842 HERSCHEL FORMULA)
+             ====================================================================== -->
+        <section id="chemistry" aria-labelledby="chemistry-heading">
+            <div class="section-bar">
+                <h2 id="chemistry-heading" class="section-title">
+                    <span class="reg-mark" aria-hidden="true"><span></span></span>
+                    <span>02 // PHOTOCHEMICAL PROTOCOL</span>
+                </h2>
+                <span class="section-meta">SIR JOHN HERSCHEL'S 1842 ACTINIC PROCESS • ZERO SILVER HALIDES</span>
+            </div>
+
+            <div class="chemistry-grid">
+                <div class="chemistry-step">
+                    <div class="step-num">
+                        <span>PHASE I // SENSITIZING</span>
+                        <span class="citrate-tag">CHARTREUSE EMULSION</span>
+                    </div>
+                    <h3>Ferric Salt Coating</h3>
+                    <p>
+                        Equal volumes of 20% Ferric Ammonium Citrate (green crystal) and 8% Potassium Ferricyanide are mixed under tungsten safelight and hand-brushed onto 100% cotton rag paper. Dried in the dark, the sheet holds a luminous chartreuse-amber skin.
+                    </p>
+                    <div class="formula-pill">
+                        <span>SENSITIZER PEAK</span>
+                        <span>365–405 NM UV-A</span>
+                    </div>
+                </div>
+
+                <div class="chemistry-step">
+                    <div class="step-num">
+                        <span>PHASE II // CONTACT EXPOSURE</span>
+                        <span>NORTH SEA DAYLIGHT</span>
+                    </div>
+                    <h3>Actinic Reduction</h3>
+                    <p>
+                        Pressed flat inside a heavy ash-wood contact frame beneath 6mm low-iron glass, botanical specimens or architectural CAD vellums block UV photons. Where light strikes the paper, iron(III) reduces to iron(II), forming insoluble Prussian blue pigment.
+                    </p>
+                    <div class="formula-pill">
+                        <span>BERGEN OVERCAST</span>
+                        <span>14–35 MIN EXPOSURE</span>
+                    </div>
+                </div>
+
+                <div class="chemistry-step">
+                    <div class="step-num">
+                        <span>PHASE III // CLEARING &amp; OXIDATION</span>
+                        <span>PERMANENCE</span>
+                    </div>
+                    <h3>Archival Acid Wash</h3>
+                    <p>
+                        Unexposed ferric salts wash out in cold running Bergen water, revealing stark rag-paper whites beneath the specimen shadows. Immersion in a mild citric acid bath deepens the ferric ferrocyanide lattice for century-long museum permanence.
+                    </p>
+                    <div class="formula-pill">
+                        <span>LIGHTFASTNESS</span>
+                        <span>ISO 105 BLUE WOOL 7+</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             SECTION 03: CUSTOM EXPOSURE CALCULATOR & COMMISSION BENCH
+             ====================================================================== -->
+        <section id="commission" aria-labelledby="commission-heading">
+            <div class="section-bar">
+                <h2 id="commission-heading" class="section-title">
+                    <span class="reg-mark" aria-hidden="true"><span></span></span>
+                    <span>03 // BESPOKE COMMISSION &amp; EXPOSURE BENCH</span>
+                </h2>
+                <span class="section-meta">LOCAL-FIRST ESTIMATOR • NO TRACKERS OR ACCOUNTS</span>
+            </div>
+
+            <div class="commission-grid">
+                <!-- Left Column: Interactive Print Estimator -->
+                <div class="calculator-panel">
+                    <p style="font-size:0.86rem; color:var(--text-muted); margin-bottom:1.5rem;">
+                        Architects, maritime historians, and collectors can commission one-off contact prints from CAD vector files (DXF/PDF plotted onto archival mylar) or pressed botanical specimens. Configure your sheet parameters below:
+                    </p>
+
+                    <div class="field-group">
+                        <label class="field-label" for="comm-subject">01. SELECTED PLATE OR CUSTOM SUBJECT</label>
+                        <input 
+                            type="text" 
+                            id="comm-subject" 
+                            class="field-input" 
+                            value="Custom Architectural Elevation / Botanical Contact Print"
+                        >
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="comm-size">02. COTTON RAG SHEET FORMAT</label>
+                        <select id="comm-size" class="field-select">
+                            <option value="a3" data-price="2400" data-area="1.0">A3 (297 × 420 mm) — Hahnemühle Platinum Rag 300gsm — NOK 2,400</option>
+                            <option value="a2" data-price="3600" data-area="1.35" selected>A2 (420 × 594 mm) — Arches Platine 310gsm — NOK 3,600</option>
+                            <option value="a1" data-price="5100" data-area="1.8">A1 (594 × 841 mm) — Custom Boathouse Dip Tank — NOK 5,100</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="comm-toning">03. BOTANICAL TANNIN TONING BATH</label>
+                        <select id="comm-toning" class="field-select">
+                            <option value="Untoned Classic Prussian Blue (Herschel 1842)" data-addon="0">Untoned Classic Prussian Blue (Herschel 1842) — +NOK 0</option>
+                            <option value="Western Norway Oak Gall & Alder Bark (Split-Tone Slate)" data-addon="550">Western Norway Oak Gall &amp; Alder Bark (Split-Tone Slate) — +NOK 550</option>
+                            <option value="Green Tea & Tannic Acid Warm Black-Blue" data-addon="450">Green Tea &amp; Tannic Acid (Warm Deep Indigo) — +NOK 450</option>
+                        </select>
+                    </div>
+
+                    <div class="field-group">
+                        <label class="field-label" for="comm-notes">04. ARCHITECTURAL SCALE OR SPECIMEN NOTES</label>
+                        <textarea id="comm-notes" class="field-textarea" rows="2" placeholder="e.g., 1:50 South Elevation of timber cabin, deckle edges preserved..."></textarea>
+                    </div>
+
+                    <div class="calc-output-box">
+                        <div class="calc-row">
+                            <span>CURRENT BERGEN UV INDEX</span>
+                            <span id="calc-uv-readout">1.8 UV (LIVE)</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>ESTIMATED SOLAR CONTACT TIME</span>
+                            <span id="calc-time-readout">24 MINUTES</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>SENSITIZER VOLUME REQUIRED</span>
+                            <span id="calc-ml-readout">18 ML FERRIC EMULSION</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>ESTIMATED STUDIO COMMISSION</span>
+                            <span id="calc-price-readout">NOK 3,600</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Local-First Dossier Export -->
+                <div class="dossier-panel">
+                    <div>
+                        <div class="sheet-index">
+                            <span>SPECIFICATION SHEET GENERATOR</span>
+                            <span>•</span>
+                            <span>ZERO CLOUD STORAGE</span>
+                        </div>
+                        <h3 style="font-family:var(--font-heading); font-size:1.35rem; margin:0.65rem 0;">
+                            Export Your Print Dossier
+                        </h3>
+                        <p style="font-size:0.84rem; color:var(--text-muted);">
+                            This studio uses no external form trackers or third-party scripts. Review your generated cyanotype specification below, then copy it to your clipboard or open it directly in your mail client.
+                        </p>
+
+                        <pre id="dossier-text" class="dossier-preview" aria-live="polite"></pre>
+                    </div>
+
+                    <div style="display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center;">
+                        <button type="button" id="btn-copy-dossier" class="btn-uv primary-uv">
+                            <span>COPY DOSSIER TO CLIPBOARD</span>
+                        </button>
+                        <a id="mailto-link" href="mailto:soren@lindqvist-cyanotype.no" class="btn-uv">
+                            <span>OPEN IN MAIL CLIENT ↗</span>
+                        </a>
+                        <span id="copy-toast" class="copy-feedback" role="status">COPIED TO CLIPBOARD</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ======================================================================
+             FOOTER & REUSABLE TEMPLATE COLOPHON
+             ====================================================================== -->
+        <footer class="site-footer">
+            <div>
+                <strong>SOREN LINDQVIST — CYANOTYPE &amp; ARCHITECTURAL BLUEPRINT ATELIER</strong><br>
+                <span>Sandviksboder 14B, 5035 Bergen, Norway • Open Thu–Sat 11:00–17:00 or by tide appointment</span>
+            </div>
+            <div style="text-align:right;">
+                <div>REUSABLE SINGLE-FILE PORTFOLIO TEMPLATE</div>
+                <code class="slug-badge">SLUG: soren-lindqvist-cyanotype</code>
+            </div>
+        </footer>
+
+    </div>
+</div>
+
+<!-- ==========================================================================
+     APPLICATION LOGIC: UV EXPOSURE ENGINE, OPEN-METEO TELEMETRY & DOSSIER
+     ========================================================================== -->
+<script>
+    (function () {
+        'use strict';
+
+        // 1. State & DOM References
+        const root = document.documentElement;
+        const slider = document.getElementById('uv-exposure-slider');
+        const statusLabel = document.getElementById('exposure-status-label');
+        const plateChemicalState = document.getElementById('plate-chemical-state');
+        const btnHoldUv = document.getElementById('btn-hold-uv');
+        const btnSyncBergen = document.getElementById('btn-sync-bergen');
+        const btnResetRag = document.getElementById('btn-reset-rag');
+
+        // Weather DOM
+        const weatherConditionEl = document.getElementById('weather-condition');
+        const weatherUvEl = document.getElementById('weather-uv');
+        const recommendedExposureEl = document.getElementById('recommended-exposure');
+
+        // Commission Calculator DOM
+        const commSubject = document.getElementById('comm-subject');
+        const commSize = document.getElementById('comm-size');
+        const commToning = document.getElementById('comm-toning');
+        const commNotes = document.getElementById('comm-notes');
+        const calcUvReadout = document.getElementById('calc-uv-readout');
+        const calcTimeReadout = document.getElementById('calc-time-readout');
+        const calcMlReadout = document.getElementById('calc-ml-readout');
+        const calcPriceReadout = document.getElementById('calc-price-readout');
+        const dossierText = document.getElementById('dossier-text');
+        const btnCopyDossier = document.getElementById('btn-copy-dossier');
+        const mailtoLink = document.getElementById('mailto-link');
+        const copyToast = document.getElementById('copy-toast');
+
+        // Live Bergen Telemetry State (Degrades gracefully if offline)
+        const bergenState = {
+            tempC: 9.4,
+            cloudCover: 68,
+            uvIndex: 1.8,
+            isDay: 1,
+            source: 'FALLBACK ARCHIVE',
+            naturalMinutes: 22
+        };
+
+        let currentExposure = 0; // 0 to 100
+        let rafId = null;
+
+        // 2. Core Photochemical Exposure Updater
+        function setExposure(percentValue) {
+            const clamped = Math.max(0, Math.min(100, Number(percentValue) || 0));
+            currentExposure = clamped;
+            const normalized = (clamped / 100).toFixed(3);
+
+            // Update CSS Custom Property driving the entire contact-print transformation
+            root.style.setProperty('--exposure', normalized);
+            slider.value = Math.round(clamped);
+
+            // Fallback class for browsers without CSS color-mix
+            if (clamped > 50) {
+                document.body.classList.add('exposed-fallback');
+            } else {
+                document.body.classList.remove('exposed-fallback');
+            }
+
+            // Update Photochemical Stage Readouts
+            if (clamped < 12) {
+                statusLabel.textContent = `${Math.round(clamped)}% — RAW UNEXPOSED RAG`;
+                plateChemicalState.textContent = 'STATE: UNEXPOSED FERRIC AMMONIUM CITRATE';
+            } else if (clamped < 45) {
+                statusLabel.textContent = `${Math.round(clamped)}% — ACTINIC REDUCTION BEGINNING`;
+                plateChemicalState.textContent = 'STATE: IRON(III) REDUCING TO IRON(II)';
+            } else if (clamped < 82) {
+                statusLabel.textContent = `${Math.round(clamped)}% — LATENT BLUEPRINT EMERGING`;
+                plateChemicalState.textContent = 'STATE: OXIDIZING TO PRUSSIAN BLUE';
+            } else {
+                statusLabel.textContent = `${Math.round(clamped)}% — FIXED PRUSSIAN BLUE PLATE`;
+                plateChemicalState.textContent = 'STATE: ARCHIVAL PRUSSIAN BLUE (DEVELOPED)';
+            }
+
+            updateCommissionDossier();
+        }
+
+        // Smooth animation helper for solar wash button
+        function animateExposureTo(targetPercent, durationMs = 950) {
+            if (rafId) cancelAnimationFrame(rafId);
+            const startPercent = currentExposure;
+            const delta = targetPercent - startPercent;
+            const startTime = performance.now();
+
+            function step(now) {
+                const elapsed = now - startTime;
+                const progress = Math.min(1, elapsed / durationMs);
+                // Ease in-out cubic
+                const eased = progress < 0.5
+                    ? 4 * progress * progress * progress
+                    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+                setExposure(startPercent + delta * eased);
+                if (progress < 1) {
+                    rafId = requestAnimationFrame(step);
+                }
+            }
+            rafId = requestAnimationFrame(step);
+        }
+
+        // Event Listeners for UV Exposure Controls
+        slider.addEventListener('input', (e) => {
+            if (rafId) cancelAnimationFrame(rafId);
+            setExposure(e.target.value);
+        });
+
+        btnHoldUv.addEventListener('click', () => {
+            // Toggle between full Prussian blue development (100%) and raw rag paper (0%)
+            const nextTarget = currentExposure < 85 ? 100 : 0;
+            animateExposureTo(nextTarget, 900);
+        });
+
+        btnResetRag.addEventListener('click', () => {
+            animateExposureTo(0, 650);
+        });
+
+        btnSyncBergen.addEventListener('click', () => {
+            // Calculate an authentic exposure level from Bergen's live UV and sky cover
+            // Even when UV is 0 at night in Bergen, twilight/studio UV bank gives 68% development
+            const uvFactor = Math.min(100, Math.round(38 + (bergenState.uvIndex * 14) + ((100 - bergenState.cloudCover) * 0.25)));
+            animateExposureTo(Math.max(55, uvFactor), 850);
+        });
+
+        // Keyboard shortcut [U] to toggle UV Exposure (when not typing in a form field)
+        window.addEventListener('keydown', (e) => {
+            const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+            if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+            if (e.key === 'u' || e.key === 'U') {
+                e.preventDefault();
+                const nextTarget = currentExposure < 85 ? 100 : 0;
+                animateExposureTo(nextTarget, 850);
+            }
+        });
+
+        // Clicking the Hero Contact Plate also toggles development
+        document.getElementById('hero-contact-plate').addEventListener('click', () => {
+            const nextTarget = currentExposure < 85 ? 100 : 0;
+            animateExposureTo(nextTarget, 850);
+        });
+
+        // 3. Keyless Live Bergen Telemetry via Open-Meteo (60.3913° N, 5.3221° E)
+        async function fetchBergenTelemetry() {
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=60.3913&longitude=5.3221&current=temperature_2m,cloud_cover,uv_index,is_day&timezone=Europe%2FOslo';
+            try {
+                const controller = new AbortController();
+                const timeout = setTimeout(() => controller.abort(), 4500);
+
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeout);
+
+                if (!response.ok) throw new Error('Open-Meteo non-200');
+                const data = await response.json();
+
+                if (data && data.current) {
+                    bergenState.tempC = typeof data.current.temperature_2m === 'number' ? data.current.temperature_2m : 9.4;
+                    bergenState.cloudCover = typeof data.current.cloud_cover === 'number' ? data.current.cloud_cover : 68;
+                    bergenState.uvIndex = typeof data.current.uv_index === 'number' ? data.current.uv_index : 1.8;
+                    bergenState.isDay = typeof data.current.is_day === 'number' ? data.current.is_day : 1;
+                    bergenState.source = 'OPEN-METEO LIVE';
+                }
+            } catch (err) {
+                // Graceful degradation to seasonal Bergen coastal averages
+                bergenState.source = 'SEASONAL ESTIMATE';
+            }
+
+            renderTelemetryBar();
+            updateCommissionDossier();
+        }
+
+        function renderTelemetryBar() {
+            const skyDesc = bergenState.cloudCover > 75
+                ? 'OVERCAST FJORD MARINE LAYER'
+                : bergenState.cloudCover > 35
+                    ? 'BROKEN COASTAL SCUD'
+                    : 'CLEAR NORDIC ZENITH';
+
+            // Calculate authentic cyanotype solar exposure minutes from UV index
+            const effectiveUv = Math.max(0.4, bergenState.uvIndex);
+            const mins = Math.round(Math.max(8, Math.min(48, 36 / effectiveUv)));
+            bergenState.naturalMinutes = mins;
+
+            weatherConditionEl.textContent = `BERGEN SKY: ${skyDesc} (${bergenState.tempC.toFixed(1)}°C, ${bergenState.cloudCover}% CLOUD)`;
+            weatherUvEl.textContent = `UV INDEX: ${bergenState.uvIndex.toFixed(1)} (${bergenState.source})`;
+            recommendedExposureEl.textContent = bergenState.uvIndex < 0.5
+                ? `NATURAL PRINT: ${mins} MIN (OR 14 MIN UV BANK)`
+                : `NATURAL PRINT TIME: ${mins} MIN`;
+        }
+
+        // 4. Portfolio Category Filtering & "Load in Bench" Buttons
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const plateCards = document.querySelectorAll('.plate-card');
+
+        filterBtns.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach((b) => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const filter = btn.getAttribute('data-filter');
+                plateCards.forEach((card) => {
+                    const cat = card.getAttribute('data-category');
+                    if (filter === 'all' || cat === filter) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+        // Load any plate directly into the Commission Bench
+        document.querySelectorAll('.select-plate-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const plateTitle = btn.getAttribute('data-plate');
+                const sizeCode = btn.getAttribute('data-size');
+                commSubject.value = `Edition Plate Inquiry — ${plateTitle}`;
+                if (sizeCode) commSize.value = sizeCode;
+                updateCommissionDossier();
+                document.getElementById('commission').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Clicking a card's artwork window develops the page if not yet developed
+        document.querySelectorAll('.plate-art-window').forEach((win) => {
+            win.addEventListener('click', () => {
+                const nextTarget = currentExposure < 80 ? 100 : 25;
+                animateExposureTo(nextTarget, 700);
+            });
+        });
+
+        // 5. Commission Calculator & Local-First Dossier Builder
+        function updateCommissionDossier() {
+            const selectedSizeOpt = commSize.options[commSize.selectedIndex];
+            const basePrice = Number(selectedSizeOpt.getAttribute('data-price')) || 3600;
+            const areaMultiplier = Number(selectedSizeOpt.getAttribute('data-area')) || 1.35;
+
+            const selectedToneOpt = commToning.options[commToning.selectedIndex];
+            const toneAddon = Number(selectedToneOpt.getAttribute('data-addon')) || 0;
+
+            const totalNok = basePrice + toneAddon;
+            const sensitizerMl = Math.round(13 * areaMultiplier);
+            const exposureMinutes = Math.round(bergenState.naturalMinutes * (areaMultiplier * 0.92));
+
+            calcUvReadout.textContent = `${bergenState.uvIndex.toFixed(1)} UV (${bergenState.source})`;
+            calcTimeReadout.textContent = `${exposureMinutes} MINUTES (AT ${bergenState.cloudCover}% CLOUD)`;
+            calcMlReadout.textContent = `${sensitizerMl} ML FERRIC CITRATE EMULSION`;
+            calcPriceReadout.textContent = `NOK ${totalNok.toLocaleString('en-US')}`;
+
+            const notesClean = (commNotes.value || '').trim() || 'Standard deckle edge; signed & numbered in graphite.';
+
+            const specText = [
+                '========================================================',
+                'SOREN LINDQVIST // CYANOTYPE COMMISSION DOSSIER',
+                'SANDVIKSBODER 14B, BERGEN (60.3913° N, 5.3221° E)',
+                '========================================================',
+                `SUBJECT / PLATE : ${commSubject.value}`,
+                `SHEET FORMAT    : ${selectedSizeOpt.text.split('—')[0].trim()}`,
+                `TONING PROTOCOL : ${selectedToneOpt.value}`,
+                `SENSITIZER VOL  : ${sensitizerMl} ml (20% Ferric Ammonium Citrate + 8% K3Fe(CN)6)`,
+                `BERGEN SKY COND : ${bergenState.tempC.toFixed(1)}°C, UV Index ${bergenState.uvIndex.toFixed(1)} (${exposureMinutes} min contact)`,
+                `PAGE UV STATE   : ${Math.round(currentExposure)}% Exposed when generated`,
+                `SPECIMEN NOTES  : ${notesClean}`,
+                '--------------------------------------------------------',
+                `ESTIMATED TOTAL : NOK ${totalNok.toLocaleString('en-US')} (Archival Flat Shipping Included)`,
+                '========================================================'
+            ].join('\n');
+
+            dossierText.textContent = specText;
+
+            const mailSubject = encodeURIComponent(`Cyanotype Commission Dossier: ${commSubject.value}`);
+            const mailBody = encodeURIComponent(specText);
+            mailtoLink.setAttribute('href', `mailto:soren@lindqvist-cyanotype.no?subject=${mailSubject}&body=${mailBody}`);
+        }
+
+        [commSubject, commSize, commToning, commNotes].forEach((el) => {
+            el.addEventListener('input', updateCommissionDossier);
+            el.addEventListener('change', updateCommissionDossier);
+        });
+
+        // Clipboard Copy with Fallback
+        btnCopyDossier.addEventListener('click', () => {
+            const textToCopy = dossierText.textContent;
+            const showCopied = () => {
+                copyToast.classList.add('visible');
+                setTimeout(() => copyToast.classList.remove('visible'), 2600);
+            };
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy).then(showCopied).catch(() => {
+                    fallbackCopy(textToCopy);
+                    showCopied();
+                });
+            } else {
+                fallbackCopy(textToCopy);
+                showCopied();
+            }
+        });
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try {
+                document.execCommand('copy');
+            } catch (e) {}
+            document.body.removeChild(ta);
+        }
+
+        // Initialize Page
+        setExposure(0);
+        fetchBergenTelemetry();
+    })();
+</script>
+</body>
+</html>
